@@ -1,10 +1,14 @@
+import { db } from "@/db"
+
 import {
   DAYS_OF_WEEK,
   FIRST_SUBJECT_HOUR,
   LAST_SUBJECT_HOUR,
 } from "@/config/timetable"
 
-export function Timetable() {
+export async function Timetable() {
+  const entries = await db.query.timetable.findMany({ with: { course: true } })
+
   return (
     <div className="flex overflow-x-auto">
       <table className="mb-4 flex-1 text-foreground">
@@ -12,7 +16,9 @@ export function Timetable() {
           <tr>
             <th className="sticky left-0 bg-background py-2">Hour</th>
             {DAYS_OF_WEEK.map((day, i) => (
-              <th key={i}>{day}</th>
+              <th key={i} className="capitalize">
+                {day}
+              </th>
             ))}
           </tr>
         </thead>
@@ -24,14 +30,25 @@ export function Timetable() {
               <th className="sticky left-0 bg-background pr-4 md:pl-4">{`${
                 i + FIRST_SUBJECT_HOUR
               }:00`}</th>
-              {DAYS_OF_WEEK.map((_, i) => {
+              {DAYS_OF_WEEK.map((weekday, dayIndex) => {
+                const course = entries.find(
+                  (entry) =>
+                    entry.weekday === weekday &&
+                    entry.startTime <= i + FIRST_SUBJECT_HOUR &&
+                    entry.endTime > i + FIRST_SUBJECT_HOUR
+                )?.course
+
                 return (
                   <td
-                    key={i}
-                    className="min-w-[16rem] border-l-2 border-l-muted-foreground px-1 py-2 md:min-w-[12rem] md:px-2 lg:min-w-0 lg:px-4"
+                    key={dayIndex}
+                    className="min-w-[16rem] border-l-2 border-l-muted-foreground px-1 py-2 capitalize md:min-w-[12rem] md:px-2 lg:min-w-0 lg:px-4"
                   >
-                    <p>[Wykład]</p>
-                    Algorytmy i struktury danych
+                    {!course ? null : (
+                      <>
+                        <span>[{course.type}]</span>
+                        <p>{course.name}</p>
+                      </>
+                    )}
                   </td>
                 )
               })}
