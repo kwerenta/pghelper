@@ -1,3 +1,4 @@
+import { relations } from "drizzle-orm"
 import {
   bigint,
   mysqlEnum,
@@ -22,6 +23,10 @@ export const courses = mysqlTable("courses", {
   ]).notNull(),
 })
 
+export const coursesRelations = relations(courses, ({ many }) => ({
+  course: many(timetable),
+}))
+
 export const timetable = mysqlTable("timetable", {
   id: serial("id").primaryKey(),
   courseId: bigint("course_id", { mode: "bigint" }).notNull(),
@@ -36,3 +41,10 @@ export const timetable = mysqlTable("timetable", {
   endTime: tinyint("end_time").notNull(),
   deanGroup: tinyint("dean_group").notNull().default(0),
 })
+
+export const timetableRelations = relations(timetable, ({ one }) => ({
+  course: one(courses, {
+    fields: [timetable.courseId],
+    references: [courses.id],
+  }),
+}))
