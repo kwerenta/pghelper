@@ -29,7 +29,7 @@ export const coursesRelations = relations(courses, ({ many }) => ({
 
 export const timetable = mysqlTable("timetable", {
   id: serial("id").primaryKey(),
-  courseId: bigint("course_id", { mode: "bigint" }).notNull(),
+  courseId: bigint("course_id", { mode: "number" }).notNull(),
   weekday: mysqlEnum("weekday", [
     "monday",
     "tuesday",
