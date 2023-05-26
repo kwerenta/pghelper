@@ -1,8 +1,11 @@
 import Link from "next/link"
+import { db } from "@/db"
+import { courses as coursesTable } from "@/db/schema"
 
 import { buttonVariants } from "@/components/ui/button"
 
-export default function IndexPage() {
+export default async function IndexPage() {
+  const courses = await db.select().from(coursesTable)
   return (
     <section className="container grid items-center gap-6 pb-8 pt-6 md:py-10">
       <div className="flex max-w-[980px] flex-col items-start gap-2">
@@ -24,6 +27,11 @@ export default function IndexPage() {
           Log in
         </Link>
       </div>
+      <ul>
+        {courses.map((course) => (
+          <li key={course.id}>{course.name}</li>
+        ))}
+      </ul>
     </section>
   )
 }
