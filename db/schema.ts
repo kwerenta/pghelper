@@ -1,4 +1,4 @@
-import { relations } from "drizzle-orm"
+import { InferModel, relations } from "drizzle-orm"
 import {
   bigint,
   mysqlEnum,
@@ -22,6 +22,8 @@ export const courses = mysqlTable("courses", {
     "every_two_weeks",
   ]).notNull(),
 })
+
+export type Course = InferModel<typeof courses>
 
 export const coursesRelations = relations(courses, ({ many }) => ({
   timetables: many(timetable),
