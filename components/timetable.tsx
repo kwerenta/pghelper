@@ -1,4 +1,7 @@
 import { db } from "@/db"
+import { studentAttendances } from "@/db/schema"
+import { eq, inArray, ne, notInArray } from "drizzle-orm"
+import { alias } from "drizzle-orm/mysql-core"
 
 import {
   DAYS_OF_WEEK,
@@ -7,7 +10,30 @@ import {
 } from "@/config/timetable"
 
 export async function Timetable() {
-  const entries = await db.query.timetable.findMany({ with: { course: true } })
+  const student = { id: 1, deanGroup: 3 }
+
+  const sa = alias(studentAttendances, "sa")
+  const attendanceQuery = db
+    .select({ id: sa.courseId })
+    .from(sa)
+    .where(eq(sa.studentId, student.id))
+  const entries = await db.query.timetable.findMany({
+    with: {
+      course: true,
+    },
+    where: ({ deanGroup, courseId }, { or, and, eq }) =>
+      or(
+        eq(deanGroup, 0),
+        and(
+          eq(deanGroup, student.deanGroup),
+          notInArray(courseId, attendanceQuery)
+        ),
+        and(
+          ne(deanGroup, student.deanGroup),
+          inArray(courseId, attendanceQuery)
+        )
+      ),
+  })
 
   return (
     <div className="flex overflow-x-auto">

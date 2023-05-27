@@ -24,7 +24,8 @@ export const courses = mysqlTable("courses", {
 })
 
 export const coursesRelations = relations(courses, ({ many }) => ({
-  course: many(timetable),
+  timetables: many(timetable),
+  studentAttendances: many(studentAttendances),
 }))
 
 export const timetable = mysqlTable("timetable", {
@@ -48,3 +49,20 @@ export const timetableRelations = relations(timetable, ({ one }) => ({
     references: [courses.id],
   }),
 }))
+
+export const studentAttendances = mysqlTable("student_attendances", {
+  id: serial("id"),
+  studentId: bigint("student_id", { mode: "number" }).notNull(),
+  courseId: bigint("course_id", { mode: "number" }).notNull(),
+  deanGroup: tinyint("dean_group").notNull(),
+})
+
+export const studentAttendancesRelations = relations(
+  studentAttendances,
+  ({ one }) => ({
+    course: one(courses, {
+      fields: [studentAttendances.courseId],
+      references: [courses.id],
+    }),
+  })
+)
