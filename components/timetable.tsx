@@ -1,5 +1,6 @@
 import { db } from "@/db"
 import { studentAttendances } from "@/db/schema"
+import { currentUser } from "@clerk/nextjs"
 import { eq, inArray, ne, notInArray } from "drizzle-orm"
 import { alias } from "drizzle-orm/mysql-core"
 
@@ -12,13 +13,14 @@ import {
 import { Timeslot } from "./timeslot"
 
 export async function Timetable() {
-  const student = { id: 1, deanGroup: 3 }
+  const student = await currentUser()
+  const studentData: { deanGroup?: number } = student!.unsafeMetadata
 
   const sa = alias(studentAttendances, "sa")
   const attendanceQuery = db
     .select({ id: sa.courseId })
     .from(sa)
-    .where(eq(sa.studentId, student.id))
+    .where(eq(sa.studentId, student!.id))
   const entries = await db.query.timetable.findMany({
     with: {
       course: true,
@@ -27,11 +29,11 @@ export async function Timetable() {
       or(
         eq(deanGroup, 0),
         and(
-          eq(deanGroup, student.deanGroup),
+          eq(deanGroup, studentData.deanGroup ?? 0),
           notInArray(courseId, attendanceQuery)
         ),
         and(
-          ne(deanGroup, student.deanGroup),
+          ne(deanGroup, studentData.deanGroup ?? 0),
           inArray(courseId, attendanceQuery)
         )
       ),
