@@ -12,6 +12,11 @@ import {
 
 import { Timeslot } from "./timeslot"
 
+const hoursArray = Array.from(
+  { length: LAST_SUBJECT_HOUR - FIRST_SUBJECT_HOUR + 1 },
+  (_, i) => i + FIRST_SUBJECT_HOUR
+)
+
 export async function Timetable() {
   const student = await currentUser()
   const studentData: { deanGroup?: number } = student!.unsafeMetadata
@@ -53,21 +58,19 @@ export async function Timetable() {
           </tr>
         </thead>
         <tbody>
-          {Array.from({
-            length: LAST_SUBJECT_HOUR - FIRST_SUBJECT_HOUR + 1,
-          }).map((_, i) => (
-            <tr key={i} className="text-center">
+          {hoursArray.map((hour) => (
+            <tr key={hour} className="text-center">
               <th className="sticky left-0 bg-background p-2 capitalize sm:px-3 lg:px-4">
-                {i + FIRST_SUBJECT_HOUR}:00
+                {hour}:00
               </th>
               {DAYS_OF_WEEK.map((weekday) => {
                 const course = entries.find(
                   (entry) =>
                     entry.weekday === weekday &&
-                    entry.startTime <= i + FIRST_SUBJECT_HOUR &&
-                    entry.endTime > i + FIRST_SUBJECT_HOUR
+                    entry.startTime <= hour &&
+                    entry.endTime > hour
                 )?.course
-                return <Timeslot key={weekday + i} course={course} />
+                return <Timeslot key={weekday + hour} course={course} />
               })}
             </tr>
           ))}
