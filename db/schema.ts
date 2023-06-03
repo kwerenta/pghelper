@@ -1,4 +1,4 @@
-import { InferModel, relations } from "drizzle-orm"
+import { InferModel, InferModelFromColumns, relations } from "drizzle-orm"
 import {
   bigint,
   mysqlEnum,
