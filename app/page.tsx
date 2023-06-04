@@ -1,27 +1,15 @@
-import { Button } from "@/components/ui/button"
-import { Separator } from "@/components/ui/separator"
-import { Icons } from "@/components/icons"
-import { Timetable } from "@/components/timetable"
-
-export default async function IndexPage() {
-  // Workaround for Typescript server component cannot be used as a JSX component error
-  const timetable: JSX.Element = await Timetable()
+export default function IndexPage() {
   return (
-    <section className="container grid items-center pb-8 pt-6 md:py-10">
-      <div className="flex items-center justify-between">
-        <div className="space-y-0.5">
-          <h2 className="text-2xl font-bold tracking-tight">Timetable</h2>
-          <p className="text-muted-foreground">
-            View and customise your timetable.
-          </p>
-        </div>
-        <Button variant="default">
-          <Icons.edit className="mr-2 h-4 w-4" />
-          Edit timetable
-        </Button>
+    <section className="container grid items-center gap-6 pb-8 pt-6 md:py-10">
+      <div className="flex max-w-[980px] flex-col items-start gap-2">
+        <h1 className="text-3xl font-extrabold leading-tight tracking-tighter sm:text-3xl md:text-5xl lg:text-6xl">
+          Tools for PG students.
+        </h1>
+        <p className="max-w-[700px] text-lg text-muted-foreground sm:text-xl">
+          Customizable timetable and more.
+        </p>
       </div>
-      <Separator className="my-6" />
-      {timetable}
+      <div className="flex gap-4"></div>
     </section>
   )
 }
