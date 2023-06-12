@@ -1,8 +1,8 @@
-import { UserButton } from "@clerk/nextjs"
-
 import { siteConfig } from "@/config/site"
 import { MainNav } from "@/components/mainNav"
 import { ThemeToggle } from "@/components/themeToggle"
+
+import { UserButton } from "./userButton"
 
 export function SiteHeader() {
   return (
@@ -12,7 +12,7 @@ export function SiteHeader() {
         <div className="flex flex-1 items-center justify-end space-x-4">
           <nav className="flex items-center space-x-1">
             <ThemeToggle />
-            <UserButton afterSignOutUrl="/" />
+            <UserButton />
           </nav>
         </div>
       </div>

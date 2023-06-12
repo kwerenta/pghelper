@@ -1,5 +1,3 @@
-import { currentUser } from "@clerk/nextjs"
-
 import {
   DAYS_OF_WEEK,
   FIRST_SUBJECT_HOUR,
@@ -15,8 +13,7 @@ const hoursArray = Array.from(
 )
 
 export async function Timetable() {
-  const student = await currentUser()
-  const entries = await getUserTimetable(student)
+  const entries = await getUserTimetable({ id: "", deanGroup: 3 })
 
   return (
     <div className="flex overflow-x-auto">
