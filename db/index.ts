@@ -6,3 +6,5 @@ const connection = createConnection(
   process.env.DATABASE_URL ?? "mysql://root@127.0.0.1:3306/pghelper"
 )
 export const db = drizzle(connection, { schema })
+
+export type DatabaseInstance = typeof db
