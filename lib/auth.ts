@@ -11,6 +11,9 @@ export const authOptions: NextAuthOptions = {
   session: {
     strategy: "jwt",
   },
+  pages: {
+    signIn: "/login",
+  },
   providers: [
     Discord({
       clientId: process.env.DISCORD_CLIENT_ID ?? "",
