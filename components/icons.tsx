@@ -4,6 +4,7 @@ import {
   GraduationCap,
   LucideProps,
   Moon,
+  Sheet,
   SunMedium,
   type Icon as LucideIcon,
 } from "lucide-react"
@@ -15,6 +16,7 @@ export const Icons = {
   moon: Moon,
   edit: Edit,
   graduationCap: GraduationCap,
+  sheet: Sheet,
   calendarDays: CalendarDays,
   discord: (props: LucideProps) => (
     // Source: https://icons.getbootstrap.com/icons/discord/

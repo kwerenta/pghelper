@@ -19,12 +19,22 @@ export function SidebarNav({ items }: DashboardNavProps) {
   }
 
   return (
-    <nav className="grid items-start gap-2">
+    <nav className="grid items-start gap-2 pb-8 pt-6 md:py-10">
+      <Link href="/">
+        <span className="mb-10 flex items-center text-2xl font-bold tracking-tight">
+          <Icons.graduationCap className="mr-2 h-6 w-6" />
+          <span>PGHelper</span>
+        </span>
+      </Link>
       {items.map((item, index) => {
         const Icon = Icons[item.icon || "logo"]
         return (
           item.href && (
-            <Link key={index} href={item.disabled ? "/" : item.href}>
+            <Link
+              key={index}
+              href={item.disabled ? "/" : item.href}
+              target={item.external ? "_blank" : "_self"}
+            >
               <span
                 className={cn(
                   "group flex items-center rounded-md px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground",
