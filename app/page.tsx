@@ -1,3 +1,5 @@
+import Link from "next/link"
+
 export default function IndexPage() {
   return (
     <section className="container grid items-center gap-6 pb-8 pt-6 md:py-10">
@@ -6,10 +8,16 @@ export default function IndexPage() {
           Tools for PG students.
         </h1>
         <p className="max-w-[700px] text-lg text-muted-foreground sm:text-xl">
-          Customizable timetable and more.
+          Customizable{" "}
+          <Link
+            className="underline underline-offset-4 hover:text-primary"
+            href="/timetable"
+          >
+            timetable
+          </Link>{" "}
+          and more.
         </p>
       </div>
-      <div className="flex gap-4"></div>
     </section>
   )
 }
