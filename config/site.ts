@@ -1,16 +1,13 @@
-export type SiteConfig = typeof siteConfig
+import { SiteConfig } from "@/types"
 
-export const siteConfig = {
+export const siteConfig: SiteConfig = {
   name: "PGHelper",
   description: "Tools for PG students.",
-  mainNav: [
-    {
-      title: "Home",
-      href: "/",
-    },
+  sidebarNav: [
     {
       title: "Timetable",
       href: "/timetable",
+      icon: "calendarDays",
     },
   ],
 }

@@ -1,4 +1,5 @@
 import {
+  CalendarDays,
   Edit,
   GraduationCap,
   LucideProps,
@@ -14,6 +15,7 @@ export const Icons = {
   moon: Moon,
   edit: Edit,
   graduationCap: GraduationCap,
+  calendarDays: CalendarDays,
   discord: (props: LucideProps) => (
     // Source: https://icons.getbootstrap.com/icons/discord/
     <svg
