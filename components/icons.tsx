@@ -2,6 +2,7 @@ import {
   CalendarDays,
   Edit,
   GraduationCap,
+  LogOut,
   LucideProps,
   Moon,
   Sheet,
@@ -18,6 +19,7 @@ export const Icons = {
   graduationCap: GraduationCap,
   sheet: Sheet,
   calendarDays: CalendarDays,
+  logOut: LogOut,
   discord: (props: LucideProps) => (
     // Source: https://icons.getbootstrap.com/icons/discord/
     <svg
