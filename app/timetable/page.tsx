@@ -4,8 +4,6 @@ import { Icons } from "@/components/icons"
 import { Timetable } from "@/components/timetable"
 
 export default async function TimetablePage() {
-  // Workaround for Typescript server component cannot be used as a JSX component error
-  const timetable: JSX.Element = await Timetable()
   return (
     <section className="container grid items-center pb-8 pt-6 md:py-10">
       <div className="flex items-center justify-between">
@@ -21,7 +19,8 @@ export default async function TimetablePage() {
         </Button>
       </div>
       <Separator className="my-6" />
-      {timetable}
+      {/* @ts-expect-error server component */}
+      <Timetable />
     </section>
   )
 }
