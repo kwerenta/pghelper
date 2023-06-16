@@ -5,7 +5,6 @@ import { siteConfig } from "@/config/site"
 import { fontSans } from "@/lib/fonts"
 import { cn } from "@/lib/utils"
 import { NextAuthProvider } from "@/components/nextAuthProvider"
-import { SiteHeader } from "@/components/siteHeader"
 import { TailwindIndicator } from "@/components/tailwindIndicator"
 import { ThemeProvider } from "@/components/themeProvider"
 
@@ -42,10 +41,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
       >
         <NextAuthProvider>
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-            <div className="relative flex min-h-screen flex-col">
-              <SiteHeader />
-              <div className="flex-1">{children}</div>
-            </div>
+            {children}
             <TailwindIndicator />
           </ThemeProvider>
         </NextAuthProvider>
