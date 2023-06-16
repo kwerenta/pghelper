@@ -5,7 +5,7 @@ import {
 } from "@/config/timetable"
 import { getUserTimetable } from "@/lib/timetable"
 
-import { Timeslot } from "./timeslot"
+import { Timeslot } from "./Timeslot"
 
 const hoursArray = Array.from(
   { length: LAST_SUBJECT_HOUR - FIRST_SUBJECT_HOUR + 1 },

@@ -1,5 +1,5 @@
 import { siteConfig } from "@/config/site"
-import { SidebarNav } from "@/components/nav"
+import { SidebarNav } from "@/components/Nav"
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
