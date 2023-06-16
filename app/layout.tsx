@@ -4,9 +4,9 @@ import { Metadata } from "next"
 import { siteConfig } from "@/config/site"
 import { fontSans } from "@/lib/fonts"
 import { cn } from "@/lib/utils"
-import { NextAuthProvider } from "@/components/nextAuthProvider"
-import { TailwindIndicator } from "@/components/tailwindIndicator"
-import { ThemeProvider } from "@/components/themeProvider"
+import { NextAuthProvider } from "@/components/NextAuthProvider"
+import { TailwindIndicator } from "@/components/TailwindIndicator"
+import { ThemeProvider } from "@/components/ThemeProvider"
 
 export const metadata: Metadata = {
   title: {
@@ -25,11 +25,11 @@ export const metadata: Metadata = {
   },
 }
 
-interface RootLayoutProps {
+export default function RootLayout({
+  children,
+}: {
   children: React.ReactNode
-}
-
-export default function RootLayout({ children }: RootLayoutProps) {
+}) {
   return (
     <html lang="en" suppressHydrationWarning>
       <head />

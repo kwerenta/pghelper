@@ -16,23 +16,20 @@ export const authOptions: NextAuthOptions = {
   },
   providers: [
     Discord({
-      clientId: process.env.DISCORD_CLIENT_ID ?? "",
-      clientSecret: process.env.DISCORD_CLIENT_SECRET ?? "",
+      clientId: process.env.DISCORD_CLIENT_ID!,
+      clientSecret: process.env.DISCORD_CLIENT_SECRET!,
     }),
   ],
   callbacks: {
     async session({ token, session }) {
-      if (!token) return session
-
-      return {
-        ...session,
-        user: {
-          id: token.id,
-          name: token.name,
-          email: token.email,
-          image: token.picture,
-        },
+      if (token) {
+        session.user.id = token.id
+        session.user.name = token.name
+        session.user.email = token.email
+        session.user.image = token.picture
       }
+
+      return session
     },
     async jwt({ token, user }) {
       const dbUser =

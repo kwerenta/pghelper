@@ -6,10 +6,10 @@ import { NavItem } from "@/types"
 import { signOut } from "next-auth/react"
 
 import { cn } from "@/lib/utils"
-import { Icons } from "@/components/icons"
+import { Icons } from "@/components/Icons"
 
-import { Button } from "./ui/button"
-import { Separator } from "./ui/separator"
+import { Button } from "./ui/Button"
+import { Separator } from "./ui/Separator"
 
 interface DashboardNavProps {
   items: NavItem[]
