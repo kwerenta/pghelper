@@ -1,7 +1,11 @@
 import { siteConfig } from "@/config/site"
 import { SidebarNav } from "@/components/Nav"
 
-export default function Layout({ children }: { children: React.ReactNode }) {
+export default async function Layout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
   return (
     <div className="flex min-h-screen flex-col space-y-6">
       <div className="container grid flex-1 lg:grid-cols-[200px_1fr] lg:gap-12">
