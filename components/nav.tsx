@@ -3,6 +3,7 @@
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { NavItem } from "@/types"
+import { User } from "next-auth"
 import { signOut } from "next-auth/react"
 
 import { cn } from "@/lib/utils"
@@ -11,11 +12,11 @@ import { Icons } from "@/components/Icons"
 import { Button } from "./ui/Button"
 import { Separator } from "./ui/Separator"
 
-interface DashboardNavProps {
+interface SidebarNavProps {
   items: NavItem[]
 }
 
-export function SidebarNav({ items }: DashboardNavProps) {
+export function SidebarNav({ items }: SidebarNavProps) {
   const path = usePathname()
 
   if (!items?.length) {
