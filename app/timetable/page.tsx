@@ -19,7 +19,6 @@ export default async function TimetablePage() {
         </Button>
       </div>
       <Separator className="my-6" />
-      {/* @ts-expect-error server component */}
       <Timetable />
     </section>
   )
