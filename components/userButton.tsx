@@ -5,6 +5,7 @@ import { User } from "next-auth"
 import { signOut } from "next-auth/react"
 
 import { Icons } from "./Icons"
+import { ModeToggleSubMenu } from "./ModeToggleSubMenu"
 import { Button } from "./ui/Button"
 import {
   DropdownMenu,
@@ -23,7 +24,7 @@ export function UserButton({ user }: { user: User }) {
           <span className="truncate">{user.name || user.email || "User"}</span>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent>
+      <DropdownMenuContent align="start">
         <div className="flex items-center justify-start gap-2 p-2">
           <div className="flex flex-col space-y-1 leading-none">
             {user.name && <p className="font-medium">{user.name}</p>}
@@ -38,9 +39,11 @@ export function UserButton({ user }: { user: User }) {
         <DropdownMenuItem asChild>
           <Link href="/settings">
             <Icons.settings className="mr-2 h-4 w-4" />
-            <span className="truncate">Settings</span>
+            <span>Settings</span>
           </Link>
         </DropdownMenuItem>
+        <ModeToggleSubMenu />
+        <DropdownMenuSeparator />
         <DropdownMenuItem
           className="cursor-pointer"
           onSelect={(e) => {
@@ -49,7 +52,7 @@ export function UserButton({ user }: { user: User }) {
           }}
         >
           <Icons.logOut className="mr-2 h-4 w-4" />
-          <span className="truncate">Log out</span>
+          <span>Log out</span>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

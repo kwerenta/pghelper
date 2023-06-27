@@ -2,6 +2,7 @@ import {
   CalendarDays,
   Edit,
   GraduationCap,
+  Laptop,
   LogOut,
   LucideProps,
   Moon,
@@ -24,6 +25,7 @@ export const Icons = {
   logOut: LogOut,
   user: User,
   settings: Settings,
+  laptop: Laptop,
   discord: (props: LucideProps) => (
     // Source: https://icons.getbootstrap.com/icons/discord/
     <svg
