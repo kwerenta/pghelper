@@ -5,8 +5,10 @@ import {
   LogOut,
   LucideProps,
   Moon,
+  Settings,
   Sheet,
   SunMedium,
+  User,
   type Icon as LucideIcon,
 } from "lucide-react"
 
@@ -20,6 +22,8 @@ export const Icons = {
   sheet: Sheet,
   calendarDays: CalendarDays,
   logOut: LogOut,
+  user: User,
+  settings: Settings,
   discord: (props: LucideProps) => (
     // Source: https://icons.getbootstrap.com/icons/discord/
     <svg
