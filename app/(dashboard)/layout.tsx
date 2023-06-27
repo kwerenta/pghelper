@@ -2,7 +2,7 @@ import { siteConfig } from "@/config/site"
 import { getCurrentUser } from "@/lib/session"
 import { Separator } from "@/components/ui/Separator"
 import { SidebarNav } from "@/components/Nav"
-import { UserButton } from "@/components/UserButton"
+import { UserDropdownMenu } from "@/components/UserDropdownMenu"
 
 export default async function Layout({
   children,
@@ -19,7 +19,7 @@ export default async function Layout({
         <aside className="flex flex-col py-6 lg:sticky lg:top-0 lg:h-screen lg:w-[200px] lg:py-10">
           <SidebarNav items={siteConfig.sidebarNav} />
           <Separator className="my-4" />
-          <UserButton user={user} />
+          <UserDropdownMenu user={user} />
         </aside>
         <main className="flex w-full flex-1 flex-col overflow-hidden">
           {children}
