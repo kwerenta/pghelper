@@ -18,6 +18,7 @@ export const users = mysqlTable("users", {
   email: varchar("email", { length: 255 }).notNull(),
   emailVerified: timestamp("emailVerified", { mode: "date" }),
   image: varchar("image", { length: 255 }),
+  deanGroup: tinyint("dean_group").notNull().default(0),
 })
 
 export const accounts = mysqlTable(
@@ -106,7 +107,7 @@ export const timetableRelations = relations(timetable, ({ one }) => ({
 
 export const studentAttendances = mysqlTable("student_attendances", {
   id: serial("id").primaryKey(),
-  studentId: varchar("student_id", { length: 32 }).notNull(),
+  studentId: varchar("student_id", { length: 255 }).notNull(),
   courseId: bigint("course_id", { mode: "number" }).notNull(),
   deanGroup: tinyint("dean_group").notNull(),
 })

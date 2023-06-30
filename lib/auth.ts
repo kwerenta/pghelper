@@ -27,15 +27,15 @@ export const authOptions: NextAuthOptions = {
         session.user.name = token.name
         session.user.email = token.email
         session.user.image = token.picture
+        session.user.deanGroup = token.deanGroup
       }
 
       return session
     },
     async jwt({ token, user }) {
-      const dbUser =
-        (await db.query.users.findFirst({
-          where: eq(users.email, token.email ?? ""),
-        })) ?? null
+      const dbUser = await db.query.users.findFirst({
+        where: eq(users.email, token.email ?? ""),
+      })
 
       if (!dbUser) {
         if (user) {
@@ -49,6 +49,7 @@ export const authOptions: NextAuthOptions = {
         name: dbUser.name,
         email: dbUser.email,
         picture: dbUser.image,
+        deanGroup: dbUser.deanGroup,
       }
     },
   },

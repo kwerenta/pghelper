@@ -1,8 +1,11 @@
+import { redirect } from "next/navigation"
+
 import {
   DAYS_OF_WEEK,
   FIRST_SUBJECT_HOUR,
   LAST_SUBJECT_HOUR,
 } from "@/config/timetable"
+import { getCurrentUser } from "@/lib/session"
 import { getUserTimetable } from "@/lib/timetable"
 
 import { Timeslot } from "./Timeslot"
@@ -14,7 +17,13 @@ const hoursArray = Array.from(
 )
 
 export async function Timetable() {
-  const entries = await getUserTimetable({ id: "", deanGroup: 5 })
+  const user = await getCurrentUser()
+  if (!user) return redirect("/")
+
+  const entries = await getUserTimetable({
+    id: user.id,
+    deanGroup: user.deanGroup,
+  })
 
   return (
     <Card className="overflow-x-auto">
