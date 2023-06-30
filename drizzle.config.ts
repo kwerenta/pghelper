@@ -1,7 +1,12 @@
+import * as dotEnv from "dotenv"
 import type { Config } from "drizzle-kit"
+
+dotEnv.config({ path: ".env.local" })
 
 export default {
   schema: "./db/schema.ts",
-  connectionString:
-    process.env.DATABASE_URL ?? "mysql://root@127.0.0.1:3306/pghelper",
+  driver: "mysql2",
+  dbCredentials: {
+    connectionString: process.env.DATABASE_URL!,
+  },
 } satisfies Config
