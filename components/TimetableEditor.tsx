@@ -1,13 +1,11 @@
 "use client"
 
-import { useState } from "react"
+import { Timeslot } from "@/db/schema"
 
 import { TimetableEntry } from "@/lib/timetable"
-import { cn } from "@/lib/utils"
 
 import { Icons } from "./Icons"
 import { Button } from "./ui/Button"
-import { RadioGroup, RadioGroupItem } from "./ui/RadioGroup"
 import {
   Select,
   SelectContent,
@@ -31,16 +29,13 @@ import { Label } from "./ui/label"
 
 export const TimetableEditor = ({
   timetableEntries,
+  timeslots,
 }: {
   timetableEntries: TimetableEntry[]
+  timeslots: Timeslot[]
 }) => {
-  const [selectedCourse, setSelectedCourse] = useState<string | null>(null)
-  const defaultDeanGroup = timetableEntries
-    .find((entry) => entry.course.name == selectedCourse)
-    ?.deanGroup.toString()
-
   return (
-    <Sheet onOpenChange={() => setSelectedCourse(null)}>
+    <Sheet>
       <SheetTrigger asChild>
         <Button variant="default">
           <Icons.edit className="mr-2 h-4 w-4" />
@@ -56,43 +51,33 @@ export const TimetableEditor = ({
         </SheetHeader>
 
         <div className="space-y-4 py-4">
-          <div className="space-y-1">
-            <Label>Course</Label>
-            <Select onValueChange={(value) => setSelectedCourse(value)}>
-              <SelectTrigger className={cn(selectedCourse && "capitalize")}>
-                <SelectValue placeholder="Select a course" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectLabel>Courses</SelectLabel>
-                  {timetableEntries.map((entry) => (
-                    <SelectItem
-                      key={entry.courseId}
-                      value={entry.course.name}
-                      className="capitalize"
-                    >
-                      {entry.course.name}
-                    </SelectItem>
-                  ))}
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-          </div>
-          {selectedCourse && (
-            <div className="space-y-1">
-              <Label htmlFor="timeslot">Choose timeslot</Label>
-              <RadioGroup id="timeslot" defaultValue={defaultDeanGroup}>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="3" id="r1" />
-                  <Label htmlFor="r1">Group 3 | Monday 15-17</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="5" id="r2" />
-                  <Label htmlFor="r2">Group 5 | Friday 7-9</Label>
-                </div>
-              </RadioGroup>
+          {timetableEntries.map((entry) => (
+            <div key={entry.id} className="space-y-1">
+              <Label className="capitalize">{entry.course.name}</Label>
+              <Select defaultValue={entry.deanGroup.toString()}>
+                <SelectTrigger className="capitalize">
+                  <SelectValue placeholder="Select a course" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectLabel>Timeslot</SelectLabel>
+                    {timeslots
+                      .filter((timeslot) => timeslot.courseId == entry.courseId)
+                      .map((timeslot) => (
+                        <SelectItem
+                          key={timeslot.id}
+                          className="capitalize"
+                          value={timeslot.deanGroup.toString()}
+                        >
+                          Group {timeslot.deanGroup} | {timeslot.startTime}:00 -{" "}
+                          {timeslot.endTime}:00 {timeslot.weekday}
+                        </SelectItem>
+                      ))}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
             </div>
-          )}
+          ))}
         </div>
 
         <SheetFooter>

@@ -1,5 +1,5 @@
 import { db } from "@/db"
-import { studentAttendances } from "@/db/schema"
+import { studentAttendances, timetable } from "@/db/schema"
 import { eq, inArray, ne, notInArray } from "drizzle-orm"
 import { alias } from "drizzle-orm/mysql-core"
 
@@ -31,5 +31,8 @@ export const getUserTimetable = (student: {
       ),
   })
 }
+
+export const getCoursesTimeslots = (ids: number[]) =>
+  db.select().from(timetable).where(inArray(timetable.courseId, ids))
 
 export type TimetableEntry = Awaited<ReturnType<typeof getUserTimetable>>[0]

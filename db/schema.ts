@@ -98,6 +98,8 @@ export const timetable = mysqlTable("timetable", {
   deanGroup: tinyint("dean_group").notNull().default(0),
 })
 
+export type Timeslot = InferModel<typeof timetable>
+
 export const timetableRelations = relations(timetable, ({ one }) => ({
   course: one(courses, {
     fields: [timetable.courseId],

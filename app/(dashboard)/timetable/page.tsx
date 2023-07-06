@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation"
 
 import { getCurrentUser } from "@/lib/session"
-import { getUserTimetable } from "@/lib/timetable"
+import { getCoursesTimeslots, getUserTimetable } from "@/lib/timetable"
 import { DashboardHeader } from "@/components/DashboardHeader"
 import { DashboardShell } from "@/components/DashboardShell"
 import { Timetable } from "@/components/Timetable"
@@ -19,6 +19,9 @@ export default async function TimetablePage() {
   const modifiableEntries = entries.filter(
     (entry, index, arr) => entry.deanGroup !== 0 && arr.indexOf(entry) === index
   )
+  const timeslots = await getCoursesTimeslots(
+    modifiableEntries.map((e) => e.course.id)
+  )
 
   return (
     <DashboardShell>
@@ -26,7 +29,10 @@ export default async function TimetablePage() {
         title="Timetable"
         description="View and customise your timetable."
       >
-        <TimetableEditor timetableEntries={modifiableEntries} />
+        <TimetableEditor
+          timetableEntries={modifiableEntries}
+          timeslots={timeslots}
+        />
       </DashboardHeader>
       <Timetable entries={entries} />
     </DashboardShell>
