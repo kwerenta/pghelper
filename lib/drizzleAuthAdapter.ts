@@ -93,8 +93,8 @@ export function DrizzleAdapter(client: DatabaseInstance): Adapter {
         .where(
           and(
             eq(accounts.providerAccountId, account.providerAccountId),
-            eq(accounts.provider, account.provider)
-          )
+            eq(accounts.provider, account.provider),
+          ),
         )
         .leftJoin(users, eq(accounts.userId, users.id))
         .then((res) => res[0])
@@ -125,8 +125,8 @@ export function DrizzleAdapter(client: DatabaseInstance): Adapter {
             .where(
               and(
                 eq(verificationTokens.identifier, token.identifier),
-                eq(verificationTokens.token, token.token)
-              )
+                eq(verificationTokens.token, token.token),
+              ),
             )
             .then((res) => res[0])) ?? null
 
@@ -135,8 +135,8 @@ export function DrizzleAdapter(client: DatabaseInstance): Adapter {
           .where(
             and(
               eq(verificationTokens.identifier, token.identifier),
-              eq(verificationTokens.token, token.token)
-            )
+              eq(verificationTokens.token, token.token),
+            ),
           )
 
         return deletedToken
@@ -159,8 +159,8 @@ export function DrizzleAdapter(client: DatabaseInstance): Adapter {
         .where(
           and(
             eq(accounts.providerAccountId, account.providerAccountId),
-            eq(accounts.provider, account.provider)
-          )
+            eq(accounts.provider, account.provider),
+          ),
         )
 
       return undefined
