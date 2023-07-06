@@ -3,7 +3,7 @@ import { studentAttendances } from "@/db/schema"
 import { eq, inArray, ne, notInArray } from "drizzle-orm"
 import { alias } from "drizzle-orm/mysql-core"
 
-export const getUserTimetable = async (student: {
+export const getUserTimetable = (student: {
   id: string
   deanGroup: number
 }) => {
@@ -13,7 +13,7 @@ export const getUserTimetable = async (student: {
     .from(sa)
     .where(eq(sa.studentId, student.id))
 
-  return await db.query.timetable.findMany({
+  return db.query.timetable.findMany({
     with: {
       course: true,
     },
@@ -31,3 +31,5 @@ export const getUserTimetable = async (student: {
       ),
   })
 }
+
+export type TimetableEntry = Awaited<ReturnType<typeof getUserTimetable>>[0]
