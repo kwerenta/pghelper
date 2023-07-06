@@ -17,10 +17,11 @@ export default async function TimetablePage() {
   })
 
   const modifiableEntries = entries.filter(
-    (entry, index, arr) => entry.deanGroup !== 0 && arr.indexOf(entry) === index
+    (entry, index, arr) =>
+      entry.deanGroup !== 0 && arr.indexOf(entry) === index,
   )
   const timeslots = await getCoursesTimeslots(
-    modifiableEntries.map((e) => e.course.id)
+    modifiableEntries.map((e) => e.course.id),
   )
 
   return (

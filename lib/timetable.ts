@@ -22,12 +22,12 @@ export const getUserTimetable = (student: {
         eq(deanGroup, 0),
         and(
           eq(deanGroup, student.deanGroup),
-          notInArray(courseId, attendanceQuery)
+          notInArray(courseId, attendanceQuery),
         ),
         and(
           ne(deanGroup, student.deanGroup),
-          inArray(courseId, attendanceQuery)
-        )
+          inArray(courseId, attendanceQuery),
+        ),
       ),
   })
 }

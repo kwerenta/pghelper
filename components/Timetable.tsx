@@ -10,7 +10,7 @@ import { Card, CardContent } from "./ui/card"
 
 const hoursArray = Array.from(
   { length: LAST_SUBJECT_HOUR - FIRST_SUBJECT_HOUR + 1 },
-  (_, i) => i + FIRST_SUBJECT_HOUR
+  (_, i) => i + FIRST_SUBJECT_HOUR,
 )
 
 export const Timetable = ({ entries }: { entries: TimetableEntry[] }) => (
@@ -38,7 +38,7 @@ export const Timetable = ({ entries }: { entries: TimetableEntry[] }) => (
                   (entry) =>
                     entry.weekday === weekday &&
                     entry.startTime <= hour &&
-                    entry.endTime > hour
+                    entry.endTime > hour,
                 )?.course
                 return <Timeslot key={weekday + hour} course={course} />
               })}

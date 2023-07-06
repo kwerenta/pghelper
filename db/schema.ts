@@ -40,7 +40,7 @@ export const accounts = mysqlTable(
   },
   (account) => ({
     compoundKey: primaryKey(account.provider, account.providerAccountId),
-  })
+  }),
 )
 
 export const sessions = mysqlTable("sessions", {
@@ -58,7 +58,7 @@ export const verificationTokens = mysqlTable(
   },
   (vt) => ({
     compoundKey: primaryKey(vt.identifier, vt.token),
-  })
+  }),
 )
 
 export const courses = mysqlTable("courses", {
@@ -121,5 +121,5 @@ export const studentAttendancesRelations = relations(
       fields: [studentAttendances.courseId],
       references: [courses.id],
     }),
-  })
+  }),
 )
