@@ -2,7 +2,7 @@
 
 import { Timeslot } from "@/db/schema"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { SubmitHandler, useForm } from "react-hook-form"
+import { SubmitHandler, useFieldArray, useForm } from "react-hook-form"
 import * as z from "zod"
 
 import { TimetableEntry } from "@/lib/timetable"
@@ -37,7 +37,14 @@ import {
   SheetTrigger,
 } from "./ui/Sheet"
 
-const formSchema = z.record(z.string())
+const timetableEditorSchema = z.object({
+  timeslots: z.array(
+    z.object({
+      deanGroup: z.number(),
+      courseId: z.number(),
+    }),
+  ),
+})
 
 export const TimetableEditor = ({
   timetableEntries,
@@ -46,18 +53,33 @@ export const TimetableEditor = ({
   timetableEntries: TimetableEntry[]
   timeslots: Timeslot[]
 }) => {
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: Object.fromEntries(
-      timetableEntries.map((entry) => [
-        entry.courseId.toString(),
-        entry.deanGroup.toString(),
-      ]),
-    ),
+  const form = useForm<z.infer<typeof timetableEditorSchema>>({
+    resolver: zodResolver(timetableEditorSchema),
+    defaultValues: {
+      timeslots: timetableEntries.map((entry) => ({
+        courseId: entry.courseId,
+        deanGroup: entry.deanGroup,
+      })),
+    },
   })
 
-  const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = async (data) => {
-    console.log(data)
+  const { fields } = useFieldArray({ name: "timeslots", control: form.control })
+
+  const transformToNumber = (e: string) => {
+    const output = parseInt(e, 10)
+    return isNaN(output) ? 0 : output
+  }
+
+  const onSubmit: SubmitHandler<z.infer<typeof timetableEditorSchema>> = async (
+    data,
+  ) => {
+    const res = await fetch("/api/timetable", {
+      body: JSON.stringify(data),
+      method: "POST",
+    })
+    const resData = await res.json()
+
+    if (res.ok) console.log(resData.message)
   }
 
   return (
@@ -85,56 +107,68 @@ export const TimetableEditor = ({
             onSubmit={form.handleSubmit(onSubmit)}
             className="space-y-4 py-4"
           >
-            {timetableEntries.map((entry) => (
-              <FormField
-                key={entry.id}
-                control={form.control}
-                name={entry.courseId.toString()}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="capitalize">
-                      {entry.course.name}
-                    </FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
-                      <FormControl>
-                        <SelectTrigger className="capitalize">
-                          <SelectValue placeholder="Select a timeslot" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectGroup>
-                          <SelectLabel>Timeslots</SelectLabel>
-                          {timeslots
-                            .filter(
-                              (timeslot) => timeslot.courseId == entry.courseId,
-                            )
-                            .map((timeslot) => (
-                              <SelectItem
-                                key={timeslot.id}
-                                className="capitalize"
-                                value={timeslot.deanGroup.toString()}
-                              >
-                                Group {timeslot.deanGroup} |{" "}
-                                {timeslot.startTime}
-                                :00 - {timeslot.endTime}:00 {timeslot.weekday}
-                              </SelectItem>
-                            ))}
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+            {fields.map((entry, index) => (
+              <div key={entry.id}>
+                <FormField
+                  control={form.control}
+                  name={`timeslots.${index}.deanGroup`}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="capitalize">
+                        {timetableEntries.find(
+                          (e) => entry.courseId === e.courseId,
+                        )?.course.name ?? "Unknown course"}
+                      </FormLabel>
+                      <Select
+                        onValueChange={(e) =>
+                          field.onChange(transformToNumber(e))
+                        }
+                        defaultValue={field.value.toString()}
+                      >
+                        <FormControl>
+                          <SelectTrigger className="capitalize">
+                            <SelectValue placeholder="Select a timeslot" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectGroup>
+                            <SelectLabel>Timeslots</SelectLabel>
+                            {timeslots
+                              .filter(
+                                (timeslot) =>
+                                  timeslot.courseId === entry.courseId,
+                              )
+                              .map((timeslot) => (
+                                <SelectItem
+                                  key={timeslot.id}
+                                  className="capitalize"
+                                  value={timeslot.deanGroup.toString()}
+                                >
+                                  Group {timeslot.deanGroup} |{" "}
+                                  {timeslot.startTime}
+                                  :00 - {timeslot.endTime}:00 {timeslot.weekday}
+                                </SelectItem>
+                              ))}
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  name={`timeslots.${index}.courseId`}
+                  control={form.control}
+                  defaultValue={entry.courseId}
+                  render={({ field }) => (
+                    <input {...field} className="sr-only" />
+                  )}
+                />
+              </div>
             ))}
-            <SheetFooter>
-              <SheetClose asChild>
-                <Button type="submit">Save changes</Button>
-              </SheetClose>
-            </SheetFooter>
+            <div className="flex flex-col-reverse sm:flex-row sm:justify-end">
+              <Button type="submit">Save changes</Button>
+            </div>
           </form>
         </Form>
       </SheetContent>
