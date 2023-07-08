@@ -107,12 +107,17 @@ export const timetableRelations = relations(timetable, ({ one }) => ({
   }),
 }))
 
-export const studentAttendances = mysqlTable("student_attendances", {
-  id: serial("id").primaryKey(),
-  studentId: varchar("student_id", { length: 255 }).notNull(),
-  courseId: bigint("course_id", { mode: "number" }).notNull(),
-  deanGroup: tinyint("dean_group").notNull(),
-})
+export const studentAttendances = mysqlTable(
+  "student_attendances",
+  {
+    studentId: varchar("student_id", { length: 255 }).notNull(),
+    courseId: bigint("course_id", { mode: "number" }).notNull(),
+    deanGroup: tinyint("dean_group").notNull(),
+  },
+  (attendance) => ({
+    compoundKey: primaryKey(attendance.studentId, attendance.courseId),
+  }),
+)
 
 export const studentAttendancesRelations = relations(
   studentAttendances,
