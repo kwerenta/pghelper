@@ -6,7 +6,7 @@ import {
 import { TimetableEntry } from "@/lib/timetable"
 
 import { Timeslot } from "./Timeslot"
-import { Card, CardContent } from "./ui/card"
+import { Card, CardContent } from "./ui/Card"
 
 const hoursArray = Array.from(
   { length: LAST_SUBJECT_HOUR - FIRST_SUBJECT_HOUR + 1 },

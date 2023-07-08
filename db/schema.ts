@@ -79,11 +79,11 @@ export const courses = mysqlTable("courses", {
 export type Course = InferModel<typeof courses>
 
 export const coursesRelations = relations(courses, ({ many }) => ({
-  timetables: many(timetable),
-  studentAttendances: many(studentAttendances),
+  timeslots: many(timeslots),
+  customTimeslots: many(customTimeslots),
 }))
 
-export const timetable = mysqlTable("timetable", {
+export const timeslots = mysqlTable("timeslots", {
   id: serial("id").primaryKey(),
   courseId: bigint("course_id", { mode: "number" }).notNull(),
   weekday: mysqlEnum("weekday", [
@@ -98,32 +98,32 @@ export const timetable = mysqlTable("timetable", {
   deanGroup: tinyint("dean_group").notNull().default(0),
 })
 
-export type Timeslot = InferModel<typeof timetable>
+export type Timeslot = InferModel<typeof timeslots>
 
-export const timetableRelations = relations(timetable, ({ one }) => ({
+export const timeslotsRelations = relations(timeslots, ({ one }) => ({
   course: one(courses, {
-    fields: [timetable.courseId],
+    fields: [timeslots.courseId],
     references: [courses.id],
   }),
 }))
 
-export const studentAttendances = mysqlTable(
-  "student_attendances",
+export const customTimeslots = mysqlTable(
+  "custom_timeslots",
   {
     studentId: varchar("student_id", { length: 255 }).notNull(),
     courseId: bigint("course_id", { mode: "number" }).notNull(),
     deanGroup: tinyint("dean_group").notNull(),
   },
-  (attendance) => ({
-    compoundKey: primaryKey(attendance.studentId, attendance.courseId),
+  (timeslot) => ({
+    compoundKey: primaryKey(timeslot.studentId, timeslot.courseId),
   }),
 )
 
-export const studentAttendancesRelations = relations(
-  studentAttendances,
+export const customTimeslotsRelations = relations(
+  customTimeslots,
   ({ one }) => ({
     course: one(courses, {
-      fields: [studentAttendances.courseId],
+      fields: [customTimeslots.courseId],
       references: [courses.id],
     }),
   }),

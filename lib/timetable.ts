@@ -1,19 +1,17 @@
 import { db } from "@/db"
-import { studentAttendances, timetable } from "@/db/schema"
+import { customTimeslots, timeslots } from "@/db/schema"
 import { eq, inArray, ne, notInArray } from "drizzle-orm"
-import { alias } from "drizzle-orm/mysql-core"
 
 export const getUserTimetable = (student: {
   id: string
   deanGroup: number
 }) => {
-  const sa = alias(studentAttendances, "sa")
-  const attendanceQuery = db
-    .select({ id: sa.courseId })
-    .from(sa)
-    .where(eq(sa.studentId, student.id))
+  const customTimeslotsIds = db
+    .select({ id: customTimeslots.courseId })
+    .from(customTimeslots)
+    .where(eq(customTimeslots.studentId, student.id))
 
-  return db.query.timetable.findMany({
+  return db.query.timeslots.findMany({
     with: {
       course: true,
     },
@@ -22,17 +20,17 @@ export const getUserTimetable = (student: {
         eq(deanGroup, 0),
         and(
           eq(deanGroup, student.deanGroup),
-          notInArray(courseId, attendanceQuery),
+          notInArray(courseId, customTimeslotsIds),
         ),
         and(
           ne(deanGroup, student.deanGroup),
-          inArray(courseId, attendanceQuery),
+          inArray(courseId, customTimeslotsIds),
         ),
       ),
   })
 }
 
 export const getCoursesTimeslots = (ids: number[]) =>
-  db.select().from(timetable).where(inArray(timetable.courseId, ids))
+  db.select().from(timeslots).where(inArray(timeslots.courseId, ids))
 
 export type TimetableEntry = Awaited<ReturnType<typeof getUserTimetable>>[0]

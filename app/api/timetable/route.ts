@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server"
 import { db } from "@/db"
-import { studentAttendances } from "@/db/schema"
+import { customTimeslots } from "@/db/schema"
 import { DrizzleError, and, eq, inArray } from "drizzle-orm"
 import { getServerSession } from "next-auth"
 import * as z from "zod"
@@ -39,17 +39,17 @@ export const POST = async (req: Request) => {
     }))
 
     db.transaction(async (tx) => {
-      await tx.delete(studentAttendances).where(
+      await tx.delete(customTimeslots).where(
         and(
           inArray(
-            studentAttendances.courseId,
+            customTimeslots.courseId,
             data.map((d) => d.courseId),
           ),
-          eq(studentAttendances.studentId, session.user.id),
+          eq(customTimeslots.studentId, session.user.id),
         ),
       )
       await tx
-        .insert(studentAttendances)
+        .insert(customTimeslots)
         .values(data.filter((d) => d.deanGroup !== session.user.deanGroup))
     })
 
