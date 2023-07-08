@@ -1,3 +1,4 @@
+import { redirect } from "next/navigation"
 import { NextResponse } from "next/server"
 import { db } from "@/db"
 import { customTimeslots } from "@/db/schema"
@@ -38,7 +39,7 @@ export const POST = async (req: Request) => {
       studentId: session.user.id,
     }))
 
-    db.transaction(async (tx) => {
+    await db.transaction(async (tx) => {
       await tx.delete(customTimeslots).where(
         and(
           inArray(
@@ -48,9 +49,13 @@ export const POST = async (req: Request) => {
           eq(customTimeslots.studentId, session.user.id),
         ),
       )
-      await tx
-        .insert(customTimeslots)
-        .values(data.filter((d) => d.deanGroup !== session.user.deanGroup))
+
+      const timeslotsToInsert = data.filter(
+        (d) => d.deanGroup !== session.user.deanGroup,
+      )
+
+      if (timeslotsToInsert.length !== 0)
+        await tx.insert(customTimeslots).values(timeslotsToInsert)
     })
 
     return NextResponse.json<Result>(
@@ -63,8 +68,16 @@ export const POST = async (req: Request) => {
         { message: "Unprocessable entity" },
         { status: 422 },
       )
-    } else if (e instanceof DrizzleError) {
-      return NextResponse.json<Result>({ message: "Error" }, { status: 500 })
     }
+    if (e instanceof DrizzleError) {
+      return NextResponse.json<Result>(
+        { message: "Failed to save changes in database" },
+        { status: 500 },
+      )
+    }
+    return NextResponse.json<Result>(
+      { message: "Something went wrong. Try again later" },
+      { status: 500 },
+    )
   }
 }

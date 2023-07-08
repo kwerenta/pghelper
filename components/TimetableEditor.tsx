@@ -28,10 +28,8 @@ import {
 } from "./ui/Select"
 import {
   Sheet,
-  SheetClose,
   SheetContent,
   SheetDescription,
-  SheetFooter,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
@@ -73,13 +71,18 @@ export const TimetableEditor = ({
   const onSubmit: SubmitHandler<z.infer<typeof timetableEditorSchema>> = async (
     data,
   ) => {
+    const filteredData = data.timeslots.filter(
+      (_, index) => form.getFieldState(`timeslots.${index}`).isDirty,
+    )
+    if (filteredData.length === 0) return console.log("No changes made")
+
     const res = await fetch("/api/timetable", {
-      body: JSON.stringify(data),
+      body: JSON.stringify({ timeslots: filteredData }),
       method: "POST",
     })
     const resData = await res.json()
 
-    if (res.ok) console.log(resData.message)
+    console.log(resData.message)
   }
 
   return (
