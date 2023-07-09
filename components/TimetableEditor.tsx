@@ -167,9 +167,7 @@ export const TimetableEditor = ({
                   name={`timeslots.${index}.courseId`}
                   control={form.control}
                   defaultValue={entry.courseId}
-                  render={({ field }) => (
-                    <input {...field} className="sr-only" />
-                  )}
+                  render={({ field }) => <input type="hidden" {...field} />}
                 />
               </div>
             ))}
