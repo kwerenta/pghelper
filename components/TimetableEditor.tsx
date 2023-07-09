@@ -1,12 +1,14 @@
 "use client"
 
+import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { Timeslot } from "@/db/schema"
+import type { Timeslot } from "@/db/schema"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { SubmitHandler, useFieldArray, useForm } from "react-hook-form"
+import { useFieldArray, useForm } from "react-hook-form"
 import * as z from "zod"
 
 import { TimetableEntry } from "@/lib/timetable"
+import { useToast } from "@/hooks/useToast"
 
 import { Icons } from "./Icons"
 import { Button } from "./ui/Button"
@@ -53,6 +55,9 @@ export const TimetableEditor = ({
   timeslots: Timeslot[]
 }) => {
   const router = useRouter()
+  const { toast } = useToast()
+  const [open, setOpen] = useState(false)
+
   const form = useForm<z.infer<typeof timetableEditorSchema>>({
     resolver: zodResolver(timetableEditorSchema),
     defaultValues: {
@@ -62,7 +67,6 @@ export const TimetableEditor = ({
       })),
     },
   })
-
   const { fields } = useFieldArray({ name: "timeslots", control: form.control })
 
   const transformToNumber = (e: string) => {
@@ -70,30 +74,35 @@ export const TimetableEditor = ({
     return isNaN(output) ? 0 : output
   }
 
-  const onSubmit: SubmitHandler<z.infer<typeof timetableEditorSchema>> = async (
-    data,
-  ) => {
+  const onSubmit = async (data: z.infer<typeof timetableEditorSchema>) => {
     const filteredData = data.timeslots.filter(
       (_, index) => form.getFieldState(`timeslots.${index}`).isDirty,
     )
-    if (filteredData.length === 0) return console.log("No changes made")
+    if (filteredData.length === 0) return
 
     const res = await fetch("/api/timetable", {
       body: JSON.stringify({ timeslots: filteredData }),
       method: "POST",
     })
-    const resData = await res.json()
+    const body = await res.json()
 
     if (res.ok) {
       router.refresh()
       form.reset(form.getValues())
     }
-    console.log(resData.message)
+
+    setOpen(false)
+    toast({
+      variant: res.ok ? "default" : "destructive",
+      description: body.message,
+    })
   }
 
   return (
     <Sheet
+      open={open}
       onOpenChange={(open) => {
+        setOpen(open)
         if (!open) form.reset()
       }}
     >
