@@ -1,5 +1,6 @@
 "use client"
 
+import { useRouter } from "next/navigation"
 import { Timeslot } from "@/db/schema"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { SubmitHandler, useFieldArray, useForm } from "react-hook-form"
@@ -51,6 +52,7 @@ export const TimetableEditor = ({
   timetableEntries: TimetableEntry[]
   timeslots: Timeslot[]
 }) => {
+  const router = useRouter()
   const form = useForm<z.infer<typeof timetableEditorSchema>>({
     resolver: zodResolver(timetableEditorSchema),
     defaultValues: {
@@ -82,6 +84,10 @@ export const TimetableEditor = ({
     })
     const resData = await res.json()
 
+    if (res.ok) {
+      router.refresh()
+      form.reset(form.getValues())
+    }
     console.log(resData.message)
   }
 
