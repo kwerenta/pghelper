@@ -8,6 +8,7 @@ import { useFieldArray, useForm } from "react-hook-form"
 import * as z from "zod"
 
 import { TimetableEntry } from "@/lib/timetable"
+import { transformStringToNumber } from "@/lib/utils"
 import { timetableEditorSchema } from "@/lib/validators/timetable"
 import { useToast } from "@/hooks/useToast"
 
@@ -60,11 +61,6 @@ export const TimetableEditor = ({
     },
   })
   const { fields } = useFieldArray({ name: "timeslots", control: form.control })
-
-  const transformToNumber = (e: string) => {
-    const output = parseInt(e, 10)
-    return isNaN(output) ? 0 : output
-  }
 
   const onSubmit = async (data: z.infer<typeof timetableEditorSchema>) => {
     const filteredData = data.timeslots.filter(
@@ -131,8 +127,8 @@ export const TimetableEditor = ({
                         )?.course.name ?? "Unknown course"}
                       </FormLabel>
                       <Select
-                        onValueChange={(e) =>
-                          field.onChange(transformToNumber(e))
+                        onValueChange={(value) =>
+                          field.onChange(transformStringToNumber(value))
                         }
                         defaultValue={field.value.toString()}
                       >
