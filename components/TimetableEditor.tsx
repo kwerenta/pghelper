@@ -49,7 +49,6 @@ export const TimetableEditor = ({
   const router = useRouter()
   const { toast } = useToast()
   const [isOpen, setIsOpen] = useState(false)
-  const [isSubmitting, setIsSubmitting] = useState(false)
 
   const form = useForm<z.infer<typeof timetableEditorSchema>>({
     resolver: zodResolver(timetableEditorSchema),
@@ -73,7 +72,6 @@ export const TimetableEditor = ({
     )
     if (filteredData.length === 0) return
 
-    setIsSubmitting(true)
     const res = await fetch("/api/timetable", {
       body: JSON.stringify({ timeslots: filteredData }),
       method: "POST",
@@ -85,7 +83,6 @@ export const TimetableEditor = ({
       form.reset(form.getValues())
     }
 
-    setIsSubmitting(false)
     setIsOpen(false)
     toast({
       variant: res.ok ? "default" : "destructive",
@@ -97,12 +94,13 @@ export const TimetableEditor = ({
     <Sheet
       open={isOpen}
       onOpenChange={(open) => {
+        if (form.formState.isSubmitting) return
         setIsOpen(open)
         if (!open) form.reset()
       }}
     >
       <SheetTrigger asChild>
-        <Button disabled={isSubmitting} variant="default">
+        <Button variant="default">
           <Icons.edit className="mr-2 h-4 w-4" />
           Edit timetable
         </Button>
@@ -180,7 +178,7 @@ export const TimetableEditor = ({
               </div>
             ))}
             <div className="flex flex-col-reverse sm:flex-row sm:justify-end">
-              <Button disabled={isSubmitting} type="submit">
+              <Button disabled={form.formState.isSubmitting} type="submit">
                 Save changes
               </Button>
             </div>
