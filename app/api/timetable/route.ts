@@ -1,4 +1,3 @@
-import { redirect } from "next/navigation"
 import { NextResponse } from "next/server"
 import { db } from "@/db"
 import { customTimeslots } from "@/db/schema"
@@ -9,12 +8,14 @@ import * as z from "zod"
 import { authOptions } from "@/lib/auth"
 
 export const timetableEditorSchema = z.object({
-  timeslots: z.array(
-    z.object({
-      deanGroup: z.number(),
-      courseId: z.number(),
-    }),
-  ),
+  timeslots: z
+    .array(
+      z.object({
+        deanGroup: z.number(),
+        courseId: z.number(),
+      }),
+    )
+    .min(1),
 })
 
 type Result = {
@@ -26,7 +27,7 @@ export const POST = async (req: Request) => {
     const session = await getServerSession(authOptions)
     if (!session || !session.user) {
       return NextResponse.json<Result>(
-        { message: "Unauthorized" },
+        { message: "You are not logged in." },
         { status: 401 },
       )
     }
@@ -59,24 +60,24 @@ export const POST = async (req: Request) => {
     })
 
     return NextResponse.json<Result>(
-      { message: "Timetable successfully updated" },
+      { message: "Timetable successfully updated." },
       { status: 200 },
     )
   } catch (e) {
     if (e instanceof z.ZodError) {
       return NextResponse.json<Result>(
-        { message: "Unprocessable entity" },
+        { message: "Failed to validate sent data." },
         { status: 422 },
       )
     }
     if (e instanceof DrizzleError) {
       return NextResponse.json<Result>(
-        { message: "Failed to save changes in database" },
+        { message: "Failed to save timetable changes." },
         { status: 500 },
       )
     }
     return NextResponse.json<Result>(
-      { message: "Something went wrong. Try again later" },
+      { message: "Something went wrong. Try again later." },
       { status: 500 },
     )
   }
