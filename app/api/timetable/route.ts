@@ -6,17 +6,7 @@ import { getServerSession } from "next-auth"
 import * as z from "zod"
 
 import { authOptions } from "@/lib/auth"
-
-export const timetableEditorSchema = z.object({
-  timeslots: z
-    .array(
-      z.object({
-        deanGroup: z.number(),
-        courseId: z.number(),
-      }),
-    )
-    .min(1),
-})
+import { timetableEditorSchema } from "@/lib/validators/timetable"
 
 type Result = {
   message: string

@@ -8,6 +8,7 @@ import { useFieldArray, useForm } from "react-hook-form"
 import * as z from "zod"
 
 import { TimetableEntry } from "@/lib/timetable"
+import { timetableEditorSchema } from "@/lib/validators/timetable"
 import { useToast } from "@/hooks/useToast"
 
 import { Icons } from "./Icons"
@@ -37,15 +38,6 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "./ui/Sheet"
-
-const timetableEditorSchema = z.object({
-  timeslots: z.array(
-    z.object({
-      deanGroup: z.number(),
-      courseId: z.number(),
-    }),
-  ),
-})
 
 export const TimetableEditor = ({
   timetableEntries,
