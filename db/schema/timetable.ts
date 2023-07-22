@@ -33,8 +33,8 @@ export const timeslotsRelations = relations(timeslots, ({ one }) => ({
   }),
 }))
 
-export const customTimeslots = mysqlTable(
-  "custom_timeslots",
+export const timeslotsOverrides = mysqlTable(
+  "timeslots_overrides",
   {
     studentId: varchar("student_id", { length: 255 }).notNull(),
     courseId: bigint("course_id", { mode: "number" }).notNull(),
@@ -45,11 +45,11 @@ export const customTimeslots = mysqlTable(
   }),
 )
 
-export const customTimeslotsRelations = relations(
-  customTimeslots,
+export const timeslotsOverridesRelations = relations(
+  timeslotsOverrides,
   ({ one }) => ({
     course: one(courses, {
-      fields: [customTimeslots.courseId],
+      fields: [timeslotsOverrides.courseId],
       references: [courses.id],
     }),
   }),
@@ -74,5 +74,5 @@ export type Course = InferModel<typeof courses>
 
 export const coursesRelations = relations(courses, ({ many }) => ({
   timeslots: many(timeslots),
-  customTimeslots: many(customTimeslots),
+  customTimeslots: many(timeslotsOverrides),
 }))

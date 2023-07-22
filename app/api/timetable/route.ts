@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server"
 import { db } from "@/db"
-import { customTimeslots } from "@/db/schema"
+import { timeslotsOverrides } from "@/db/schema"
 import { DrizzleError, and, eq, inArray } from "drizzle-orm"
 import { getServerSession } from "next-auth"
 import * as z from "zod"
@@ -31,13 +31,13 @@ export const POST = async (req: Request) => {
     }))
 
     await db.transaction(async (tx) => {
-      await tx.delete(customTimeslots).where(
+      await tx.delete(timeslotsOverrides).where(
         and(
           inArray(
-            customTimeslots.courseId,
+            timeslotsOverrides.courseId,
             data.map((d) => d.courseId),
           ),
-          eq(customTimeslots.studentId, session.user.id),
+          eq(timeslotsOverrides.studentId, session.user.id),
         ),
       )
 
@@ -46,7 +46,7 @@ export const POST = async (req: Request) => {
       )
 
       if (timeslotsToInsert.length !== 0)
-        await tx.insert(customTimeslots).values(timeslotsToInsert)
+        await tx.insert(timeslotsOverrides).values(timeslotsToInsert)
     })
 
     return NextResponse.json<Result>(
