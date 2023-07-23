@@ -1,12 +1,12 @@
-import {
-  DAYS_OF_WEEK,
-  FIRST_SUBJECT_HOUR,
-  LAST_SUBJECT_HOUR,
-} from "@/config/timetable"
+import { timeslots } from "@/db/schema"
+
 import { TimetableEntry } from "@/lib/timetable"
 
 import { Timeslot } from "./Timeslot"
 import { Card, CardContent } from "./ui/Card"
+
+const FIRST_SUBJECT_HOUR = 7
+const LAST_SUBJECT_HOUR = 21
 
 const hoursArray = Array.from(
   { length: LAST_SUBJECT_HOUR - FIRST_SUBJECT_HOUR + 1 },
@@ -20,7 +20,7 @@ export const Timetable = ({ entries }: { entries: TimetableEntry[] }) => (
         <thead>
           <tr>
             <th className="sticky left-0 bg-background py-2">Hour</th>
-            {DAYS_OF_WEEK.map((day, i) => (
+            {timeslots.weekday.enumValues.map((day, i) => (
               <th key={i} className="capitalize">
                 {day}
               </th>
@@ -33,7 +33,7 @@ export const Timetable = ({ entries }: { entries: TimetableEntry[] }) => (
               <th className="sticky left-0 bg-background px-2 align-text-top capitalize md:px-3">
                 {hour}:00
               </th>
-              {DAYS_OF_WEEK.map((weekday) => {
+              {timeslots.weekday.enumValues.map((weekday) => {
                 const course = entries.find(
                   (entry) =>
                     entry.weekday === weekday &&
