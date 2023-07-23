@@ -3,9 +3,11 @@ import {
   Edit,
   GraduationCap,
   Laptop,
+  Lightbulb,
   LogOut,
   LucideProps,
   Moon,
+  PlusCircle,
   Settings,
   Sheet,
   SunMedium,
@@ -26,6 +28,8 @@ export const Icons = {
   user: User,
   settings: Settings,
   laptop: Laptop,
+  plusCircle: PlusCircle,
+  lightbulb: Lightbulb,
   discord: (props: LucideProps) => (
     // Source: https://icons.getbootstrap.com/icons/discord/
     <svg

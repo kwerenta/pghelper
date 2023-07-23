@@ -15,5 +15,10 @@ export const siteConfig: SiteConfig = {
       external: true,
       icon: "calendarDays",
     },
+    {
+      title: "Quiz",
+      href: "/quiz",
+      icon: "lightbulb",
+    },
   ],
 }
