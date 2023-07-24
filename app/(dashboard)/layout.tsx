@@ -14,7 +14,7 @@ export default async function Layout({
   if (!user) return null
 
   return (
-    <div className="flex min-h-screen flex-col space-y-6">
+    <div className="flex flex-col space-y-6 lg:min-h-screen">
       <div className="container grid flex-1 lg:grid-cols-[200px_1fr] lg:gap-12">
         <aside className="flex flex-col py-6 lg:sticky lg:top-0 lg:h-screen lg:w-[200px] lg:py-10">
           <SidebarNav items={siteConfig.sidebarNav} />

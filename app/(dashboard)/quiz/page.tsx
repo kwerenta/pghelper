@@ -1,11 +1,11 @@
 import Link from "next/link"
 
 import { getQuizzesList } from "@/lib/quizzes"
-import { Button } from "@/components/ui/Button"
 import { Card, CardContent } from "@/components/ui/Card"
 import { DashboardHeader } from "@/components/DashboardHeader"
 import { DashboardShell } from "@/components/DashboardShell"
 import { Icons } from "@/components/Icons"
+import { QuizCreator } from "@/components/QuizCreator"
 
 export default async function QuizPage() {
   const quizzes = await getQuizzesList()
@@ -16,10 +16,7 @@ export default async function QuizPage() {
         title="Quiz"
         description="View all available quizzes for you."
       >
-        <Button variant="default">
-          <Icons.plusCircle className="mr-2 h-4 w-4" />
-          Add quiz
-        </Button>
+        <QuizCreator />
       </DashboardHeader>
       <Card className="overflow-hidden">
         <CardContent className="p-0">
@@ -28,7 +25,7 @@ export default async function QuizPage() {
               <Link
                 href={`/quiz/${quiz.id}`}
                 key={quiz.id}
-                className="flex items-center border-b border-b-border p-4 last:border-b-0 hover:bg-accent hover:text-accent-foreground"
+                className="flex items-center border-b border-b-border p-3 last:border-b-0 hover:bg-accent hover:text-accent-foreground md:p-4"
               >
                 <div className="flex flex-1 flex-col space-y-1.5">
                   <h4 className="text-xl font-semibold leading-none tracking-tight">
@@ -38,7 +35,7 @@ export default async function QuizPage() {
                     {quiz.description}
                   </p>
                 </div>
-                <div className="mr-4 flex shrink-0 flex-col items-end text-sm">
+                <div className="mr-3 flex shrink-0 flex-col items-end text-sm md:mr-4">
                   <p className="inline-flex items-center">
                     {quiz.author.name ?? "Unknown author"}
                     <Icons.user className="ml-2 h-4 w-4" />

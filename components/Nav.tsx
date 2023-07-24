@@ -26,7 +26,7 @@ export function SidebarNav({ items }: SidebarNavProps) {
           <span>PGHelper</span>
         </span>
       </Link>
-      <nav className="flex h-full flex-col justify-start gap-2">
+      <nav className="flex flex-col justify-start gap-2">
         {items.map((item, index) => {
           const Icon = Icons[item.icon || "logo"]
           return (
