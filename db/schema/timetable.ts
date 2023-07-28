@@ -59,7 +59,7 @@ export const timeslotsOverridesRelations = relations(
 
 export const courses = mysqlTable("courses", {
   id: serial("id").primaryKey(),
-  name: varchar("name", { length: 256 }).notNull(),
+  name: varchar("name", { length: 255 }).notNull(),
   type: mysqlEnum("type", [
     "lecture",
     "tutorial",
