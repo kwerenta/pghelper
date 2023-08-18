@@ -1,11 +1,11 @@
 import Link from "next/link"
 
 import { getQuizzesList } from "@/lib/quizzes"
+import { buttonVariants } from "@/components/ui/Button"
 import { Card, CardContent } from "@/components/ui/Card"
 import { DashboardHeader } from "@/components/DashboardHeader"
 import { DashboardShell } from "@/components/DashboardShell"
 import { Icons } from "@/components/Icons"
-import { QuizCreator } from "@/components/QuizCreator"
 
 export default async function QuizPage() {
   const quizzes = await getQuizzesList()
@@ -16,7 +16,10 @@ export default async function QuizPage() {
         title="Quiz"
         description="View all available quizzes for you."
       >
-        <QuizCreator />
+        <Link href="/quiz/new" className={buttonVariants()}>
+          <Icons.plusCircle className="mr-2 h-4 w-4" />
+          Add quiz
+        </Link>
       </DashboardHeader>
       <Card className="overflow-hidden">
         <CardContent className="p-0">
