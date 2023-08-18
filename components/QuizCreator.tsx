@@ -1,9 +1,12 @@
 "use client"
 
+import { Course } from "@/db/schema"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { Check, ChevronsUpDown } from "lucide-react"
 import { useFieldArray, useForm } from "react-hook-form"
 import * as z from "zod"
 
+import { cn } from "@/lib/utils"
 import { quizSchema } from "@/lib/validators/quiz"
 
 import { QuizQuestionForm } from "./QuizQuestionForm"
@@ -16,22 +19,36 @@ import {
   CardTitle,
 } from "./ui/Card"
 import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+} from "./ui/Command"
+import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "./ui/Form"
 import { Input } from "./ui/Input"
+import { Popover, PopoverContent, PopoverTrigger } from "./ui/Popover"
 import { Textarea } from "./ui/Textarea"
 
-export const QuizCreator = () => {
+export const QuizCreator = ({
+  courses,
+}: {
+  courses: Pick<Course, "id" | "name">[]
+}) => {
   const form = useForm<z.infer<typeof quizSchema>>({
     resolver: zodResolver(quizSchema),
     defaultValues: {
       title: "",
       description: "",
+      courseId: 0,
       questions: [],
     },
   })
@@ -86,13 +103,61 @@ export const QuizCreator = () => {
             />
             <FormField
               control={form.control}
-              name="course"
+              name="courseId"
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="flex flex-col">
                   <FormLabel>Course</FormLabel>
-                  <FormControl>
-                    <Input type="text" {...field} />
-                  </FormControl>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <FormControl>
+                        <Button
+                          variant="outline"
+                          role="combobox"
+                          className={cn(
+                            "justify-between",
+                            !field.value
+                              ? "text-muted-foreground"
+                              : "capitalize",
+                          )}
+                        >
+                          {field.value
+                            ? courses.find(
+                                (course) => course.id === field.value,
+                              )?.name
+                            : "Select course"}
+                          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                        </Button>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent className="p-0">
+                      <Command>
+                        <CommandInput placeholder="Search course..." />
+                        <CommandEmpty>No course found.</CommandEmpty>
+                        <CommandGroup>
+                          {courses.map((course) => (
+                            <CommandItem
+                              className="capitalize"
+                              value={course.name}
+                              key={course.id}
+                              onSelect={() => {
+                                form.setValue("courseId", course.id)
+                              }}
+                            >
+                              <Check
+                                className={cn(
+                                  "mr-2 h-4 w-4",
+                                  course.id === field.value
+                                    ? "opacity-100"
+                                    : "opacity-0",
+                                )}
+                              />
+                              {course.name}
+                            </CommandItem>
+                          ))}
+                        </CommandGroup>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
                   <FormMessage />
                 </FormItem>
               )}

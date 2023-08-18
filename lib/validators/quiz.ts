@@ -10,7 +10,7 @@ const baseAnswersSchema = z.array(
 export const quizSchema = z.object({
   title: z.string().min(3).max(255),
   description: z.string().min(1).max(255),
-  course: z.string().min(1).max(255),
+  courseId: z.number(),
   questions: z
     .array(
       z.union([
