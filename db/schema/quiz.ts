@@ -40,7 +40,7 @@ export const quizzesRelations = relations(quizzes, ({ one, many }) => ({
 
 export const questions = mysqlTable("questions", {
   id: serial("id").primaryKey(),
-  quizId: varchar("id", { length: 255 }).notNull(),
+  quizId: varchar("quiz_id", { length: 255 }).notNull(),
   text: varchar("text", { length: 1023 }).notNull(),
   type: mysqlEnum("type", [
     "single_choice",
