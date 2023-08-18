@@ -123,6 +123,15 @@ export const QuizCreator = () => {
           </CardContent>
         </Card>
 
+        {questionFields.map((question, index) => (
+          <QuizQuestionForm
+            key={question.id}
+            control={form.control}
+            index={index}
+            removeQuestion={() => removeQuestion(index)}
+          />
+        ))}
+
         <Button
           type="button"
           variant="secondary"

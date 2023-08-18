@@ -12,6 +12,7 @@ import {
   Settings,
   Sheet,
   SunMedium,
+  Trash,
   User,
   type Icon as LucideIcon,
 } from "lucide-react"
@@ -32,6 +33,7 @@ export const Icons = {
   plusCircle: PlusCircle,
   lightbulb: Lightbulb,
   chevronRight: ChevronRight,
+  trash: Trash,
   discord: (props: LucideProps) => (
     // Source: https://icons.getbootstrap.com/icons/discord/
     <svg
