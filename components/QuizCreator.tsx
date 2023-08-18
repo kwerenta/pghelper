@@ -1,9 +1,10 @@
 "use client"
 
-import { questions } from "@/db/schema"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useFieldArray, useForm } from "react-hook-form"
 import * as z from "zod"
+
+import { quizSchema } from "@/lib/validators/quiz"
 
 import { QuizQuestionForm } from "./QuizQuestionForm"
 import { Button } from "./ui/Button"
@@ -24,30 +25,6 @@ import {
 } from "./ui/Form"
 import { Input } from "./ui/Input"
 import { Textarea } from "./ui/Textarea"
-
-export const quizSchema = z.object({
-  title: z.string().min(1).max(255),
-  description: z.string().min(1).max(255),
-  course: z.string().min(1).max(255),
-  questions: z
-    .array(
-      z.object({
-        text: z.string().min(3).max(1023),
-        type: z.enum(questions.type.enumValues),
-        answers: z
-          .array(
-            z.object({
-              text: z.string().min(1).max(255),
-              isCorrect: z.boolean(),
-            }),
-          )
-          .min(2)
-          .max(8),
-      }),
-    )
-    .min(1)
-    .max(255),
-})
 
 export const QuizCreator = () => {
   const form = useForm<z.infer<typeof quizSchema>>({

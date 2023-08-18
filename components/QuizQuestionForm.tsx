@@ -1,8 +1,9 @@
 import { Control, useFieldArray } from "react-hook-form"
 import * as z from "zod"
 
+import { quizSchema } from "@/lib/validators/quiz"
+
 import { Icons } from "./Icons"
-import { quizSchema } from "./QuizCreator"
 import { Button } from "./ui/Button"
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/Card"
 import {
