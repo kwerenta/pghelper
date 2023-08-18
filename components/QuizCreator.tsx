@@ -1,5 +1,6 @@
 "use client"
 
+import { useRouter } from "next/navigation"
 import { Course } from "@/db/schema"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Check, ChevronsUpDown } from "lucide-react"
@@ -8,6 +9,7 @@ import * as z from "zod"
 
 import { cn } from "@/lib/utils"
 import { quizSchema } from "@/lib/validators/quiz"
+import { toast } from "@/hooks/useToast"
 
 import { QuizQuestionForm } from "./QuizQuestionForm"
 import { Button } from "./ui/Button"
@@ -28,7 +30,6 @@ import {
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -43,13 +44,23 @@ export const QuizCreator = ({
 }: {
   courses: Pick<Course, "id" | "name">[]
 }) => {
+  const router = useRouter()
   const form = useForm<z.infer<typeof quizSchema>>({
     resolver: zodResolver(quizSchema),
     defaultValues: {
-      title: "",
-      description: "",
-      courseId: 0,
-      questions: [],
+      title: "Another test",
+      description: "test quiz",
+      courseId: 2,
+      questions: [
+        {
+          text: "question",
+          type: "single_choice",
+          answers: [
+            { text: "correct", isCorrect: true },
+            { text: "incorrect", isCorrect: false },
+          ],
+        },
+      ],
     },
   })
 
@@ -63,7 +74,21 @@ export const QuizCreator = ({
   })
 
   const onSubmit = async (data: z.infer<typeof quizSchema>) => {
-    console.log(data)
+    const res = await fetch("/api/quiz", {
+      body: JSON.stringify(data),
+      method: "POST",
+    })
+    const body = await res.json()
+
+    if (res.ok) {
+      router.push("/quiz")
+      router.refresh()
+    }
+
+    toast({
+      variant: res.ok ? "default" : "destructive",
+      description: body.message,
+    })
   }
 
   return (
