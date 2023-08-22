@@ -13,7 +13,7 @@ const baseAnswersSchema = z
 export const quizSchema = z.object({
   title: z.string().min(3).max(255),
   description: z.string().min(1).max(255),
-  courseId: z.number(),
+  courseId: z.number().positive({ message: "Course must be selected" }),
   questions: z
     .array(
       z.union([

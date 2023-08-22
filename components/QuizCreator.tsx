@@ -48,16 +48,16 @@ export const QuizCreator = ({
   const form = useForm<z.infer<typeof quizSchema>>({
     resolver: zodResolver(quizSchema),
     defaultValues: {
-      title: "Another test",
-      description: "test quiz",
-      courseId: 2,
+      title: "",
+      description: "",
+      courseId: 0,
       questions: [
         {
           text: "question",
           type: "single_choice",
           answers: [
-            { text: "correct", isCorrect: true },
-            { text: "incorrect", isCorrect: false },
+            { text: "", isCorrect: true },
+            { text: "", isCorrect: false },
           ],
         },
       ],
