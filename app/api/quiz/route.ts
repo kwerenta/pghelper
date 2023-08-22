@@ -1,7 +1,7 @@
 import crypto from "node:crypto"
 import { NextResponse } from "next/server"
 import { db } from "@/db"
-import { answers, questions, quizzes } from "@/db/schema"
+import { answers, courses, questions, quizzes } from "@/db/schema"
 import { DrizzleError, and, asc, eq } from "drizzle-orm"
 import { getServerSession } from "next-auth"
 import * as z from "zod"
@@ -21,6 +21,17 @@ export const POST = async (req: Request) => {
 
     const body = await req.json()
     const data = quizSchema.parse(body)
+
+    const course = await db
+      .select({ id: courses.id })
+      .from(courses)
+      .where(eq(courses.id, data.courseId))
+
+    if (course.length === 0)
+      return NextResponse.json(
+        { message: "Provided course dose not exist." },
+        { status: 400 },
+      )
 
     await db.transaction(async (tx) => {
       const quizId = crypto.randomUUID()
