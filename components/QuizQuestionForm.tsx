@@ -85,17 +85,11 @@ export const QuizQuestionForm = ({
                   </FormItem>
                   <FormItem className="flex items-center space-x-2 space-y-0">
                     <FormControl>
-                      <RadioGroupItem value="multi_choice" />
+                      <RadioGroupItem value="multiple_choice" />
                     </FormControl>
                     <FormLabel className="font-normal">
                       Multiple choice
                     </FormLabel>
-                  </FormItem>
-                  <FormItem className="flex items-center space-x-2 space-y-0">
-                    <FormControl>
-                      <RadioGroupItem value="true_or_false" />
-                    </FormControl>
-                    <FormLabel className="font-normal">True or False</FormLabel>
                   </FormItem>
                 </RadioGroup>
               </FormControl>

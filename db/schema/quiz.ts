@@ -42,11 +42,7 @@ export const questions = mysqlTable("questions", {
   id: serial("id").primaryKey(),
   quizId: varchar("quiz_id", { length: 255 }).notNull(),
   text: varchar("text", { length: 1023 }).notNull(),
-  type: mysqlEnum("type", [
-    "single_choice",
-    "multi_choice",
-    "true_or_false",
-  ]).notNull(),
+  type: mysqlEnum("type", ["single_choice", "multiple_choice"]).notNull(),
 })
 
 export const questionsRelations = relations(questions, ({ one, many }) => ({

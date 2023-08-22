@@ -31,7 +31,7 @@ export const quizSchema = z.object({
         }),
         z.object({
           text: z.string().min(3).max(1023),
-          type: z.literal("multi_choice"),
+          type: z.literal("multiple_choice"),
           answers: baseAnswersSchema
             .min(2)
             .max(8)
@@ -39,20 +39,6 @@ export const quizSchema = z.object({
               message:
                 "Multiple choice question must have at least 1 correct answer",
             }),
-        }),
-        z.object({
-          text: z.string().min(3).max(1023),
-          type: z.literal("true_or_false"),
-          answers: baseAnswersSchema
-            .length(2)
-            .refine(
-              (answers) =>
-                answers.filter((answer) => answer.isCorrect).length === 1,
-              {
-                message:
-                  "True or false question must have exactly 1 correct answer",
-              },
-            ),
         }),
       ]),
     )
