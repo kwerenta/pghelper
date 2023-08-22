@@ -196,6 +196,7 @@ export const QuizCreator = ({
             control={form.control}
             index={index}
             errors={form.formState.errors?.questions?.[index]?.answers?.message}
+            validateAnswers={() => form.trigger(`questions.${index}.answers`)}
             removeQuestion={() => removeQuestion(index)}
           />
         ))}

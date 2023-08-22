@@ -20,8 +20,9 @@ import { Textarea } from "./ui/Textarea"
 
 interface QuizQuestionFormProps {
   control: Control<z.infer<typeof quizSchema>>
-  errors: string | undefined
   index: number
+  errors: string | undefined
+  validateAnswers: () => void
   removeQuestion: () => void
 }
 
@@ -29,6 +30,7 @@ export const QuizQuestionForm = ({
   control,
   errors,
   index,
+  validateAnswers,
   removeQuestion,
 }: QuizQuestionFormProps) => {
   const {
@@ -75,7 +77,10 @@ export const QuizQuestionForm = ({
               <FormLabel>Type</FormLabel>
               <FormControl>
                 <RadioGroup
-                  onValueChange={(e: typeof field.value) => field.onChange(e)}
+                  onValueChange={(e: typeof field.value) => {
+                    field.onChange(e)
+                    validateAnswers()
+                  }}
                   defaultValue={field.value}
                   className="flex space-x-4"
                 >
@@ -123,7 +128,10 @@ export const QuizQuestionForm = ({
                       <FormControl>
                         <Switch
                           checked={field.value}
-                          onCheckedChange={field.onChange}
+                          onCheckedChange={(e) => {
+                            field.onChange(e)
+                            validateAnswers()
+                          }}
                         />
                       </FormControl>
                       <FormMessage />
@@ -145,6 +153,7 @@ export const QuizQuestionForm = ({
             <Button
               variant="secondary"
               type="button"
+              disabled={answers.length === 8}
               onClick={() =>
                 addAnswer({
                   isCorrect: false,
