@@ -20,12 +20,14 @@ import { Textarea } from "./ui/Textarea"
 
 interface QuizQuestionFormProps {
   control: Control<z.infer<typeof quizSchema>>
+  errors: string | undefined
   index: number
   removeQuestion: () => void
 }
 
 export const QuizQuestionForm = ({
   control,
+  errors,
   index,
   removeQuestion,
 }: QuizQuestionFormProps) => {
@@ -154,6 +156,9 @@ export const QuizQuestionForm = ({
             </Button>
           </li>
         </ul>
+        {errors ? (
+          <p className="px-4 text-sm font-medium text-destructive">{errors}</p>
+        ) : null}
       </CardContent>
     </Card>
   )

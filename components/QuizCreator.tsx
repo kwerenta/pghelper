@@ -195,6 +195,7 @@ export const QuizCreator = ({
             key={question.id}
             control={form.control}
             index={index}
+            errors={form.formState.errors?.questions?.[index]?.answers?.message}
             removeQuestion={() => removeQuestion(index)}
           />
         ))}
