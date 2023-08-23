@@ -1,9 +1,8 @@
 "use client"
 
-import { useState } from "react"
 import { answers, questions } from "@/db/schema"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { InferModel } from "drizzle-orm"
+import { InferSelectModel } from "drizzle-orm"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
 
@@ -32,8 +31,8 @@ const answersSchema = z.object({
 })
 
 interface QuizFormProps {
-  questions: (InferModel<typeof questions> & {
-    answers: InferModel<typeof answers>[]
+  questions: (InferSelectModel<typeof questions> & {
+    answers: InferSelectModel<typeof answers>[]
   })[]
 }
 
