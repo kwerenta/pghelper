@@ -97,7 +97,7 @@ export const TimetableEditor = ({
     >
       <SheetTrigger asChild>
         <Button variant="default">
-          <Icons.edit className="mr-2 h-4 w-4" />
+          <Icons.penSquare className="mr-2 h-4 w-4" />
           Edit timetable
         </Button>
       </SheetTrigger>
