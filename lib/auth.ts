@@ -1,10 +1,9 @@
 import { db } from "@/db"
 import { users } from "@/db/schema"
+import { DrizzleAdapter } from "@auth/drizzle-adapter"
 import { eq } from "drizzle-orm"
 import type { NextAuthOptions } from "next-auth"
 import Discord from "next-auth/providers/discord"
-
-import { DrizzleAdapter } from "./drizzleAuthAdapter"
 
 export const authOptions: NextAuthOptions = {
   adapter: DrizzleAdapter(db),
