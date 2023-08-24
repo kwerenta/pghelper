@@ -7,10 +7,10 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useFieldArray, useForm } from "react-hook-form"
 import * as z from "zod"
 
-import { TimetableEntry } from "@/lib/timetable"
 import { transformStringToNumber } from "@/lib/utils"
 import { timetableEditorSchema } from "@/lib/validators/timetable"
 import { useToast } from "@/hooks/useToast"
+import { TimetableEntry } from "@/app/(dashboard)/timetable/loaders"
 
 import { Icons } from "./Icons"
 import { Button } from "./ui/Button"

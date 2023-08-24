@@ -1,11 +1,12 @@
 import { redirect } from "next/navigation"
 
 import { getCurrentUser } from "@/lib/session"
-import { getCoursesTimeslots, getUserTimetable } from "@/lib/timetable"
 import { DashboardHeader } from "@/components/DashboardHeader"
 import { DashboardShell } from "@/components/DashboardShell"
 import { Timetable } from "@/components/Timetable"
 import { TimetableEditor } from "@/components/TimetableEditor"
+
+import { getCoursesTimeslots, getUserTimetable } from "./loaders"
 
 export default async function TimetablePage() {
   const user = await getCurrentUser()

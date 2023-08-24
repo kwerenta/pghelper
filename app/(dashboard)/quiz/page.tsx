@@ -1,11 +1,12 @@
 import Link from "next/link"
 
-import { getQuizzesList } from "@/lib/quizzes"
 import { buttonVariants } from "@/components/ui/Button"
 import { Card, CardContent } from "@/components/ui/Card"
 import { DashboardHeader } from "@/components/DashboardHeader"
 import { DashboardShell } from "@/components/DashboardShell"
 import { Icons } from "@/components/Icons"
+
+import { getQuizzesList } from "./loaders"
 
 export default async function QuizPage() {
   const quizzes = await getQuizzesList()
