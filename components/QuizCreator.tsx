@@ -39,6 +39,15 @@ import { Input } from "./ui/Input"
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/Popover"
 import { Textarea } from "./ui/Textarea"
 
+const DEFAULT_QUESTION: z.infer<typeof quizSchema>["questions"][number] = {
+  text: "",
+  type: "single_choice",
+  answers: [
+    { text: "", isCorrect: true },
+    { text: "", isCorrect: false },
+  ],
+}
+
 export const QuizCreator = ({
   courses,
 }: {
@@ -51,16 +60,7 @@ export const QuizCreator = ({
       title: "",
       description: "",
       courseId: 0,
-      questions: [
-        {
-          text: "question",
-          type: "single_choice",
-          answers: [
-            { text: "", isCorrect: true },
-            { text: "", isCorrect: false },
-          ],
-        },
-      ],
+      questions: [DEFAULT_QUESTION],
     },
   })
 
@@ -205,16 +205,7 @@ export const QuizCreator = ({
           type="button"
           variant="secondary"
           className="mt-4 w-full"
-          onClick={() =>
-            addQuestion({
-              text: "",
-              type: "single_choice",
-              answers: [
-                { text: "", isCorrect: true },
-                { text: "", isCorrect: false },
-              ],
-            })
-          }
+          onClick={() => addQuestion(DEFAULT_QUESTION)}
         >
           Add new question
         </Button>
