@@ -7,10 +7,12 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useFieldArray, useForm } from "react-hook-form"
 import * as z from "zod"
 
+import { catchActionErrors } from "@/lib/exceptions"
 import { transformStringToNumber } from "@/lib/utils"
 import { timetableEditorSchema } from "@/lib/validators/timetable"
 import { useToast } from "@/hooks/useToast"
-import { TimetableEntry } from "@/app/(dashboard)/timetable/loaders"
+import { updateTimetable } from "@/app/(dashboard)/timetable/actions"
+import type { TimetableEntry } from "@/app/(dashboard)/timetable/loaders"
 
 import { Icons } from "./Icons"
 import { Button } from "./ui/Button"
@@ -68,22 +70,19 @@ export const TimetableEditor = ({
     )
     if (filteredData.length === 0) return
 
-    const res = await fetch("/api/timetable", {
-      body: JSON.stringify({ timeslots: filteredData }),
-      method: "POST",
-    })
-    const body = await res.json()
+    try {
+      await updateTimetable({ timeslots: filteredData })
 
-    if (res.ok) {
       router.refresh()
       form.reset(form.getValues())
-    }
 
-    setIsOpen(false)
-    toast({
-      variant: res.ok ? "default" : "destructive",
-      description: body.message,
-    })
+      setIsOpen(false)
+      toast({
+        description: "Timetable successfully updated.",
+      })
+    } catch (error) {
+      catchActionErrors(error)
+    }
   }
 
   return (

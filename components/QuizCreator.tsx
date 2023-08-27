@@ -7,9 +7,11 @@ import { Check, ChevronsUpDown } from "lucide-react"
 import { useFieldArray, useForm } from "react-hook-form"
 import * as z from "zod"
 
+import { catchActionErrors } from "@/lib/exceptions"
 import { cn } from "@/lib/utils"
 import { quizSchema } from "@/lib/validators/quiz"
 import { toast } from "@/hooks/useToast"
+import { createQuiz } from "@/app/(dashboard)/quiz/new/actions"
 
 import { QuizQuestionForm } from "./QuizQuestionForm"
 import { Button } from "./ui/Button"
@@ -74,21 +76,18 @@ export const QuizCreator = ({
   })
 
   const onSubmit = async (data: z.infer<typeof quizSchema>) => {
-    const res = await fetch("/api/quiz", {
-      body: JSON.stringify(data),
-      method: "POST",
-    })
-    const body = await res.json()
+    try {
+      await createQuiz(data)
 
-    if (res.ok) {
       router.push("/quiz")
       router.refresh()
-    }
 
-    toast({
-      variant: res.ok ? "default" : "destructive",
-      description: body.message,
-    })
+      toast({
+        description: "Successfully created quiz.",
+      })
+    } catch (error) {
+      catchActionErrors(error)
+    }
   }
 
   return (
