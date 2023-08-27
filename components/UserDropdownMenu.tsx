@@ -15,7 +15,11 @@ import {
   DropdownMenuTrigger,
 } from "./ui/DropdownMenu"
 
-export function UserDropdownMenu({ user }: { user: User }) {
+type UserDropdownMenuProps = {
+  user: User
+}
+
+export function UserDropdownMenu({ user }: UserDropdownMenuProps) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>

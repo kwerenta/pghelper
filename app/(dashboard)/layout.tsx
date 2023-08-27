@@ -4,11 +4,11 @@ import { Separator } from "@/components/ui/Separator"
 import { SidebarNav } from "@/components/Nav"
 import { UserDropdownMenu } from "@/components/UserDropdownMenu"
 
-export default async function Layout({
-  children,
-}: {
+type LayoutProps = {
   children: React.ReactNode
-}) {
+}
+
+export default async function Layout({ children }: LayoutProps) {
   const user = await getCurrentUser()
 
   if (!user) return null

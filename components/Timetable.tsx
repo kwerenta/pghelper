@@ -13,7 +13,11 @@ const hoursArray = Array.from(
   (_, i) => i + FIRST_SUBJECT_HOUR,
 )
 
-export const Timetable = ({ entries }: { entries: TimetableEntry[] }) => (
+type TimetableProps = {
+  entries: TimetableEntry[]
+}
+
+export const Timetable = ({ entries }: TimetableProps) => (
   <Card className="overflow-x-auto">
     <CardContent className="pl-0">
       <table className="border-separate border-spacing-2">

@@ -30,7 +30,7 @@ const answersSchema = z.object({
   ),
 })
 
-interface QuizFormProps {
+type QuizFormProps = {
   questions: (InferSelectModel<typeof questions> & {
     answers: InferSelectModel<typeof answers>[]
   })[]

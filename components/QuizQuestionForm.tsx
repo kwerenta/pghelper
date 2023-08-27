@@ -18,7 +18,7 @@ import { RadioGroup, RadioGroupItem } from "./ui/RadioGroup"
 import { Switch } from "./ui/Switch"
 import { Textarea } from "./ui/Textarea"
 
-interface QuizQuestionFormProps {
+type QuizQuestionFormProps = {
   control: Control<z.infer<typeof quizSchema>>
   index: number
   errors: string | undefined

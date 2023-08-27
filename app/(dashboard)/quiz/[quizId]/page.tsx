@@ -8,7 +8,11 @@ import { QuizForm } from "@/components/QuizForm"
 
 import { getQuiz } from "./loaders"
 
-export default async function Quiz({ params }: { params: { quizId: string } }) {
+type QuizPageProps = {
+  params: { quizId: string }
+}
+
+export default async function Quiz({ params }: QuizPageProps) {
   const quiz = await getQuiz(params.quizId)
 
   if (!quiz) return notFound()

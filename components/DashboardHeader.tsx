@@ -2,7 +2,7 @@ import type { ReactNode } from "react"
 
 import { Separator } from "@/components/ui/Separator"
 
-interface DashboardHeaderProps {
+type DashboardHeaderProps = {
   children?: ReactNode
   title: string
   description: string

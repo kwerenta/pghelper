@@ -49,11 +49,11 @@ const DEFAULT_QUESTION: z.infer<typeof quizSchema>["questions"][number] = {
   ],
 }
 
-export const QuizCreator = ({
-  courses,
-}: {
+type QuizCreatorProps = {
   courses: Pick<Course, "id" | "name">[]
-}) => {
+}
+
+export const QuizCreator = ({ courses }: QuizCreatorProps) => {
   const form = useForm<z.infer<typeof quizSchema>>({
     resolver: zodResolver(quizSchema),
     defaultValues: {

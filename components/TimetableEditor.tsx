@@ -41,13 +41,15 @@ import {
   SheetTrigger,
 } from "./ui/Sheet"
 
+type TimetableEditorProps = {
+  timetableEntries: TimetableEntry[]
+  timeslots: Timeslot[]
+}
+
 export const TimetableEditor = ({
   timetableEntries,
   timeslots,
-}: {
-  timetableEntries: TimetableEntry[]
-  timeslots: Timeslot[]
-}) => {
+}: TimetableEditorProps) => {
   const { toast } = useToast()
   const [isOpen, setIsOpen] = useState(false)
 
