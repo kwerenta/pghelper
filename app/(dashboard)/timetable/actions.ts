@@ -1,5 +1,6 @@
 "use server"
 
+import { revalidatePath } from "next/cache"
 import { db } from "@/db"
 import { timeslotsOverrides } from "@/db/schema"
 import { and, eq, inArray } from "drizzle-orm"
@@ -38,5 +39,7 @@ export const updateTimetable = validatedAction(
       if (timeslotsToInsert.length !== 0)
         await tx.insert(timeslotsOverrides).values(timeslotsToInsert)
     })
+
+    revalidatePath("/timetable")
   },
 )

@@ -1,6 +1,8 @@
 "use server"
 
 import crypto from "node:crypto"
+import { revalidatePath } from "next/cache"
+import { redirect } from "next/navigation"
 import { db } from "@/db"
 import { answers, courses, questions, quizzes } from "@/db/schema"
 import { and, asc, eq } from "drizzle-orm"
@@ -60,4 +62,7 @@ export const createQuiz = validatedAction(quizSchema, async (data) => {
 
     await tx.insert(answers).values(answersData)
   })
+
+  revalidatePath("/quiz")
+  redirect("/quiz")
 })

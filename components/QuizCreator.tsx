@@ -1,6 +1,5 @@
 "use client"
 
-import { useRouter } from "next/navigation"
 import { Course } from "@/db/schema"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Check, ChevronsUpDown } from "lucide-react"
@@ -55,7 +54,6 @@ export const QuizCreator = ({
 }: {
   courses: Pick<Course, "id" | "name">[]
 }) => {
-  const router = useRouter()
   const form = useForm<z.infer<typeof quizSchema>>({
     resolver: zodResolver(quizSchema),
     defaultValues: {
@@ -78,9 +76,6 @@ export const QuizCreator = ({
   const onSubmit = async (data: z.infer<typeof quizSchema>) => {
     try {
       await createQuiz(data)
-
-      router.push("/quiz")
-      router.refresh()
 
       toast({
         description: "Successfully created quiz.",

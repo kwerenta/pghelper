@@ -1,7 +1,6 @@
 "use client"
 
 import { useState } from "react"
-import { useRouter } from "next/navigation"
 import type { Timeslot } from "@/db/schema"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useFieldArray, useForm } from "react-hook-form"
@@ -49,7 +48,6 @@ export const TimetableEditor = ({
   timetableEntries: TimetableEntry[]
   timeslots: Timeslot[]
 }) => {
-  const router = useRouter()
   const { toast } = useToast()
   const [isOpen, setIsOpen] = useState(false)
 
@@ -73,9 +71,7 @@ export const TimetableEditor = ({
     try {
       await updateTimetable({ timeslots: filteredData })
 
-      router.refresh()
       form.reset(form.getValues())
-
       setIsOpen(false)
       toast({
         description: "Timetable successfully updated.",
