@@ -4,7 +4,7 @@ import { useState } from "react"
 import type { Timeslot } from "@/db/schema"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useFieldArray, useForm } from "react-hook-form"
-import * as z from "zod"
+import { z } from "zod"
 
 import { catchActionErrors } from "@/lib/exceptions"
 import { transformStringToNumber } from "@/lib/utils"

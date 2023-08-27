@@ -1,5 +1,5 @@
 import { Control, useFieldArray } from "react-hook-form"
-import * as z from "zod"
+import { z } from "zod"
 
 import { quizSchema } from "@/lib/validators/quiz"
 

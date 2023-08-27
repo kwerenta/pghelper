@@ -4,7 +4,7 @@ import { Course } from "@/db/schema"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Check, ChevronsUpDown } from "lucide-react"
 import { useFieldArray, useForm } from "react-hook-form"
-import * as z from "zod"
+import { z } from "zod"
 
 import { catchActionErrors } from "@/lib/exceptions"
 import { cn } from "@/lib/utils"

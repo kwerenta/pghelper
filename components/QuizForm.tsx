@@ -4,7 +4,7 @@ import { answers, questions } from "@/db/schema"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { InferSelectModel } from "drizzle-orm"
 import { useForm } from "react-hook-form"
-import * as z from "zod"
+import { z } from "zod"
 
 import { toast } from "@/hooks/useToast"
 
