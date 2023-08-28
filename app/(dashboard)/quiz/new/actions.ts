@@ -64,5 +64,5 @@ export const createQuiz = validatedAction(quizSchema, async (data) => {
   })
 
   revalidatePath("/quiz")
-  redirect("/quiz")
+  return { message: "Successfully created new quiz." }
 })

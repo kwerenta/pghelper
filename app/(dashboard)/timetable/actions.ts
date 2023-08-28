@@ -41,5 +41,6 @@ export const updateTimetable = validatedAction(
     })
 
     revalidatePath("/timetable")
+    return { message: "Successfully updated timetable." }
   },
 )

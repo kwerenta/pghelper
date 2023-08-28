@@ -1,15 +1,15 @@
 "use client"
 
+import { useRouter } from "next/navigation"
 import { Course } from "@/db/schema"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Check, ChevronsUpDown } from "lucide-react"
 import { useFieldArray, useForm } from "react-hook-form"
 import { z } from "zod"
 
-import { catchActionErrors } from "@/lib/exceptions"
 import { cn } from "@/lib/utils"
 import { quizSchema } from "@/lib/validators/quiz"
-import { toast } from "@/hooks/useToast"
+import { useActionToast } from "@/hooks/useActionToast"
 import { createQuiz } from "@/app/(dashboard)/quiz/new/actions"
 
 import { QuizQuestionForm } from "./QuizQuestionForm"
@@ -54,6 +54,8 @@ type QuizCreatorProps = {
 }
 
 export const QuizCreator = ({ courses }: QuizCreatorProps) => {
+  const router = useRouter()
+  const actionToast = useActionToast()
   const form = useForm<z.infer<typeof quizSchema>>({
     resolver: zodResolver(quizSchema),
     defaultValues: {
@@ -74,15 +76,10 @@ export const QuizCreator = ({ courses }: QuizCreatorProps) => {
   })
 
   const onSubmit = async (data: z.infer<typeof quizSchema>) => {
-    try {
-      await createQuiz(data)
+    const result = await createQuiz(data)
+    if (result.success) router.push("/quiz")
 
-      toast({
-        description: "Successfully created quiz.",
-      })
-    } catch (error) {
-      catchActionErrors(error)
-    }
+    actionToast(result)
   }
 
   return (

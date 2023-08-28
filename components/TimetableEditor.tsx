@@ -6,10 +6,9 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useFieldArray, useForm } from "react-hook-form"
 import { z } from "zod"
 
-import { catchActionErrors } from "@/lib/exceptions"
 import { transformStringToNumber } from "@/lib/utils"
 import { timetableEditorSchema } from "@/lib/validators/timetable"
-import { useToast } from "@/hooks/useToast"
+import { useActionToast } from "@/hooks/useActionToast"
 import { updateTimetable } from "@/app/(dashboard)/timetable/actions"
 import type { TimetableEntry } from "@/app/(dashboard)/timetable/loaders"
 
@@ -50,9 +49,8 @@ export const TimetableEditor = ({
   timetableEntries,
   timeslots,
 }: TimetableEditorProps) => {
-  const { toast } = useToast()
+  const actionToast = useActionToast()
   const [isOpen, setIsOpen] = useState(false)
-
   const form = useForm<z.infer<typeof timetableEditorSchema>>({
     resolver: zodResolver(timetableEditorSchema),
     defaultValues: {
@@ -70,16 +68,12 @@ export const TimetableEditor = ({
     )
     if (filteredData.length === 0) return
 
-    try {
-      await updateTimetable({ timeslots: filteredData })
+    const result = await updateTimetable({ timeslots: filteredData })
+    actionToast(result)
 
+    if (result.success) {
       form.reset(form.getValues())
       setIsOpen(false)
-      toast({
-        description: "Timetable successfully updated.",
-      })
-    } catch (error) {
-      catchActionErrors(error)
     }
   }
 
