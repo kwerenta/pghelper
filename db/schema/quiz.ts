@@ -2,6 +2,7 @@ import { relations } from "drizzle-orm"
 import {
   bigint,
   boolean,
+  index,
   mysqlEnum,
   mysqlTable,
   serial,
@@ -38,24 +39,36 @@ export const quizzesRelations = relations(quizzes, ({ one, many }) => ({
   questions: many(questions),
 }))
 
-export const questions = mysqlTable("questions", {
-  id: serial("id").primaryKey(),
-  quizId: varchar("quiz_id", { length: 255 }).notNull(),
-  text: varchar("text", { length: 1023 }).notNull(),
-  type: mysqlEnum("type", ["single_choice", "multiple_choice"]).notNull(),
-})
+export const questions = mysqlTable(
+  "questions",
+  {
+    id: serial("id").primaryKey(),
+    quizId: varchar("quiz_id", { length: 255 }).notNull(),
+    text: varchar("text", { length: 1023 }).notNull(),
+    type: mysqlEnum("type", ["single_choice", "multiple_choice"]).notNull(),
+  },
+  (question) => ({
+    quizIndex: index("quiz_index").on(question.quizId),
+  }),
+)
 
 export const questionsRelations = relations(questions, ({ one, many }) => ({
   quiz: one(quizzes, { fields: [questions.quizId], references: [quizzes.id] }),
   answers: many(answers),
 }))
 
-export const answers = mysqlTable("answers", {
-  id: serial("id").primaryKey(),
-  questionId: bigint("question_id", { mode: "number" }).notNull(),
-  text: varchar("text", { length: 255 }).notNull(),
-  isCorrect: boolean("is_correct").notNull(),
-})
+export const answers = mysqlTable(
+  "answers",
+  {
+    id: serial("id").primaryKey(),
+    questionId: bigint("question_id", { mode: "number" }).notNull(),
+    text: varchar("text", { length: 255 }).notNull(),
+    isCorrect: boolean("is_correct").notNull(),
+  },
+  (answer) => ({
+    questionIndex: index("question_index").on(answer.questionId),
+  }),
+)
 
 export const answersRelations = relations(answers, ({ one }) => ({
   question: one(questions, {

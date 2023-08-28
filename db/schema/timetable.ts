@@ -1,6 +1,7 @@
-import { InferModel, relations } from "drizzle-orm"
+import { InferSelectModel, relations } from "drizzle-orm"
 import {
   bigint,
+  index,
   mysqlEnum,
   mysqlTable,
   primaryKey,
@@ -11,22 +12,28 @@ import {
 
 import { quizzes } from "./quiz"
 
-export const timeslots = mysqlTable("timeslots", {
-  id: serial("id").primaryKey(),
-  courseId: bigint("course_id", { mode: "number" }).notNull(),
-  weekday: mysqlEnum("weekday", [
-    "monday",
-    "tuesday",
-    "wednesday",
-    "thursday",
-    "friday",
-  ]).notNull(),
-  startTime: tinyint("start_time").notNull(),
-  endTime: tinyint("end_time").notNull(),
-  deanGroup: tinyint("dean_group").notNull().default(0),
-})
+export const timeslots = mysqlTable(
+  "timeslots",
+  {
+    id: serial("id").primaryKey(),
+    courseId: bigint("course_id", { mode: "number" }).notNull(),
+    weekday: mysqlEnum("weekday", [
+      "monday",
+      "tuesday",
+      "wednesday",
+      "thursday",
+      "friday",
+    ]).notNull(),
+    startTime: tinyint("start_time").notNull(),
+    endTime: tinyint("end_time").notNull(),
+    deanGroup: tinyint("dean_group").notNull().default(0),
+  },
+  (timeslot) => ({
+    deanGroupIndex: index("dean_group_index").on(timeslot.deanGroup),
+  }),
+)
 
-export type Timeslot = InferModel<typeof timeslots>
+export type Timeslot = InferSelectModel<typeof timeslots>
 
 export const timeslotsRelations = relations(timeslots, ({ one }) => ({
   course: one(courses, {
@@ -72,7 +79,7 @@ export const courses = mysqlTable("courses", {
   ]).notNull(),
 })
 
-export type Course = InferModel<typeof courses>
+export type Course = InferSelectModel<typeof courses>
 
 export const coursesRelations = relations(courses, ({ many }) => ({
   timeslots: many(timeslots),
