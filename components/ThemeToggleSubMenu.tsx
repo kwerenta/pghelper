@@ -11,6 +11,12 @@ import {
   DropdownMenuSubTrigger,
 } from "./ui/DropdownMenu"
 
+const themes = [
+  { name: "light", icon: "sun" },
+  { name: "dark", icon: "moon" },
+  { name: "system", icon: "laptop" },
+] as const
+
 export function ThemeToggleSubMenu() {
   const { setTheme } = useTheme()
   return (
@@ -22,18 +28,18 @@ export function ThemeToggleSubMenu() {
       </DropdownMenuSubTrigger>
       <DropdownMenuPortal>
         <DropdownMenuSubContent>
-          <DropdownMenuItem onClick={() => setTheme("light")}>
-            <Icons.sun className="mr-2 h-4 w-4" />
-            <span>Light</span>
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => setTheme("dark")}>
-            <Icons.moon className="mr-2 h-4 w-4" />
-            <span>Dark</span>
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => setTheme("system")}>
-            <Icons.laptop className="mr-2 h-4 w-4" />
-            <span>System</span>
-          </DropdownMenuItem>
+          {themes.map((theme) => {
+            const Icon = Icons[theme.icon]
+            return (
+              <DropdownMenuItem
+                key={theme.name}
+                onClick={() => setTheme(theme.name)}
+              >
+                <Icon className="mr-2 h-4 w-4" />
+                <span className="capitalize">{theme.name}</span>
+              </DropdownMenuItem>
+            )
+          })}
         </DropdownMenuSubContent>
       </DropdownMenuPortal>
     </DropdownMenuSub>
