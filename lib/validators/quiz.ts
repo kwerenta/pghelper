@@ -3,22 +3,34 @@ import * as z from "zod"
 const baseAnswersSchema = z
   .array(
     z.object({
-      text: z.string().min(1).max(255),
+      text: z
+        .string({ required_error: "Please enter a text for the answer" })
+        .max(255, "Answer text must be less than 256 characters long"),
       isCorrect: z.boolean(),
     }),
   )
   .min(2, "Question must have at least 2 answers")
-  .max(8, "Question must have at most 8 answers")
+  .max(8, "Question must have less than 9 answers")
+
+const questionTextSchema = z
+  .string({ required_error: "Please enter a text for the question" })
+  .min(3, "Question text must be at least 3 characters long")
+  .max(1023, "Question text must be less than 1024 characters long")
 
 export const quizSchema = z.object({
-  title: z.string().min(3).max(255),
-  description: z.string().min(1).max(255),
-  courseId: z.number().positive({ message: "Course must be selected" }),
+  title: z
+    .string({ required_error: "Please enter a title for the quiz" })
+    .min(3, "Question title must be at least 3 characters long")
+    .max(255, "Question title must be less than 256 characters long"),
+  description: z
+    .string({ required_error: "Please enter a description for the quiz" })
+    .max(255, "Question description must be less than 256 characters long"),
+  courseId: z.number().positive({ message: "Please select a course" }),
   questions: z
     .array(
       z.union([
         z.object({
-          text: z.string().min(3).max(1023),
+          text: questionTextSchema,
           type: z.literal("single_choice"),
           answers: baseAnswersSchema.refine(
             (answers) =>
@@ -30,7 +42,7 @@ export const quizSchema = z.object({
           ),
         }),
         z.object({
-          text: z.string().min(3).max(1023),
+          text: questionTextSchema,
           type: z.literal("multiple_choice"),
           answers: baseAnswersSchema.refine(
             (answers) => answers.some((answer) => answer.isCorrect),
@@ -42,6 +54,8 @@ export const quizSchema = z.object({
         }),
       ]),
     )
-    .min(1)
-    .max(255),
+    .min(1, "Quiz must have at least 1 question")
+    .max(255, "Quiz must have less than 256 questions"),
 })
+
+export type NewQuizValues = z.infer<typeof quizSchema>

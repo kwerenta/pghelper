@@ -10,3 +10,5 @@ export const timetableEditorSchema = z.object({
     )
     .min(1),
 })
+
+export type EditedTimetableValues = z.infer<typeof timetableEditorSchema>
