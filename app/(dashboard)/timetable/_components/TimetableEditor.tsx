@@ -4,10 +4,12 @@ import { useState } from "react"
 import type { Timeslot } from "@/db/schema"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useFieldArray, useForm } from "react-hook-form"
-import { z } from "zod"
 
 import { transformStringToNumber } from "@/lib/utils"
-import { timetableEditorSchema } from "@/lib/validators/timetable"
+import {
+  EditedTimetableValues,
+  timetableEditorSchema,
+} from "@/lib/validators/timetable"
 import { useActionToast } from "@/hooks/useActionToast"
 import { Button } from "@/components/ui/Button"
 import {
@@ -50,7 +52,8 @@ export const TimetableEditor = ({
 }: TimetableEditorProps) => {
   const actionToast = useActionToast()
   const [isOpen, setIsOpen] = useState(false)
-  const form = useForm<z.infer<typeof timetableEditorSchema>>({
+
+  const form = useForm<EditedTimetableValues>({
     resolver: zodResolver(timetableEditorSchema),
     defaultValues: {
       timeslots: timetableEntries.map((entry) => ({
@@ -61,7 +64,7 @@ export const TimetableEditor = ({
   })
   const { fields } = useFieldArray({ name: "timeslots", control: form.control })
 
-  const onSubmit = async (data: z.infer<typeof timetableEditorSchema>) => {
+  const onSubmit = async (data: EditedTimetableValues) => {
     const filteredData = data.timeslots.filter(
       (_, index) => form.getFieldState(`timeslots.${index}`).isDirty,
     )

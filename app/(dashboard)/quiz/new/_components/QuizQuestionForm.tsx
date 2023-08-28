@@ -1,7 +1,6 @@
 import { Control, useFieldArray } from "react-hook-form"
-import { z } from "zod"
 
-import { quizSchema } from "@/lib/validators/quiz"
+import type { NewQuizValues } from "@/lib/validators/quiz"
 import { Button } from "@/components/ui/Button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card"
 import {
@@ -18,7 +17,7 @@ import { Textarea } from "@/components/ui/Textarea"
 import { Icons } from "@/components/Icons"
 
 type QuizQuestionFormProps = {
-  control: Control<z.infer<typeof quizSchema>>
+  control: Control<NewQuizValues>
   index: number
   errors: string | undefined
   validateAnswers: () => void

@@ -8,7 +8,7 @@ import { useFieldArray, useForm } from "react-hook-form"
 import { z } from "zod"
 
 import { cn } from "@/lib/utils"
-import { quizSchema } from "@/lib/validators/quiz"
+import { NewQuizValues, quizSchema } from "@/lib/validators/quiz"
 import { useActionToast } from "@/hooks/useActionToast"
 import { Button } from "@/components/ui/Button"
 import {
@@ -43,7 +43,7 @@ import { Textarea } from "@/components/ui/Textarea"
 import { QuizQuestionForm } from "@/app/(dashboard)/quiz/new/_components/QuizQuestionForm"
 import { createQuiz } from "@/app/(dashboard)/quiz/new/actions"
 
-const DEFAULT_QUESTION: z.infer<typeof quizSchema>["questions"][number] = {
+const DEFAULT_QUESTION: NewQuizValues["questions"][number] = {
   text: "",
   type: "single_choice",
   answers: [
@@ -59,7 +59,8 @@ type QuizCreatorProps = {
 export const QuizCreator = ({ courses }: QuizCreatorProps) => {
   const router = useRouter()
   const actionToast = useActionToast()
-  const form = useForm<z.infer<typeof quizSchema>>({
+
+  const form = useForm<NewQuizValues>({
     resolver: zodResolver(quizSchema),
     defaultValues: {
       title: "",
@@ -78,7 +79,7 @@ export const QuizCreator = ({ courses }: QuizCreatorProps) => {
     control: form.control,
   })
 
-  const onSubmit = async (data: z.infer<typeof quizSchema>) => {
+  const onSubmit = async (data: NewQuizValues) => {
     const result = await createQuiz(data)
     if (result.success) router.push("/quiz")
 
