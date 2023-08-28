@@ -5,7 +5,7 @@ import { User } from "next-auth"
 import { signOut } from "next-auth/react"
 
 import { Icons } from "./Icons"
-import { ModeToggleSubMenu } from "./ModeToggleSubMenu"
+import { ThemeToggleSubMenu } from "./ThemeToggleSubMenu"
 import { Button } from "./ui/Button"
 import {
   DropdownMenu,
@@ -46,7 +46,7 @@ export function UserDropdownMenu({ user }: UserDropdownMenuProps) {
             <span>Settings</span>
           </Link>
         </DropdownMenuItem>
-        <ModeToggleSubMenu />
+        <ThemeToggleSubMenu />
         <DropdownMenuSeparator />
         <DropdownMenuItem
           className="cursor-pointer"

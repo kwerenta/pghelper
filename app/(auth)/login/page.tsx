@@ -1,6 +1,6 @@
 import { Metadata } from "next"
 
-import { LoginButton } from "@/components/LoginButton"
+import { LoginButton } from "@/app/(auth)/login/_components/LoginButton"
 
 export const metadata: Metadata = {
   title: "Login",

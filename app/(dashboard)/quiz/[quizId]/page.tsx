@@ -4,7 +4,7 @@ import { notFound } from "next/navigation"
 import { buttonVariants } from "@/components/ui/Button"
 import { DashboardHeader } from "@/components/DashboardHeader"
 import { DashboardShell } from "@/components/DashboardShell"
-import { QuizForm } from "@/components/QuizForm"
+import { QuizForm } from "@/app/(dashboard)/quiz/[quizId]/_components/QuizForm"
 
 import { getQuiz } from "./loaders"
 

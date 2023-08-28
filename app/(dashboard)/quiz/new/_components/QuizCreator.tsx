@@ -10,24 +10,21 @@ import { z } from "zod"
 import { cn } from "@/lib/utils"
 import { quizSchema } from "@/lib/validators/quiz"
 import { useActionToast } from "@/hooks/useActionToast"
-import { createQuiz } from "@/app/(dashboard)/quiz/new/actions"
-
-import { QuizQuestionForm } from "./QuizQuestionForm"
-import { Button } from "./ui/Button"
+import { Button } from "@/components/ui/Button"
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "./ui/Card"
+} from "@/components/ui/Card"
 import {
   Command,
   CommandEmpty,
   CommandGroup,
   CommandInput,
   CommandItem,
-} from "./ui/Command"
+} from "@/components/ui/Command"
 import {
   Form,
   FormControl,
@@ -35,10 +32,16 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "./ui/Form"
-import { Input } from "./ui/Input"
-import { Popover, PopoverContent, PopoverTrigger } from "./ui/Popover"
-import { Textarea } from "./ui/Textarea"
+} from "@/components/ui/Form"
+import { Input } from "@/components/ui/Input"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/Popover"
+import { Textarea } from "@/components/ui/Textarea"
+import { QuizQuestionForm } from "@/app/(dashboard)/quiz/new/_components/QuizQuestionForm"
+import { createQuiz } from "@/app/(dashboard)/quiz/new/actions"
 
 const DEFAULT_QUESTION: z.infer<typeof quizSchema>["questions"][number] = {
   text: "",

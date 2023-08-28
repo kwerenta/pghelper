@@ -2,8 +2,8 @@
 
 import { signIn } from "next-auth/react"
 
-import { Icons } from "./Icons"
-import { Button } from "./ui/Button"
+import { Button } from "@/components/ui/Button"
+import { Icons } from "@/components/Icons"
 
 export function LoginButton() {
   return (

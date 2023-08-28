@@ -2,21 +2,20 @@ import { Control, useFieldArray } from "react-hook-form"
 import { z } from "zod"
 
 import { quizSchema } from "@/lib/validators/quiz"
-
-import { Icons } from "./Icons"
-import { Button } from "./ui/Button"
-import { Card, CardContent, CardHeader, CardTitle } from "./ui/Card"
+import { Button } from "@/components/ui/Button"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card"
 import {
   FormControl,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
-} from "./ui/Form"
-import { Input } from "./ui/Input"
-import { RadioGroup, RadioGroupItem } from "./ui/RadioGroup"
-import { Switch } from "./ui/Switch"
-import { Textarea } from "./ui/Textarea"
+} from "@/components/ui/Form"
+import { Input } from "@/components/ui/Input"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/RadioGroup"
+import { Switch } from "@/components/ui/Switch"
+import { Textarea } from "@/components/ui/Textarea"
+import { Icons } from "@/components/Icons"
 
 type QuizQuestionFormProps = {
   control: Control<z.infer<typeof quizSchema>>

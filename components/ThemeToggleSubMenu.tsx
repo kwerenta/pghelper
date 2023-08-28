@@ -11,7 +11,7 @@ import {
   DropdownMenuSubTrigger,
 } from "./ui/DropdownMenu"
 
-export function ModeToggleSubMenu() {
+export function ThemeToggleSubMenu() {
   const { setTheme } = useTheme()
   return (
     <DropdownMenuSub>

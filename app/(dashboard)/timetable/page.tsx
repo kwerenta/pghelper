@@ -3,8 +3,8 @@ import { redirect } from "next/navigation"
 import { getCurrentUser } from "@/lib/session"
 import { DashboardHeader } from "@/components/DashboardHeader"
 import { DashboardShell } from "@/components/DashboardShell"
-import { Timetable } from "@/components/Timetable"
-import { TimetableEditor } from "@/components/TimetableEditor"
+import { Timetable } from "@/app/(dashboard)/timetable/_components/Timetable"
+import { TimetableEditor } from "@/app/(dashboard)/timetable/_components/TimetableEditor"
 
 import { getCoursesTimeslots, getUserTimetable } from "./loaders"
 

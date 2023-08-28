@@ -7,10 +7,9 @@ import { useForm } from "react-hook-form"
 import { z } from "zod"
 
 import { toast } from "@/hooks/useToast"
-
-import { Button } from "./ui/Button"
-import { Card, CardContent, CardHeader, CardTitle } from "./ui/Card"
-import { Checkbox } from "./ui/Checkbox"
+import { Button } from "@/components/ui/Button"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card"
+import { Checkbox } from "@/components/ui/Checkbox"
 import {
   Form,
   FormControl,
@@ -18,8 +17,8 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "./ui/Form"
-import { ToastAction } from "./ui/Toast"
+} from "@/components/ui/Form"
+import { ToastAction } from "@/components/ui/Toast"
 
 const answersSchema = z.object({
   questions: z.array(

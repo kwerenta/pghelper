@@ -9,11 +9,7 @@ import { z } from "zod"
 import { transformStringToNumber } from "@/lib/utils"
 import { timetableEditorSchema } from "@/lib/validators/timetable"
 import { useActionToast } from "@/hooks/useActionToast"
-import { updateTimetable } from "@/app/(dashboard)/timetable/actions"
-import type { TimetableEntry } from "@/app/(dashboard)/timetable/loaders"
-
-import { Icons } from "./Icons"
-import { Button } from "./ui/Button"
+import { Button } from "@/components/ui/Button"
 import {
   Form,
   FormControl,
@@ -21,7 +17,7 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "./ui/Form"
+} from "@/components/ui/Form"
 import {
   Select,
   SelectContent,
@@ -30,7 +26,7 @@ import {
   SelectLabel,
   SelectTrigger,
   SelectValue,
-} from "./ui/Select"
+} from "@/components/ui/Select"
 import {
   Sheet,
   SheetContent,
@@ -38,7 +34,10 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from "./ui/Sheet"
+} from "@/components/ui/Sheet"
+import { Icons } from "@/components/Icons"
+import { updateTimetable } from "@/app/(dashboard)/timetable/actions"
+import type { TimetableEntry } from "@/app/(dashboard)/timetable/loaders"
 
 type TimetableEditorProps = {
   timetableEntries: TimetableEntry[]
