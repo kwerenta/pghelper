@@ -2,7 +2,7 @@ import Link from "next/link"
 import { notFound, redirect } from "next/navigation"
 
 import { getCurrentUser } from "@/lib/session"
-import { Button, buttonVariants } from "@/components/ui/Button"
+import { buttonVariants } from "@/components/ui/Button"
 import {
   Card,
   CardContent,
@@ -15,6 +15,7 @@ import { DashboardHeader } from "@/components/DashboardHeader"
 import { DashboardShell } from "@/components/DashboardShell"
 import { Icons } from "@/components/Icons"
 
+import { DeleteQuizButton } from "./_components/DeleteQuizButton"
 import { getQuiz } from "./loaders"
 
 type QuizPageProps = {
@@ -74,9 +75,7 @@ export default async function QuizPage({ params }: QuizPageProps) {
               >
                 <Icons.penSquare className="mr-2 h-4 w-4" /> Edit
               </Link>
-              <Button variant="destructive">
-                <Icons.trash className="mr-2 h-4 w-4" /> Delete
-              </Button>
+              <DeleteQuizButton quizId={quiz.id} />
             </>
           ) : null}
         </CardFooter>

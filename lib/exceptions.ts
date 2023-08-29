@@ -7,6 +7,13 @@ export class UnauthenticatedException extends Error {
   }
 }
 
+export class UnauthorizedException extends Error {
+  constructor(message = "You are not authorized to perform this action.") {
+    super(message)
+    this.name = "UnauthorizedException"
+  }
+}
+
 export function getErrorMessage(error: unknown) {
   let message = "Something went wrong, please try again later."
 
