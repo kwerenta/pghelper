@@ -9,5 +9,15 @@ export const getQuiz = (quizId: string) =>
       questions: {
         with: { answers: true },
       },
+      course: {
+        columns: {
+          name: true,
+        },
+      },
+      author: {
+        columns: {
+          name: true,
+        },
+      },
     },
   })

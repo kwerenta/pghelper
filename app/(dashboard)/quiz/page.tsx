@@ -8,7 +8,7 @@ import { Icons } from "@/components/Icons"
 
 import { getQuizzesList } from "./loaders"
 
-export default async function QuizPage() {
+export default async function QuizzesPage() {
   const quizzes = await getQuizzesList()
 
   return (
@@ -35,8 +35,8 @@ export default async function QuizPage() {
                   <h4 className="text-xl font-semibold leading-none tracking-tight">
                     {quiz.title}
                   </h4>
-                  <p className="text-sm text-muted-foreground">
-                    {quiz.description}
+                  <p className="text-sm capitalize text-muted-foreground">
+                    {quiz.course.name}
                   </p>
                 </div>
                 <div className="mr-3 flex shrink-0 flex-col items-end text-sm md:mr-4">
