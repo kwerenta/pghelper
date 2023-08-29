@@ -1,4 +1,4 @@
-import { relations } from "drizzle-orm"
+import { InferSelectModel, relations } from "drizzle-orm"
 import {
   bigint,
   boolean,
@@ -57,6 +57,8 @@ export const questionsRelations = relations(questions, ({ one, many }) => ({
   answers: many(answers),
 }))
 
+export type Question = InferSelectModel<typeof questions>
+
 export const answers = mysqlTable(
   "answers",
   {
@@ -76,3 +78,5 @@ export const answersRelations = relations(answers, ({ one }) => ({
     references: [questions.id],
   }),
 }))
+
+export type Answer = InferSelectModel<typeof answers>

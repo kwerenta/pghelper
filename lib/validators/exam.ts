@@ -59,3 +59,14 @@ export const examSchema = z.object({
 })
 
 export type NewExamValues = z.infer<typeof examSchema>
+
+export const examAttempSchema = z.object({
+  questions: z.array(
+    z.object({
+      id: z.number().positive(),
+      answers: z.array(z.number()),
+    }),
+  ),
+})
+
+export type ExamAttemptValues = z.infer<typeof examAttempSchema>

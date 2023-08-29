@@ -1,43 +1,28 @@
 "use client"
 
-import { answers, questions } from "@/db/schema"
+import type { Answer, Question } from "@/db/schema"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { InferSelectModel } from "drizzle-orm"
 import { useForm } from "react-hook-form"
-import { z } from "zod"
 
+import { ExamAttemptValues, examAttempSchema } from "@/lib/validators/exam"
 import { toast } from "@/hooks/useToast"
 import { Button } from "@/components/ui/Button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card"
-import { Checkbox } from "@/components/ui/Checkbox"
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/Form"
+import { Form, FormField, FormItem, FormMessage } from "@/components/ui/Form"
 import { ToastAction } from "@/components/ui/Toast"
 
-const answersSchema = z.object({
-  questions: z.array(
-    z.object({
-      id: z.number().positive(),
-      answers: z.array(z.number()),
-    }),
-  ),
-})
+import { MultipleChoiceAnswers } from "./MultipleChoiceAnswers"
+import { SingleChoiceAnswers } from "./SingleChoiceAnswers"
 
 type ExamFormProps = {
-  questions: (InferSelectModel<typeof questions> & {
-    answers: InferSelectModel<typeof answers>[]
+  questions: (Question & {
+    answers: Answer[]
   })[]
 }
 
 export const ExamForm = ({ questions }: ExamFormProps) => {
-  const form = useForm<z.infer<typeof answersSchema>>({
-    resolver: zodResolver(answersSchema),
+  const form = useForm<ExamAttemptValues>({
+    resolver: zodResolver(examAttempSchema),
     defaultValues: {
       questions: questions.map((question) => ({
         id: question.id,
@@ -46,7 +31,7 @@ export const ExamForm = ({ questions }: ExamFormProps) => {
     },
   })
 
-  const onSubmit = (data: z.infer<typeof answersSchema>) => {
+  const onSubmit = (data: ExamAttemptValues) => {
     const correctQuestions = questions.filter((question) =>
       question.answers.every((answer) => {
         const hasAnswer = data.questions
@@ -99,43 +84,20 @@ export const ExamForm = ({ questions }: ExamFormProps) => {
                 control={form.control}
                 name={`questions.${index}.answers`}
                 render={() => (
-                  <FormItem className="space-y-2">
-                    {question.answers.map((answer) => (
-                      <FormField
-                        key={answer.id}
+                  <FormItem>
+                    {question.type === "single_choice" ? (
+                      <SingleChoiceAnswers
                         control={form.control}
-                        name={`questions.${index}.answers`}
-                        render={({ field }) => {
-                          return (
-                            <FormItem
-                              key={answer.id}
-                              className="flex flex-row items-start space-x-3 space-y-0"
-                            >
-                              <FormControl>
-                                <Checkbox
-                                  checked={field.value?.includes(answer.id)}
-                                  onCheckedChange={(checked) => {
-                                    return checked
-                                      ? field.onChange([
-                                          ...field.value,
-                                          answer.id,
-                                        ])
-                                      : field.onChange(
-                                          field.value?.filter(
-                                            (value) => value !== answer.id,
-                                          ),
-                                        )
-                                  }}
-                                />
-                              </FormControl>
-                              <FormLabel className="font-normal">
-                                {answer.text}
-                              </FormLabel>
-                            </FormItem>
-                          )
-                        }}
+                        index={index}
+                        question={question}
                       />
-                    ))}
+                    ) : (
+                      <MultipleChoiceAnswers
+                        control={form.control}
+                        index={index}
+                        question={question}
+                      />
+                    )}
                     <FormMessage />
                   </FormItem>
                 )}
