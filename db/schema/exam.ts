@@ -13,7 +13,7 @@ import {
 import { courses } from "./timetable"
 import { users } from "./user"
 
-export const quizzes = mysqlTable("quizzes", {
+export const exams = mysqlTable("exams", {
   id: varchar("id", { length: 255 }).notNull().primaryKey(),
   title: varchar("title", { length: 255 }).notNull(),
   description: varchar("description", { length: 255 }),
@@ -27,13 +27,13 @@ export const quizzes = mysqlTable("quizzes", {
     .defaultNow(),
 })
 
-export const quizzesRelations = relations(quizzes, ({ one, many }) => ({
+export const examsRelations = relations(exams, ({ one, many }) => ({
   course: one(courses, {
-    fields: [quizzes.courseId],
+    fields: [exams.courseId],
     references: [courses.id],
   }),
   author: one(users, {
-    fields: [quizzes.authorId],
+    fields: [exams.authorId],
     references: [users.id],
   }),
   questions: many(questions),
@@ -43,17 +43,17 @@ export const questions = mysqlTable(
   "questions",
   {
     id: serial("id").primaryKey(),
-    quizId: varchar("quiz_id", { length: 255 }).notNull(),
+    examId: varchar("exam_id", { length: 255 }).notNull(),
     text: varchar("text", { length: 1023 }).notNull(),
     type: mysqlEnum("type", ["single_choice", "multiple_choice"]).notNull(),
   },
   (question) => ({
-    quizIndex: index("quiz_index").on(question.quizId),
+    examIndex: index("exam_index").on(question.examId),
   }),
 )
 
 export const questionsRelations = relations(questions, ({ one, many }) => ({
-  quiz: one(quizzes, { fields: [questions.quizId], references: [quizzes.id] }),
+  exam: one(exams, { fields: [questions.examId], references: [exams.id] }),
   answers: many(answers),
 }))
 

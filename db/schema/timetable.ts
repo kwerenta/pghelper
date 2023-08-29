@@ -10,7 +10,7 @@ import {
   varchar,
 } from "drizzle-orm/mysql-core"
 
-import { quizzes } from "./quiz"
+import { exams } from "./exam"
 
 export const timeslots = mysqlTable(
   "timeslots",
@@ -84,5 +84,5 @@ export type Course = InferSelectModel<typeof courses>
 export const coursesRelations = relations(courses, ({ many }) => ({
   timeslots: many(timeslots),
   customTimeslots: many(timeslotsOverrides),
-  quizzes: many(quizzes),
+  exams: many(exams),
 }))

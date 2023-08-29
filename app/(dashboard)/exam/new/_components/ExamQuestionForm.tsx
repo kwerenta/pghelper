@@ -1,6 +1,6 @@
 import { Control, useFieldArray } from "react-hook-form"
 
-import type { NewQuizValues } from "@/lib/validators/quiz"
+import type { NewExamValues } from "@/lib/validators/exam"
 import { Button } from "@/components/ui/Button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card"
 import {
@@ -16,21 +16,21 @@ import { Switch } from "@/components/ui/Switch"
 import { Textarea } from "@/components/ui/Textarea"
 import { Icons } from "@/components/Icons"
 
-type QuizQuestionFormProps = {
-  control: Control<NewQuizValues>
+type ExamQuestionFormProps = {
+  control: Control<NewExamValues>
   index: number
   errors: string | undefined
   validateAnswers: () => void
   removeQuestion: () => void
 }
 
-export const QuizQuestionForm = ({
+export const ExamQuestionForm = ({
   control,
   errors,
   index,
   validateAnswers,
   removeQuestion,
-}: QuizQuestionFormProps) => {
+}: ExamQuestionFormProps) => {
   const {
     fields: answers,
     remove: removeAnswer,

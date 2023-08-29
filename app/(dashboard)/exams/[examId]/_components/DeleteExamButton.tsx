@@ -6,13 +6,13 @@ import { useActionToast } from "@/hooks/useActionToast"
 import { Button } from "@/components/ui/Button"
 import { Icons } from "@/components/Icons"
 
-import { deleteQuiz } from "../actions"
+import { deleteExam } from "../actions"
 
-type DeleteQuizButtonProps = {
-  quizId: string
+type DeleteExamButtonProps = {
+  examId: string
 }
 
-export const DeleteQuizButton = ({ quizId }: DeleteQuizButtonProps) => {
+export const DeleteExamButton = ({ examId }: DeleteExamButtonProps) => {
   const actionToast = useActionToast()
   const router = useRouter()
 
@@ -20,10 +20,10 @@ export const DeleteQuizButton = ({ quizId }: DeleteQuizButtonProps) => {
     <Button
       variant="destructive"
       onClick={async () => {
-        const result = await deleteQuiz(quizId)
+        const result = await deleteExam(examId)
         actionToast(result)
 
-        if (result.success) router.push("/quiz")
+        if (result.success) router.push("/exams")
       }}
     >
       <Icons.trash className="mr-2 h-4 w-4" /> Delete

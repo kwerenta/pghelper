@@ -5,10 +5,9 @@ import { Course } from "@/db/schema"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Check, ChevronsUpDown } from "lucide-react"
 import { useFieldArray, useForm } from "react-hook-form"
-import { z } from "zod"
 
 import { cn } from "@/lib/utils"
-import { NewQuizValues, quizSchema } from "@/lib/validators/quiz"
+import { NewExamValues, examSchema } from "@/lib/validators/exam"
 import { useActionToast } from "@/hooks/useActionToast"
 import { Button } from "@/components/ui/Button"
 import {
@@ -40,10 +39,10 @@ import {
   PopoverTrigger,
 } from "@/components/ui/Popover"
 import { Textarea } from "@/components/ui/Textarea"
-import { QuizQuestionForm } from "@/app/(dashboard)/quiz/new/_components/QuizQuestionForm"
-import { createQuiz } from "@/app/(dashboard)/quiz/new/actions"
+import { ExamQuestionForm } from "@/app/(dashboard)/exam/new/_components/ExamQuestionForm"
+import { createExam } from "@/app/(dashboard)/exam/new/actions"
 
-const DEFAULT_QUESTION: NewQuizValues["questions"][number] = {
+const DEFAULT_QUESTION: NewExamValues["questions"][number] = {
   text: "",
   type: "single_choice",
   answers: [
@@ -52,16 +51,16 @@ const DEFAULT_QUESTION: NewQuizValues["questions"][number] = {
   ],
 }
 
-type QuizCreatorProps = {
+type ExamCreatorProps = {
   courses: Pick<Course, "id" | "name">[]
 }
 
-export const QuizCreator = ({ courses }: QuizCreatorProps) => {
+export const ExamCreator = ({ courses }: ExamCreatorProps) => {
   const router = useRouter()
   const actionToast = useActionToast()
 
-  const form = useForm<NewQuizValues>({
-    resolver: zodResolver(quizSchema),
+  const form = useForm<NewExamValues>({
+    resolver: zodResolver(examSchema),
     defaultValues: {
       title: "",
       description: "",
@@ -79,9 +78,9 @@ export const QuizCreator = ({ courses }: QuizCreatorProps) => {
     control: form.control,
   })
 
-  const onSubmit = async (data: NewQuizValues) => {
-    const result = await createQuiz(data)
-    if (result.success) router.push("/quiz")
+  const onSubmit = async (data: NewExamValues) => {
+    const result = await createExam(data)
+    if (result.success) router.push("/exams")
 
     actionToast(result)
   }
@@ -92,7 +91,7 @@ export const QuizCreator = ({ courses }: QuizCreatorProps) => {
         <Card>
           <CardHeader>
             <CardTitle>Settings</CardTitle>
-            <CardDescription>General quiz settings</CardDescription>
+            <CardDescription>General exam settings</CardDescription>
           </CardHeader>
           <CardContent className="space-y-2">
             <FormField
@@ -186,7 +185,7 @@ export const QuizCreator = ({ courses }: QuizCreatorProps) => {
         </Card>
 
         {questionFields.map((question, index) => (
-          <QuizQuestionForm
+          <ExamQuestionForm
             key={question.id}
             control={form.control}
             index={index}
@@ -207,7 +206,7 @@ export const QuizCreator = ({ courses }: QuizCreatorProps) => {
 
         <div className="mt-4">
           <Button type="submit" size="lg">
-            Create quiz
+            Create exam
           </Button>
         </div>
       </form>

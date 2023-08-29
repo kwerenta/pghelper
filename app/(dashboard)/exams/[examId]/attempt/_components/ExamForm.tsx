@@ -29,13 +29,13 @@ const answersSchema = z.object({
   ),
 })
 
-type QuizFormProps = {
+type ExamFormProps = {
   questions: (InferSelectModel<typeof questions> & {
     answers: InferSelectModel<typeof answers>[]
   })[]
 }
 
-export const QuizForm = ({ questions }: QuizFormProps) => {
+export const ExamForm = ({ questions }: ExamFormProps) => {
   const form = useForm<z.infer<typeof answersSchema>>({
     resolver: zodResolver(answersSchema),
     defaultValues: {

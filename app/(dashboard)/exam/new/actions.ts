@@ -4,15 +4,15 @@ import crypto from "node:crypto"
 import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
 import { db } from "@/db"
-import { answers, courses, questions, quizzes } from "@/db/schema"
+import { answers, courses, exams, questions } from "@/db/schema"
 import { and, asc, eq } from "drizzle-orm"
 
 import { validatedAction } from "@/lib/actionValidator"
 import { UnauthenticatedException } from "@/lib/exceptions"
 import { getCurrentUser } from "@/lib/session"
-import { quizSchema } from "@/lib/validators/quiz"
+import { examSchema } from "@/lib/validators/exam"
 
-export const createQuiz = validatedAction(quizSchema, async (data) => {
+export const createExam = validatedAction(examSchema, async (data) => {
   const user = await getCurrentUser()
   if (!user) throw new UnauthenticatedException()
 
@@ -25,10 +25,10 @@ export const createQuiz = validatedAction(quizSchema, async (data) => {
   if (course.length === 0) throw new Error("Provided course does not exist")
 
   await db.transaction(async (tx) => {
-    const quizId = crypto.randomUUID()
+    const examId = crypto.randomUUID()
 
-    await tx.insert(quizzes).values({
-      id: quizId,
+    await tx.insert(exams).values({
+      id: examId,
       title: data.title,
       courseId: data.courseId,
       description: data.description,
@@ -37,7 +37,7 @@ export const createQuiz = validatedAction(quizSchema, async (data) => {
 
     await tx.insert(questions).values(
       data.questions.map((question) => ({
-        quizId,
+        examId: examId,
         text: question.text,
         type: question.type,
       })),
@@ -46,7 +46,7 @@ export const createQuiz = validatedAction(quizSchema, async (data) => {
     const questiondIds = await tx
       .select({ id: questions.id })
       .from(questions)
-      .where(and(eq(questions.quizId, quizId)))
+      .where(and(eq(questions.examId, examId)))
       .orderBy(asc(questions.id))
       .limit(1)
 
@@ -63,6 +63,6 @@ export const createQuiz = validatedAction(quizSchema, async (data) => {
     await tx.insert(answers).values(answersData)
   })
 
-  revalidatePath("/quiz")
-  return { message: "Successfully created new quiz." }
+  revalidatePath("/exams")
+  return { message: "Successfully created new exam." }
 })

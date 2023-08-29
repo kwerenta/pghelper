@@ -3,21 +3,21 @@ import Link from "next/link"
 import { buttonVariants } from "@/components/ui/Button"
 import { DashboardHeader } from "@/components/DashboardHeader"
 import { DashboardShell } from "@/components/DashboardShell"
-import { QuizCreator } from "@/app/(dashboard)/quiz/new/_components/QuizCreator"
+import { ExamCreator } from "@/app/(dashboard)/exam/new/_components/ExamCreator"
 
 import { getCoursesList } from "./loaders"
 
-export default async function NewQuizPage() {
+export default async function NewExamPage() {
   const coursesList = await getCoursesList()
 
   return (
     <DashboardShell>
-      <DashboardHeader title="Quiz creator" description="Create new quiz.">
-        <Link href="/quiz" className={buttonVariants()}>
+      <DashboardHeader title="Exam creator" description="Create new exam.">
+        <Link href="/exams" className={buttonVariants()}>
           Go back
         </Link>
       </DashboardHeader>
-      <QuizCreator courses={coursesList} />
+      <ExamCreator courses={coursesList} />
     </DashboardShell>
   )
 }

@@ -6,46 +6,46 @@ import { DashboardHeader } from "@/components/DashboardHeader"
 import { DashboardShell } from "@/components/DashboardShell"
 import { Icons } from "@/components/Icons"
 
-import { getQuizzesList } from "./loaders"
+import { getExamsList } from "./loaders"
 
-export default async function QuizzesPage() {
-  const quizzes = await getQuizzesList()
+export default async function ExamsPage() {
+  const exams = await getExamsList()
 
   return (
     <DashboardShell>
       <DashboardHeader
-        title="Quiz"
-        description="View all available quizzes for you."
+        title="Exam"
+        description="View all available exams for you."
       >
-        <Link href="/quiz/new" className={buttonVariants()}>
+        <Link href="/exam/new" className={buttonVariants()}>
           <Icons.plusCircle className="mr-2 h-4 w-4" />
-          Add quiz
+          Add exam
         </Link>
       </DashboardHeader>
       <Card className="overflow-hidden">
         <CardContent className="p-0">
-          {quizzes.length ? (
-            quizzes.map((quiz) => (
+          {exams.length ? (
+            exams.map((exam) => (
               <Link
-                href={`/quiz/${quiz.id}`}
-                key={quiz.id}
+                href={`/exams/${exam.id}`}
+                key={exam.id}
                 className="flex items-center border-b border-b-border p-3 last:border-b-0 hover:bg-accent hover:text-accent-foreground md:p-4"
               >
                 <div className="flex flex-1 flex-col space-y-1.5">
                   <h4 className="text-xl font-semibold leading-none tracking-tight">
-                    {quiz.title}
+                    {exam.title}
                   </h4>
                   <p className="text-sm capitalize text-muted-foreground">
-                    {quiz.course.name}
+                    {exam.course.name}
                   </p>
                 </div>
                 <div className="mr-3 flex shrink-0 flex-col items-end text-sm md:mr-4">
                   <p className="inline-flex items-center">
-                    {quiz.author.name ?? "Unknown author"}
+                    {exam.author.name ?? "Unknown author"}
                     <Icons.user className="ml-2 h-4 w-4" />
                   </p>
                   <p className="inline-flex items-center text-muted-foreground">
-                    {quiz.createdAt.toLocaleDateString()}
+                    {exam.createdAt.toLocaleDateString()}
                     <Icons.calendarDays className="ml-2 h-4 w-4" />
                   </p>
                 </div>

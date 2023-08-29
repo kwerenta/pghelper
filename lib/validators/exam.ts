@@ -17,13 +17,13 @@ const questionTextSchema = z
   .min(3, "Question text must be at least 3 characters long")
   .max(1023, "Question text must be less than 1024 characters long")
 
-export const quizSchema = z.object({
+export const examSchema = z.object({
   title: z
-    .string({ required_error: "Please enter a title for the quiz" })
+    .string({ required_error: "Please enter a title for the exam" })
     .min(3, "Question title must be at least 3 characters long")
     .max(255, "Question title must be less than 256 characters long"),
   description: z
-    .string({ required_error: "Please enter a description for the quiz" })
+    .string({ required_error: "Please enter a description for the exam" })
     .max(255, "Question description must be less than 256 characters long"),
   courseId: z.number().positive({ message: "Please select a course" }),
   questions: z
@@ -54,8 +54,8 @@ export const quizSchema = z.object({
         }),
       ]),
     )
-    .min(1, "Quiz must have at least 1 question")
-    .max(255, "Quiz must have less than 256 questions"),
+    .min(1, "Exam must have at least 1 question")
+    .max(255, "Exam must have less than 256 questions"),
 })
 
-export type NewQuizValues = z.infer<typeof quizSchema>
+export type NewExamValues = z.infer<typeof examSchema>

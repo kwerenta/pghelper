@@ -1,10 +1,10 @@
 import { db } from "@/db"
 
-export const getQuizzesList = () =>
-  db.query.quizzes.findMany({
+export const getExamsList = () =>
+  db.query.exams.findMany({
     with: {
       author: { columns: { name: true } },
       course: { columns: { name: true } },
     },
-    orderBy: (quizzes, { desc }) => desc(quizzes.createdAt),
+    orderBy: (exams, { desc }) => desc(exams.createdAt),
   })

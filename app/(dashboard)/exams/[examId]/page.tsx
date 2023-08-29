@@ -15,35 +15,35 @@ import { DashboardHeader } from "@/components/DashboardHeader"
 import { DashboardShell } from "@/components/DashboardShell"
 import { Icons } from "@/components/Icons"
 
-import { DeleteQuizButton } from "./_components/DeleteQuizButton"
-import { getQuiz } from "./loaders"
+import { DeleteExamButton } from "./_components/DeleteExamButton"
+import { getExam } from "./loaders"
 
-type QuizPageProps = {
-  params: { quizId: string }
+type ExamPageProps = {
+  params: { examId: string }
 }
 
-export default async function QuizPage({ params }: QuizPageProps) {
+export default async function ExamPage({ params }: ExamPageProps) {
   const user = await getCurrentUser()
   if (!user) return redirect("/")
 
-  const quiz = await getQuiz(params.quizId)
-  if (!quiz) return notFound()
+  const exam = await getExam(params.examId)
+  if (!exam) return notFound()
 
   return (
     <DashboardShell>
       <DashboardHeader
-        title="Quiz"
-        description="View quiz details or take a quiz."
+        title="Exam"
+        description="View exam details or do an exam."
       >
-        <Link href="/quiz" className={buttonVariants()}>
+        <Link href="/exams" className={buttonVariants()}>
           Go back
         </Link>
       </DashboardHeader>
       <Card>
         <CardHeader>
-          <CardTitle>{quiz.title}</CardTitle>
+          <CardTitle>{exam.title}</CardTitle>
           <CardDescription>
-            {quiz.description ?? "No description."}
+            {exam.description ?? "No description."}
           </CardDescription>
         </CardHeader>
         <CardContent className="flex gap-4">
@@ -54,28 +54,25 @@ export default async function QuizPage({ params }: QuizPageProps) {
             <p>Last update:</p>
           </div>
           <div className="flex-1 font-semibold capitalize">
-            <p>{quiz.course.name}</p>
-            <p>{quiz.questions.length}</p>
-            <p>{quiz.author.name}</p>
-            <p>{quiz.updatedAt.toLocaleString()}</p>
+            <p>{exam.course.name}</p>
+            <p>{exam.questions.length}</p>
+            <p>{exam.author.name}</p>
+            <p>{exam.updatedAt.toLocaleString()}</p>
           </div>
         </CardContent>
         <CardFooter className="space-x-2">
-          <Link
-            href={`/quiz/${params.quizId}/attempt`}
-            className={buttonVariants()}
-          >
-            Take a quiz
+          <Link href={`/exams/${exam.id}/attempt`} className={buttonVariants()}>
+            Do an exam
           </Link>
-          {quiz.authorId === user.id ? (
+          {exam.authorId === user.id ? (
             <>
               <Link
-                href={`/quiz/${params.quizId}/edit`}
+                href={`/exams/${exam.id}/edit`}
                 className={buttonVariants({ variant: "secondary" })}
               >
                 <Icons.penSquare className="mr-2 h-4 w-4" /> Edit
               </Link>
-              <DeleteQuizButton quizId={quiz.id} />
+              <DeleteExamButton examId={exam.id} />
             </>
           ) : null}
         </CardFooter>

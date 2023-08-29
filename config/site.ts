@@ -16,8 +16,8 @@ export const siteConfig: SiteConfig = {
       icon: "calendarDays",
     },
     {
-      title: "Quiz",
-      href: "/quiz",
+      title: "Exams",
+      href: "/exams",
       icon: "lightbulb",
     },
   ],
