@@ -2,6 +2,7 @@ import Link from "next/link"
 import { notFound, redirect } from "next/navigation"
 
 import { getCurrentUser } from "@/lib/session"
+import { formatTimeAgo } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/Button"
 import {
   Card,
@@ -53,11 +54,11 @@ export default async function ExamPage({ params }: ExamPageProps) {
             <p>Author:</p>
             <p>Last update:</p>
           </div>
-          <div className="flex-1 font-semibold capitalize">
-            <p>{exam.course.name}</p>
+          <div className="flex-1 font-semibold">
+            <p className="capitalize">{exam.course.name}</p>
             <p>{exam.questions.length}</p>
             <p>{exam.author.name}</p>
-            <p>{exam.updatedAt.toLocaleString()}</p>
+            <p>{formatTimeAgo(exam.updatedAt)}</p>
           </div>
         </CardContent>
         <CardFooter className="space-x-2">

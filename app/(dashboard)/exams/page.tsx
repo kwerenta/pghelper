@@ -1,5 +1,6 @@
 import Link from "next/link"
 
+import { formatTimeAgo } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/Button"
 import { Card, CardContent } from "@/components/ui/Card"
 import { DashboardHeader } from "@/components/DashboardHeader"
@@ -44,8 +45,11 @@ export default async function ExamsPage() {
                     {exam.author.name ?? "Unknown author"}
                     <Icons.user className="ml-2 h-4 w-4" />
                   </p>
-                  <p className="inline-flex items-center text-muted-foreground">
-                    {exam.createdAt.toLocaleDateString()}
+                  <p
+                    title={`Created at ${exam.createdAt.toLocaleString()}`}
+                    className="inline-flex items-center text-muted-foreground"
+                  >
+                    {formatTimeAgo(exam.createdAt)}
                     <Icons.calendarDays className="ml-2 h-4 w-4" />
                   </p>
                 </div>
