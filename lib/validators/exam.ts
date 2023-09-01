@@ -23,8 +23,9 @@ export const examSchema = z.object({
     .min(3, "Question title must be at least 3 characters long")
     .max(255, "Question title must be less than 256 characters long"),
   description: z
-    .string({ required_error: "Please enter a description for the exam" })
-    .max(255, "Question description must be less than 256 characters long"),
+    .string()
+    .max(255, "Question description must be less than 256 characters long")
+    .nullable(),
   courseId: z.number().positive({ message: "Please select a course" }),
   questions: z
     .array(
