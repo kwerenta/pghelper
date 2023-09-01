@@ -18,7 +18,7 @@ export default async function ExamsPage() {
         title="Exam"
         description="View all available exams for you."
       >
-        <Link href="/exam/new" className={buttonVariants()}>
+        <Link href="/exams/new" className={buttonVariants()}>
           <Icons.plusCircle className="mr-2 h-4 w-4" />
           Add exam
         </Link>

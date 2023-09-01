@@ -3,7 +3,7 @@ import Link from "next/link"
 import { buttonVariants } from "@/components/ui/Button"
 import { DashboardHeader } from "@/components/DashboardHeader"
 import { DashboardShell } from "@/components/DashboardShell"
-import { ExamCreator } from "@/app/(dashboard)/exam/new/_components/ExamCreator"
+import { ExamCreator } from "@/app/(dashboard)/exams/new/_components/ExamCreator"
 
 import { getCoursesList } from "./loaders"
 

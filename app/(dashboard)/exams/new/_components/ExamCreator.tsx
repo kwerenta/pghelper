@@ -39,8 +39,8 @@ import {
   PopoverTrigger,
 } from "@/components/ui/Popover"
 import { Textarea } from "@/components/ui/Textarea"
-import { ExamQuestionForm } from "@/app/(dashboard)/exam/new/_components/ExamQuestionForm"
-import { createExam } from "@/app/(dashboard)/exam/new/actions"
+import { ExamQuestionForm } from "@/app/(dashboard)/exams/new/_components/ExamQuestionForm"
+import { createExam } from "@/app/(dashboard)/exams/new/actions"
 
 const DEFAULT_QUESTION: NewExamValues["questions"][number] = {
   text: "",

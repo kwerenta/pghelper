@@ -2,7 +2,6 @@
 
 import crypto from "node:crypto"
 import { revalidatePath } from "next/cache"
-import { redirect } from "next/navigation"
 import { db } from "@/db"
 import { answers, courses, exams, questions } from "@/db/schema"
 import { and, asc, eq } from "drizzle-orm"
