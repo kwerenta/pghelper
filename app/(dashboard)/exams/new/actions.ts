@@ -49,7 +49,8 @@ export const createExam = validatedAction(examSchema, async (data) => {
       .orderBy(asc(questions.id))
       .limit(1)
 
-    const lastQuestionId = questiondIds[0].id
+    const lastQuestionId = questiondIds.at(0)?.id
+    if (!lastQuestionId) throw new Error("Failed to create exam")
 
     const answersData = data.questions.flatMap((questions, index) =>
       questions.answers.map((answer) => ({
