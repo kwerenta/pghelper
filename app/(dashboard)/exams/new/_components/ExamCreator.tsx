@@ -114,7 +114,11 @@ export const ExamCreator = ({ courses }: ExamCreatorProps) => {
                 <FormItem>
                   <FormLabel>Description</FormLabel>
                   <FormControl>
-                    <Textarea className="resize-none" {...field} />
+                    <Textarea
+                      className="resize-none"
+                      {...field}
+                      value={field.value === null ? undefined : field.value}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
