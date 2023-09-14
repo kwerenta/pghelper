@@ -38,7 +38,7 @@ export default async function ExamAttemptPage({
         description={exam.course.name}
         capitalizeDescription
       >
-        <Link href="/exams" className={buttonVariants()}>
+        <Link href={`/exams/${exam.id}`} className={buttonVariants()}>
           Cancel
         </Link>
       </DashboardHeader>
