@@ -1,5 +1,6 @@
 import {
   CalendarDays,
+  Check,
   ChevronRight,
   GraduationCap,
   Laptop,
@@ -34,6 +35,7 @@ export const Icons = {
   lightbulb: Lightbulb,
   chevronRight: ChevronRight,
   trash: Trash,
+  check: Check,
   discord: (props: LucideProps) => (
     // Source: https://icons.getbootstrap.com/icons/discord/
     <svg

@@ -12,8 +12,8 @@ import {
 } from "@/components/ui/Form"
 import { Input } from "@/components/ui/Input"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/RadioGroup"
-import { Switch } from "@/components/ui/Switch"
 import { Textarea } from "@/components/ui/Textarea"
+import { Toggle } from "@/components/ui/Toggle"
 import { Icons } from "@/components/Icons"
 
 type ExamQuestionFormProps = {
@@ -124,13 +124,16 @@ export const ExamQuestionForm = ({
                   render={({ field }) => (
                     <FormItem>
                       <FormControl>
-                        <Switch
-                          checked={field.value}
-                          onCheckedChange={(e) => {
+                        <Toggle
+                          pressed={field.value}
+                          onPressedChange={(e) => {
                             field.onChange(e)
                             validateAnswers()
                           }}
-                        />
+                          aria-label="Toggle correct answer"
+                        >
+                          <Icons.check className="h-4 w-4" />
+                        </Toggle>
                       </FormControl>
                       <FormMessage />
                     </FormItem>
