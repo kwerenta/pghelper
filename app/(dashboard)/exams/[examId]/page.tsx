@@ -14,7 +14,6 @@ import {
 } from "@/components/ui/Card"
 import { DashboardHeader } from "@/components/DashboardHeader"
 import { DashboardShell } from "@/components/DashboardShell"
-import { Icons } from "@/components/Icons"
 
 import { DeleteExamButton } from "./_components/DeleteExamButton"
 import { getExam } from "./loaders"
@@ -66,15 +65,7 @@ export default async function ExamPage({ params }: ExamPageProps) {
             Do an exam
           </Link>
           {exam.authorId === user.id ? (
-            <>
-              <Link
-                href={`/exams/${exam.id}/edit`}
-                className={buttonVariants({ variant: "secondary" })}
-              >
-                <Icons.penSquare className="mr-2 h-4 w-4" /> Edit
-              </Link>
-              <DeleteExamButton examId={exam.id} />
-            </>
+            <DeleteExamButton examId={exam.id} />
           ) : null}
         </CardFooter>
       </Card>
