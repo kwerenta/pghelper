@@ -34,3 +34,10 @@ export const getCoursesTimeslots = (ids: number[]) =>
   db.select().from(timeslots).where(inArray(timeslots.courseId, ids))
 
 export type TimetableEntry = Awaited<ReturnType<typeof getUserTimetable>>[0]
+
+export const getDeanGroups = () =>
+  db
+    .selectDistinct({ deanGroup: timeslots.deanGroup })
+    .from(timeslots)
+    .where(ne(timeslots.deanGroup, 0))
+    .then((data) => data.map(({ deanGroup }) => deanGroup))

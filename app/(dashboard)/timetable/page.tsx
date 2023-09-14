@@ -6,9 +6,10 @@ import { DashboardShell } from "@/components/DashboardShell"
 import { Timetable } from "@/app/(dashboard)/timetable/_components/Timetable"
 import { TimetableEditor } from "@/app/(dashboard)/timetable/_components/TimetableEditor"
 
-import { getCoursesTimeslots, getUserTimetable } from "./loaders"
+import { SelectDeanGroupTimetable } from "./_components/SelectDeanGroupTimetable"
+import { getCoursesTimeslots, getDeanGroups, getUserTimetable } from "./loaders"
 
-export default async function TimetablePage() {
+export default async function UserTimetablePage() {
   const user = await getCurrentUser()
   if (!user) return redirect("/")
 
@@ -16,6 +17,8 @@ export default async function TimetablePage() {
     id: user.id,
     deanGroup: user.deanGroup,
   })
+
+  const deanGroups = await getDeanGroups()
 
   const modifiableEntries = entries.filter(
     (entry, index, arr) =>
@@ -31,10 +34,13 @@ export default async function TimetablePage() {
         title="Timetable"
         description="View and customise your timetable."
       >
-        <TimetableEditor
-          timetableEntries={modifiableEntries}
-          timeslots={timeslots}
-        />
+        <div className="flex flex-row gap-4">
+          <SelectDeanGroupTimetable deanGroups={deanGroups} />
+          <TimetableEditor
+            timetableEntries={modifiableEntries}
+            timeslots={timeslots}
+          />
+        </div>
       </DashboardHeader>
       <Timetable entries={entries} />
     </DashboardShell>
