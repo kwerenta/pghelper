@@ -38,7 +38,7 @@ export const DeleteExamButton = ({ examId }: DeleteExamButtonProps) => {
         <AlertDialogHeader>
           <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
           <AlertDialogDescription>
-            This action cannot be undone. This will permanently delete your quiz
+            This action cannot be undone. This will permanently delete your exam
             from our servers.
           </AlertDialogDescription>
         </AlertDialogHeader>
