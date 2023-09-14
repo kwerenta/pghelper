@@ -16,6 +16,7 @@ import { DashboardHeader } from "@/components/DashboardHeader"
 import { DashboardShell } from "@/components/DashboardShell"
 
 import { DeleteExamButton } from "./_components/DeleteExamButton"
+import { StartExamButton } from "./_components/StartExamButton"
 import { getExam } from "./loaders"
 
 type ExamPageProps = {
@@ -33,7 +34,7 @@ export default async function ExamPage({ params }: ExamPageProps) {
     <DashboardShell>
       <DashboardHeader
         title="Exam"
-        description="View exam details or do an exam."
+        description="View exam details or start an exam."
       >
         <Link href="/exams" className={buttonVariants()}>
           Go back
@@ -61,9 +62,7 @@ export default async function ExamPage({ params }: ExamPageProps) {
           </div>
         </CardContent>
         <CardFooter className="space-x-2">
-          <Link href={`/exams/${exam.id}/attempt`} className={buttonVariants()}>
-            Do an exam
-          </Link>
+          <StartExamButton examId={exam.id} />
           {exam.authorId === user.id ? (
             <DeleteExamButton examId={exam.id} />
           ) : null}

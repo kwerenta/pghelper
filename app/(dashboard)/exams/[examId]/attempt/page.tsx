@@ -11,16 +11,22 @@ import { getExam } from "../loaders"
 
 type ExamAttemptPageProps = {
   params: { examId: string }
+  searchParams: { [key: string]: string | string[] | undefined }
 }
 
 export default async function ExamAttemptPage({
   params,
+  searchParams,
 }: ExamAttemptPageProps) {
   const exam = await getExam(params.examId)
 
   if (!exam) return notFound()
 
-  const shuffledQuestions = exam.questions.map((question) => ({
+  const isRandomOrder = searchParams?.randomOrder === "true" || false
+
+  const shuffledQuestions = (
+    isRandomOrder ? shuffleArray(exam.questions) : exam.questions
+  ).map((question) => ({
     ...question,
     answers: shuffleArray(question.answers),
   }))
