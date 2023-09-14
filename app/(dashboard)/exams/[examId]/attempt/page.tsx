@@ -1,6 +1,7 @@
 import Link from "next/link"
 import { notFound } from "next/navigation"
 
+import { shuffleArray } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/Button"
 import { DashboardHeader } from "@/components/DashboardHeader"
 import { DashboardShell } from "@/components/DashboardShell"
@@ -19,6 +20,11 @@ export default async function ExamAttemptPage({
 
   if (!exam) return notFound()
 
+  const shuffledQuestions = exam.questions.map((question) => ({
+    ...question,
+    answers: shuffleArray(question.answers),
+  }))
+
   return (
     <DashboardShell>
       <DashboardHeader
@@ -30,7 +36,7 @@ export default async function ExamAttemptPage({
           Cancel
         </Link>
       </DashboardHeader>
-      <ExamForm questions={exam.questions} />
+      <ExamForm questions={shuffledQuestions} />
     </DashboardShell>
   )
 }
