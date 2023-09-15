@@ -83,6 +83,6 @@ export type Course = InferSelectModel<typeof courses>
 
 export const coursesRelations = relations(courses, ({ many }) => ({
   timeslots: many(timeslots),
-  customTimeslots: many(timeslotsOverrides),
+  timeslotsOverrides: many(timeslotsOverrides),
   exams: many(exams),
 }))
