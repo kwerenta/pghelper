@@ -1,46 +1,25 @@
-import { Button } from "@/components/ui/Button"
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/Card"
-import { Input } from "@/components/ui/Input"
-import { Label } from "@/components/ui/Label"
+import { redirect } from "next/navigation"
+
+import { getCurrentUser } from "@/lib/session"
 import { DashboardHeader } from "@/components/DashboardHeader"
 import { DashboardShell } from "@/components/DashboardShell"
 
-export default function SettingsPage() {
+import { getDeanGroups } from "../timetable/loaders"
+import { DeanGroupForm } from "./_components/DeanGroupForm"
+
+export default async function SettingsPage() {
+  const user = await getCurrentUser()
+  if (!user) redirect("/")
+
+  const deanGroups = await getDeanGroups()
+
   return (
     <DashboardShell>
       <DashboardHeader
         title="Settings"
         description="Edit your account settings."
       />
-      <Card>
-        <CardHeader>
-          <CardTitle>Your Name</CardTitle>
-          <CardDescription>
-            Please enter your full name or a display name you are comfortable
-            with.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="grid gap-1">
-            <Label className="sr-only" htmlFor="name">
-              Name
-            </Label>
-            <Input id="name" className="w-[400px]" size={32} />
-          </div>
-        </CardContent>
-        <CardFooter>
-          <Button type="submit" disabled>
-            <span>Save</span>
-          </Button>
-        </CardFooter>
-      </Card>
+      <DeanGroupForm userDeanGroup={user.deanGroup} deanGroups={deanGroups} />
     </DashboardShell>
   )
 }

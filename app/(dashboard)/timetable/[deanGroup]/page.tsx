@@ -1,7 +1,7 @@
 import Link from "next/link"
 import { redirect } from "next/navigation"
-import { z } from "zod"
 
+import { deanGroupSchema } from "@/lib/validators/deanGroup"
 import { buttonVariants } from "@/components/ui/Button"
 import { DashboardHeader } from "@/components/DashboardHeader"
 import { DashboardShell } from "@/components/DashboardShell"
@@ -15,12 +15,8 @@ type TimetablePageProps = {
   params: { deanGroup: string }
 }
 
-const timetablePageParamsSchema = z.object({
-  deanGroup: z.coerce.number().positive(),
-})
-
 export default async function TimetablePage({ params }: TimetablePageProps) {
-  const parsedParams = timetablePageParamsSchema.safeParse(params)
+  const parsedParams = deanGroupSchema.safeParse(params)
   if (!parsedParams.success) redirect("/timetable")
   const { deanGroup } = parsedParams.data
 
