@@ -9,6 +9,6 @@ export default {
   verbose: true,
   driver: "mysql2",
   dbCredentials: {
-    connectionString: process.env.DATABASE_URL!,
+    uri: process.env.DATABASE_URL!,
   },
 } satisfies Config
