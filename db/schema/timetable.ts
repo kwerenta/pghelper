@@ -50,7 +50,9 @@ export const timeslotsOverrides = mysqlTable(
     deanGroup: tinyint("dean_group").notNull(),
   },
   (timeslot) => ({
-    compoundKey: primaryKey(timeslot.studentId, timeslot.courseId),
+    compoundKey: primaryKey({
+      columns: [timeslot.studentId, timeslot.courseId],
+    }),
   }),
 )
 
