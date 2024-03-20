@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache"
 import { db } from "@/db"
-import { timeslotsOverrides } from "@/db/schema"
+import { timeslotOverrides } from "@/db/schema"
 import { and, eq, inArray } from "drizzle-orm"
 
 import { validatedAction } from "@/lib/actionValidator"
@@ -22,13 +22,13 @@ export const updateTimetable = validatedAction(
     }))
 
     await db.transaction(async (tx) => {
-      await tx.delete(timeslotsOverrides).where(
+      await tx.delete(timeslotOverrides).where(
         and(
           inArray(
-            timeslotsOverrides.courseId,
+            timeslotOverrides.courseId,
             data.map((entry) => entry.courseId),
           ),
-          eq(timeslotsOverrides.studentId, user.id),
+          eq(timeslotOverrides.studentId, user.id),
         ),
       )
 
@@ -37,7 +37,7 @@ export const updateTimetable = validatedAction(
       )
 
       if (timeslotsToInsert.length !== 0)
-        await tx.insert(timeslotsOverrides).values(timeslotsToInsert)
+        await tx.insert(timeslotOverrides).values(timeslotsToInsert)
     })
 
     revalidatePath("/timetable")

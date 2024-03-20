@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache"
 import { db } from "@/db"
-import { timeslots, timeslotsOverrides, users } from "@/db/schema"
+import { timeslotOverrides, timeslots, users } from "@/db/schema"
 import { and, eq, not, notInArray } from "drizzle-orm"
 
 import { validatedAction } from "@/lib/actionValidator"
@@ -22,16 +22,16 @@ export const updateDeanGroup = validatedAction(
     await db.transaction(async (tx) => {
       if (mode === "replace") {
         await tx
-          .delete(timeslotsOverrides)
-          .where(eq(timeslotsOverrides.studentId, user.id))
+          .delete(timeslotOverrides)
+          .where(eq(timeslotOverrides.studentId, user.id))
       } else {
         const overridedCourseIds = await tx
-          .select({ courseId: timeslotsOverrides.courseId })
-          .from(timeslotsOverrides)
+          .select({ courseId: timeslotOverrides.courseId })
+          .from(timeslotOverrides)
           .where(
             and(
-              eq(timeslotsOverrides.studentId, user.id),
-              not(eq(timeslotsOverrides.deanGroup, user.deanGroup)),
+              eq(timeslotOverrides.studentId, user.id),
+              not(eq(timeslotOverrides.deanGroup, user.deanGroup)),
             ),
           )
           .then((result) => result.map(({ courseId }) => courseId))
@@ -50,7 +50,7 @@ export const updateDeanGroup = validatedAction(
           .then((result) => result.map(({ courseId }) => courseId))
 
         if (coursesToOverrideIds.length !== 0)
-          await tx.insert(timeslotsOverrides).values(
+          await tx.insert(timeslotOverrides).values(
             coursesToOverrideIds.map((courseId) => ({
               courseId,
               studentId: user.id,
@@ -59,11 +59,11 @@ export const updateDeanGroup = validatedAction(
           )
 
         await tx
-          .delete(timeslotsOverrides)
+          .delete(timeslotOverrides)
           .where(
             and(
-              eq(timeslotsOverrides.studentId, user.id),
-              eq(timeslotsOverrides.deanGroup, newDeanGroup),
+              eq(timeslotOverrides.studentId, user.id),
+              eq(timeslotOverrides.deanGroup, newDeanGroup),
             ),
           )
       }

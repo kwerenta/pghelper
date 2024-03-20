@@ -13,7 +13,7 @@ import {
 import { courses } from "./timetable"
 import { users } from "./user"
 
-export const exams = mysqlTable("exams", {
+export const exams = mysqlTable("exam", {
   id: varchar("id", { length: 255 }).notNull().primaryKey(),
   title: varchar("title", { length: 255 }).notNull(),
   description: varchar("description", { length: 255 }),
@@ -27,7 +27,7 @@ export const exams = mysqlTable("exams", {
     .defaultNow(),
 })
 
-export const examsRelations = relations(exams, ({ one, many }) => ({
+export const examRelations = relations(exams, ({ one, many }) => ({
   course: one(courses, {
     fields: [exams.courseId],
     references: [courses.id],
@@ -40,7 +40,7 @@ export const examsRelations = relations(exams, ({ one, many }) => ({
 }))
 
 export const questions = mysqlTable(
-  "questions",
+  "question",
   {
     id: serial("id").primaryKey(),
     examId: varchar("exam_id", { length: 255 }).notNull(),
@@ -52,7 +52,7 @@ export const questions = mysqlTable(
   }),
 )
 
-export const questionsRelations = relations(questions, ({ one, many }) => ({
+export const questionRelations = relations(questions, ({ one, many }) => ({
   exam: one(exams, { fields: [questions.examId], references: [exams.id] }),
   answers: many(answers),
 }))
@@ -60,7 +60,7 @@ export const questionsRelations = relations(questions, ({ one, many }) => ({
 export type Question = InferSelectModel<typeof questions>
 
 export const answers = mysqlTable(
-  "answers",
+  "answer",
   {
     id: serial("id").primaryKey(),
     questionId: bigint("question_id", { mode: "number" }).notNull(),
@@ -72,7 +72,7 @@ export const answers = mysqlTable(
   }),
 )
 
-export const answersRelations = relations(answers, ({ one }) => ({
+export const answerRelations = relations(answers, ({ one }) => ({
   question: one(questions, {
     fields: [answers.questionId],
     references: [questions.id],

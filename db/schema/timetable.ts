@@ -13,7 +13,7 @@ import {
 import { exams } from "./exam"
 
 export const timeslots = mysqlTable(
-  "timeslots",
+  "timeslot",
   {
     id: serial("id").primaryKey(),
     courseId: bigint("course_id", { mode: "number" }).notNull(),
@@ -35,15 +35,15 @@ export const timeslots = mysqlTable(
 
 export type Timeslot = InferSelectModel<typeof timeslots>
 
-export const timeslotsRelations = relations(timeslots, ({ one }) => ({
+export const timeslotRelations = relations(timeslots, ({ one }) => ({
   course: one(courses, {
     fields: [timeslots.courseId],
     references: [courses.id],
   }),
 }))
 
-export const timeslotsOverrides = mysqlTable(
-  "timeslots_overrides",
+export const timeslotOverrides = mysqlTable(
+  "timeslot_override",
   {
     studentId: varchar("student_id", { length: 255 }).notNull(),
     courseId: bigint("course_id", { mode: "number" }).notNull(),
@@ -56,17 +56,17 @@ export const timeslotsOverrides = mysqlTable(
   }),
 )
 
-export const timeslotsOverridesRelations = relations(
-  timeslotsOverrides,
+export const timeslotOverrideRelations = relations(
+  timeslotOverrides,
   ({ one }) => ({
     course: one(courses, {
-      fields: [timeslotsOverrides.courseId],
+      fields: [timeslotOverrides.courseId],
       references: [courses.id],
     }),
   }),
 )
 
-export const courses = mysqlTable("courses", {
+export const courses = mysqlTable("course", {
   id: serial("id").primaryKey(),
   name: varchar("name", { length: 255 }).notNull(),
   type: mysqlEnum("type", [
@@ -83,8 +83,8 @@ export const courses = mysqlTable("courses", {
 
 export type Course = InferSelectModel<typeof courses>
 
-export const coursesRelations = relations(courses, ({ many }) => ({
+export const courseRelations = relations(courses, ({ many }) => ({
   timeslots: many(timeslots),
-  timeslotsOverrides: many(timeslotsOverrides),
+  timeslotOverrides: many(timeslotOverrides),
   exams: many(exams),
 }))

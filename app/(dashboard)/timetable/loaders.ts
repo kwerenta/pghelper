@@ -1,5 +1,5 @@
 import { db } from "@/db"
-import { timeslots, timeslotsOverrides } from "@/db/schema"
+import { timeslotOverrides, timeslots } from "@/db/schema"
 import { eq, inArray, ne, notInArray } from "drizzle-orm"
 
 export const getUserTimetable = (student: {
@@ -7,9 +7,9 @@ export const getUserTimetable = (student: {
   deanGroup: number
 }) => {
   const customTimeslotsIds = db
-    .select({ id: timeslotsOverrides.courseId })
-    .from(timeslotsOverrides)
-    .where(eq(timeslotsOverrides.studentId, student.id))
+    .select({ id: timeslotOverrides.courseId })
+    .from(timeslotOverrides)
+    .where(eq(timeslotOverrides.studentId, student.id))
 
   return db.query.timeslots.findMany({
     with: {

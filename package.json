@@ -34,7 +34,7 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
     "cmdk": "^0.2.0",
-    "drizzle-orm": "^0.29.4",
+    "drizzle-orm": "^0.30.4",
     "lucide-react": "^0.268.0",
     "mysql2": "^3.3.2",
     "next": "^14.1.0",
