@@ -1,10 +1,10 @@
 import { redirect } from "next/navigation"
 
+import { getDeanGroups } from "@/lib/api/timeslots/queries"
 import { getCurrentUser } from "@/lib/session"
 import { DashboardHeader } from "@/components/DashboardHeader"
 import { DashboardShell } from "@/components/DashboardShell"
 
-import { getDeanGroups } from "../timetable/loaders"
 import { DeanGroupForm } from "./_components/DeanGroupForm"
 
 export default async function SettingsPage() {

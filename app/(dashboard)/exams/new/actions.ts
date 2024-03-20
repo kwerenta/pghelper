@@ -3,10 +3,11 @@
 import crypto from "node:crypto"
 import { revalidatePath } from "next/cache"
 import { db } from "@/db"
-import { answers, courses, exams, questions } from "@/db/schema"
+import { answers, exams, questions } from "@/db/schema"
 import { and, asc, eq } from "drizzle-orm"
 
 import { validatedAction } from "@/lib/actionValidator"
+import { getCourseById } from "@/lib/api/courses/queries"
 import { UnauthenticatedException } from "@/lib/exceptions"
 import { getCurrentUser } from "@/lib/session"
 import { examSchema } from "@/lib/validators/exam"
@@ -15,11 +16,7 @@ export const createExam = validatedAction(examSchema, async (data) => {
   const user = await getCurrentUser()
   if (!user) throw new UnauthenticatedException()
 
-  const course = await db
-    .select({ id: courses.id })
-    .from(courses)
-    .where(eq(courses.id, data.courseId))
-    .limit(1)
+  const course = await getCourseById(data.courseId)
 
   if (course.length === 0) throw new Error("Provided course does not exist")
 

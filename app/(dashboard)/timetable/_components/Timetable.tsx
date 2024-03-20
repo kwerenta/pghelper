@@ -1,8 +1,8 @@
 import { timeslots } from "@/db/schema"
 
+import { type TimetableEntry } from "@/lib/api/timeslots/queries"
 import { Card, CardContent } from "@/components/ui/Card"
 import { Timeslot } from "@/app/(dashboard)/timetable/_components/Timeslot"
-import { TimetableEntry } from "@/app/(dashboard)/timetable/loaders"
 
 const FIRST_SUBJECT_HOUR = 7
 const LAST_SUBJECT_HOUR = 21

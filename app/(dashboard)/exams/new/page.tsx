@@ -1,14 +1,13 @@
 import Link from "next/link"
 
+import { getCourses } from "@/lib/api/courses/queries"
 import { buttonVariants } from "@/components/ui/Button"
 import { DashboardHeader } from "@/components/DashboardHeader"
 import { DashboardShell } from "@/components/DashboardShell"
 import { ExamCreator } from "@/app/(dashboard)/exams/new/_components/ExamCreator"
 
-import { getCoursesList } from "./loaders"
-
 export default async function NewExamPage() {
-  const coursesList = await getCoursesList()
+  const coursesList = await getCourses()
 
   return (
     <DashboardShell>

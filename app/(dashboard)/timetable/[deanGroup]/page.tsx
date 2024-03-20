@@ -1,6 +1,10 @@
 import Link from "next/link"
 import { redirect } from "next/navigation"
 
+import {
+  getDeanGroups,
+  getTimeslotsByDeanGroup,
+} from "@/lib/api/timeslots/queries"
 import { deanGroupSchema } from "@/lib/validators/deanGroup"
 import { buttonVariants } from "@/components/ui/Button"
 import { DashboardHeader } from "@/components/DashboardHeader"
@@ -8,8 +12,6 @@ import { DashboardShell } from "@/components/DashboardShell"
 
 import { SelectDeanGroupTimetable } from "../_components/SelectDeanGroupTimetable"
 import { Timetable } from "../_components/Timetable"
-import { getDeanGroups } from "../loaders"
-import { getDeanGroupTimetable } from "./loaders"
 
 type TimetablePageProps = {
   params: { deanGroup: string }
@@ -23,7 +25,7 @@ export default async function TimetablePage({ params }: TimetablePageProps) {
   const deanGroups = await getDeanGroups()
   if (!deanGroups.includes(deanGroup)) redirect("/timetable")
 
-  const entries = await getDeanGroupTimetable(deanGroup)
+  const entries = await getTimeslotsByDeanGroup(deanGroup)
 
   return (
     <DashboardShell>

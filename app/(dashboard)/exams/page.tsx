@@ -1,5 +1,6 @@
 import Link from "next/link"
 
+import { getExamsWithAuthorAndCourse } from "@/lib/api/exams/queries"
 import { formatTimeAgo } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/Button"
 import { Card, CardContent } from "@/components/ui/Card"
@@ -7,10 +8,8 @@ import { DashboardHeader } from "@/components/DashboardHeader"
 import { DashboardShell } from "@/components/DashboardShell"
 import { Icons } from "@/components/Icons"
 
-import { getExamsList } from "./loaders"
-
 export default async function ExamsPage() {
-  const exams = await getExamsList()
+  const exams = await getExamsWithAuthorAndCourse()
 
   return (
     <DashboardShell>

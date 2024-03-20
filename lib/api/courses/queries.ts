@@ -1,11 +1,12 @@
+import "server-only"
 import { db } from "@/db"
 import { courses } from "@/db/schema"
 import { and, eq, gt, isNull } from "drizzle-orm"
 import { alias } from "drizzle-orm/mysql-core"
 
-export const getCoursesList = () => {
+export const getCourses = async () => {
   const coursesAlias = alias(courses, "coursesAlias")
-  return db
+  return await db
     .select({ id: courses.id, name: courses.name })
     .from(courses)
     .leftJoin(
@@ -14,3 +15,10 @@ export const getCoursesList = () => {
     )
     .where(isNull(coursesAlias.id))
 }
+
+export const getCourseById = async (id: number) =>
+  await db
+    .select({ id: courses.id })
+    .from(courses)
+    .where(eq(courses.id, id))
+    .limit(1)

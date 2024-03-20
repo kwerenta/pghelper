@@ -1,6 +1,7 @@
 import Link from "next/link"
 import { notFound, redirect } from "next/navigation"
 
+import { getExamByIdWithQuestions } from "@/lib/api/exams/queries"
 import { getCurrentUser } from "@/lib/session"
 import { formatTimeAgo } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/Button"
@@ -17,7 +18,6 @@ import { DashboardShell } from "@/components/DashboardShell"
 
 import { DeleteExamButton } from "./_components/DeleteExamButton"
 import { StartExamButton } from "./_components/StartExamButton"
-import { getExam } from "./loaders"
 
 type ExamPageProps = {
   params: { examId: string }
@@ -27,7 +27,7 @@ export default async function ExamPage({ params }: ExamPageProps) {
   const user = await getCurrentUser()
   if (!user) return redirect("/")
 
-  const exam = await getExam(params.examId)
+  const exam = await getExamByIdWithQuestions(params.examId)
   if (!exam) return notFound()
 
   return (

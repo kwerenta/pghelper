@@ -1,13 +1,12 @@
 import Link from "next/link"
 import { notFound } from "next/navigation"
 
+import { getExamByIdWithQuestions } from "@/lib/api/exams/queries"
 import { shuffleArray } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/Button"
 import { DashboardHeader } from "@/components/DashboardHeader"
 import { DashboardShell } from "@/components/DashboardShell"
 import { ExamForm } from "@/app/(dashboard)/exams/[examId]/attempt/_components/ExamForm"
-
-import { getExam } from "../loaders"
 
 type ExamAttemptPageProps = {
   params: { examId: string }
@@ -18,7 +17,7 @@ export default async function ExamAttemptPage({
   params,
   searchParams,
 }: ExamAttemptPageProps) {
-  const exam = await getExam(params.examId)
+  const exam = await getExamByIdWithQuestions(params.examId)
 
   if (!exam) return notFound()
 
