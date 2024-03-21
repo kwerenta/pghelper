@@ -1,6 +1,6 @@
 import { Control, useFieldArray } from "react-hook-form"
 
-import type { NewExamValues } from "@/lib/validators/exam"
+import type { NewExamParams } from "@/lib/validators/exam"
 import { Button } from "@/components/ui/Button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card"
 import {
@@ -17,7 +17,7 @@ import { Toggle } from "@/components/ui/Toggle"
 import { Icons } from "@/components/Icons"
 
 type ExamQuestionFormProps = {
-  control: Control<NewExamValues>
+  control: Control<NewExamParams>
   index: number
   errors: string | undefined
   validateAnswers: () => void

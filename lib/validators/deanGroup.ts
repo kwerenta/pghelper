@@ -4,10 +4,8 @@ export const deanGroupSchema = z.object({
   deanGroup: z.coerce.number().positive(),
 })
 
-export const updateDeanGroupSchema = deanGroupSchema.merge(
-  z.object({
-    mode: z.enum(["replace", "keep"]),
-  }),
-)
+export const updateDeanGroupSchema = deanGroupSchema.extend({
+  mode: z.enum(["replace", "keep"]),
+})
 
-export type UpdateDeanGroup = z.infer<typeof updateDeanGroupSchema>
+export type UpdateDeanGroupParams = z.infer<typeof updateDeanGroupSchema>

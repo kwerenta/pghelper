@@ -7,7 +7,7 @@ import { Check, ChevronsUpDown } from "lucide-react"
 import { useFieldArray, useForm } from "react-hook-form"
 
 import { cn } from "@/lib/utils"
-import { NewExamValues, examSchema } from "@/lib/validators/exam"
+import { NewExamParams, examSchema } from "@/lib/validators/exam"
 import { useActionToast } from "@/hooks/useActionToast"
 import { Button } from "@/components/ui/Button"
 import {
@@ -42,7 +42,7 @@ import { Textarea } from "@/components/ui/Textarea"
 import { ExamQuestionForm } from "@/app/(dashboard)/exams/new/_components/ExamQuestionForm"
 import { createExam } from "@/app/(dashboard)/exams/new/actions"
 
-const DEFAULT_QUESTION: NewExamValues["questions"][number] = {
+const DEFAULT_QUESTION: NewExamParams["questions"][number] = {
   text: "",
   type: "single_choice",
   answers: [
@@ -59,7 +59,7 @@ export const ExamCreator = ({ courses }: ExamCreatorProps) => {
   const router = useRouter()
   const actionToast = useActionToast()
 
-  const form = useForm<NewExamValues>({
+  const form = useForm<NewExamParams>({
     resolver: zodResolver(examSchema),
     defaultValues: {
       title: "",
@@ -78,7 +78,7 @@ export const ExamCreator = ({ courses }: ExamCreatorProps) => {
     control: form.control,
   })
 
-  const onSubmit = async (data: NewExamValues) => {
+  const onSubmit = async (data: NewExamParams) => {
     const result = await createExam(data)
     if (result.success) router.push("/exams")
 

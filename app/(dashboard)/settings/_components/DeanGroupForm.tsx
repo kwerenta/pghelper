@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form"
 
 import { transformStringToNumber } from "@/lib/utils"
 import {
-  UpdateDeanGroup,
+  UpdateDeanGroupParams,
   updateDeanGroupSchema,
 } from "@/lib/validators/deanGroup"
 import { useActionToast } from "@/hooks/useActionToast"
@@ -51,14 +51,14 @@ export const DeanGroupForm = ({
 }: DeanGroupFormProps) => {
   const actionToast = useActionToast()
 
-  const form = useForm<UpdateDeanGroup>({
+  const form = useForm<UpdateDeanGroupParams>({
     resolver: zodResolver(updateDeanGroupSchema),
     defaultValues: { deanGroup: userDeanGroup, mode: "replace" },
   })
 
   const hasGroupChanged = form.getValues("deanGroup") !== userDeanGroup
 
-  const handleSubmit = async (values: UpdateDeanGroup) => {
+  const handleSubmit = async (values: UpdateDeanGroupParams) => {
     const result = await updateDeanGroup(values)
     actionToast(result)
   }

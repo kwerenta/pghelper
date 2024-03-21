@@ -1,4 +1,4 @@
-import * as z from "zod"
+import { z } from "zod"
 
 export const timetableEditorSchema = z.object({
   timeslots: z
@@ -11,4 +11,4 @@ export const timetableEditorSchema = z.object({
     .min(1),
 })
 
-export type EditedTimetableValues = z.infer<typeof timetableEditorSchema>
+export type UpdateTimetableParams = z.infer<typeof timetableEditorSchema>

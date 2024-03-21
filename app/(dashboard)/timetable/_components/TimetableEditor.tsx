@@ -8,7 +8,7 @@ import { useFieldArray, useForm } from "react-hook-form"
 import { type TimetableEntry } from "@/lib/api/timeslots/queries"
 import { transformStringToNumber } from "@/lib/utils"
 import {
-  EditedTimetableValues,
+  UpdateTimetableParams,
   timetableEditorSchema,
 } from "@/lib/validators/timetable"
 import { useActionToast } from "@/hooks/useActionToast"
@@ -53,7 +53,7 @@ export const TimetableEditor = ({
   const actionToast = useActionToast()
   const [isOpen, setIsOpen] = useState(false)
 
-  const form = useForm<EditedTimetableValues>({
+  const form = useForm<UpdateTimetableParams>({
     resolver: zodResolver(timetableEditorSchema),
     defaultValues: {
       timeslots: timetableEntries.map((entry) => ({
@@ -64,7 +64,7 @@ export const TimetableEditor = ({
   })
   const { fields } = useFieldArray({ name: "timeslots", control: form.control })
 
-  const onSubmit = async (data: EditedTimetableValues) => {
+  const onSubmit = async (data: UpdateTimetableParams) => {
     const filteredData = data.timeslots.filter(
       (_, index) => form.getFieldState(`timeslots.${index}`).isDirty,
     )

@@ -1,4 +1,4 @@
-import * as z from "zod"
+import { z } from "zod"
 
 const baseAnswersSchema = z
   .array(
@@ -17,6 +17,29 @@ const questionTextSchema = z
   .min(3, "Question text must be at least 3 characters long")
   .max(1023, "Question text must be less than 1024 characters long")
 
+const baseQuestionSchema = z.discriminatedUnion("type", [
+  z.object({
+    text: questionTextSchema,
+    type: z.literal("single_choice"),
+    answers: baseAnswersSchema.refine(
+      (answers) => answers.filter((answer) => answer.isCorrect).length === 1,
+      {
+        message: "Single choice question must have exactly 1 correct answer",
+      },
+    ),
+  }),
+  z.object({
+    text: questionTextSchema,
+    type: z.literal("multiple_choice"),
+    answers: baseAnswersSchema.refine(
+      (answers) => answers.some((answer) => answer.isCorrect),
+      {
+        message: "Multiple choice question must have at least 1 correct answer",
+      },
+    ),
+  }),
+])
+
 export const examSchema = z.object({
   title: z
     .string({ required_error: "Please enter a title for the exam" })
@@ -28,38 +51,12 @@ export const examSchema = z.object({
     .nullable(),
   courseId: z.number().positive({ message: "Please select a course" }),
   questions: z
-    .array(
-      z.union([
-        z.object({
-          text: questionTextSchema,
-          type: z.literal("single_choice"),
-          answers: baseAnswersSchema.refine(
-            (answers) =>
-              answers.filter((answer) => answer.isCorrect).length === 1,
-            {
-              message:
-                "Single choice question must have exactly 1 correct answer",
-            },
-          ),
-        }),
-        z.object({
-          text: questionTextSchema,
-          type: z.literal("multiple_choice"),
-          answers: baseAnswersSchema.refine(
-            (answers) => answers.some((answer) => answer.isCorrect),
-            {
-              message:
-                "Multiple choice question must have at least 1 correct answer",
-            },
-          ),
-        }),
-      ]),
-    )
+    .array(baseQuestionSchema)
     .min(1, "Exam must have at least 1 question")
     .max(255, "Exam must have less than 256 questions"),
 })
 
-export type NewExamValues = z.infer<typeof examSchema>
+export type NewExamParams = z.infer<typeof examSchema>
 
 export const examAttempSchema = z.object({
   questions: z.array(
@@ -70,4 +67,4 @@ export const examAttempSchema = z.object({
   ),
 })
 
-export type ExamAttemptValues = z.infer<typeof examAttempSchema>
+export type ExamAttemptParams = z.infer<typeof examAttempSchema>

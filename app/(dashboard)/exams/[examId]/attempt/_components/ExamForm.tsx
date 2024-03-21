@@ -4,7 +4,7 @@ import type { Answer, Question } from "@/db/schema"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 
-import { ExamAttemptValues, examAttempSchema } from "@/lib/validators/exam"
+import { ExamAttemptParams, examAttempSchema } from "@/lib/validators/exam"
 import { toast } from "@/hooks/useToast"
 import { Button } from "@/components/ui/Button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card"
@@ -21,7 +21,7 @@ type ExamFormProps = {
 }
 
 export const ExamForm = ({ questions }: ExamFormProps) => {
-  const form = useForm<ExamAttemptValues>({
+  const form = useForm<ExamAttemptParams>({
     resolver: zodResolver(examAttempSchema),
     defaultValues: {
       questions: questions.map((question) => ({
@@ -31,7 +31,7 @@ export const ExamForm = ({ questions }: ExamFormProps) => {
     },
   })
 
-  const onSubmit = (data: ExamAttemptValues) => {
+  const onSubmit = (data: ExamAttemptParams) => {
     const correctQuestions = questions.filter((question) =>
       question.answers.every((answer) => {
         const hasAnswer = data.questions

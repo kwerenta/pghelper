@@ -2,7 +2,7 @@ import type { Answer, Question } from "@/db/schema"
 import { Control } from "react-hook-form"
 
 import { transformStringToNumber } from "@/lib/utils"
-import { ExamAttemptValues } from "@/lib/validators/exam"
+import { ExamAttemptParams } from "@/lib/validators/exam"
 import {
   FormControl,
   FormField,
@@ -12,7 +12,7 @@ import {
 import { RadioGroup, RadioGroupItem } from "@/components/ui/RadioGroup"
 
 type SingleChoiceAnswersProps = {
-  control: Control<ExamAttemptValues>
+  control: Control<ExamAttemptParams>
   index: number
   question: Question & {
     answers: Answer[]

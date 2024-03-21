@@ -1,7 +1,7 @@
 import type { Answer, Question } from "@/db/schema"
 import { Control } from "react-hook-form"
 
-import { ExamAttemptValues } from "@/lib/validators/exam"
+import { ExamAttemptParams } from "@/lib/validators/exam"
 import { Checkbox } from "@/components/ui/Checkbox"
 import {
   FormControl,
@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/Form"
 
 type MultipleChoiceAnswersProps = {
-  control: Control<ExamAttemptValues>
+  control: Control<ExamAttemptParams>
   index: number
   question: Question & {
     answers: Answer[]
