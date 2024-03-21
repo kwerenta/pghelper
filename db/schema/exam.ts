@@ -10,7 +10,7 @@ import {
   varchar,
 } from "drizzle-orm/mysql-core"
 
-import { courses } from "./timetable"
+import { courses } from "./course"
 import { users } from "./user"
 
 export const exams = mysqlTable("exam", {

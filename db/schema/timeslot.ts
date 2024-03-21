@@ -10,7 +10,7 @@ import {
   varchar,
 } from "drizzle-orm/mysql-core"
 
-import { exams } from "./exam"
+import { courses } from "./course"
 import { users } from "./user"
 
 export const timeslots = mysqlTable(
@@ -78,26 +78,3 @@ export const timeslotOverrideRelations = relations(
     }),
   }),
 )
-
-export const courses = mysqlTable("course", {
-  id: serial("id").primaryKey(),
-  name: varchar("name", { length: 255 }).notNull(),
-  type: mysqlEnum("type", [
-    "lecture",
-    "tutorial",
-    "laboratory",
-    "project",
-  ]).notNull(),
-  frequency: mysqlEnum("frequency", [
-    "every_week",
-    "every_two_weeks",
-  ]).notNull(),
-})
-
-export type Course = InferSelectModel<typeof courses>
-
-export const courseRelations = relations(courses, ({ many }) => ({
-  timeslots: many(timeslots),
-  timeslotOverrides: many(timeslotOverrides),
-  exams: many(exams),
-}))
