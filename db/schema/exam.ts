@@ -17,14 +17,14 @@ export const exams = mysqlTable("exam", {
   id: varchar("id", { length: 255 }).notNull().primaryKey(),
   title: varchar("title", { length: 255 }).notNull(),
   description: varchar("description", { length: 255 }),
-  courseId: bigint("course_id", { mode: "number" }).notNull(),
-  authorId: varchar("author_id", { length: 255 }).notNull(),
-  createdAt: timestamp("created_at", { mode: "date", fsp: 0 })
+  courseId: bigint("course_id", { mode: "number", unsigned: true })
     .notNull()
-    .defaultNow(),
-  updatedAt: timestamp("updated_at", { mode: "date", fsp: 0 })
+    .references(() => courses.id, { onDelete: "cascade", onUpdate: "cascade" }),
+  authorId: varchar("author_id", { length: 255 })
     .notNull()
-    .defaultNow(),
+    .references(() => users.id, { onDelete: "cascade", onUpdate: "cascade" }),
+  createdAt: timestamp("created_at", { mode: "date" }).notNull().defaultNow(),
+  updatedAt: timestamp("updated_at", { mode: "date" }).notNull().defaultNow(),
 })
 
 export const examRelations = relations(exams, ({ one, many }) => ({
@@ -42,8 +42,10 @@ export const examRelations = relations(exams, ({ one, many }) => ({
 export const questions = mysqlTable(
   "question",
   {
-    id: serial("id").primaryKey(),
-    examId: varchar("exam_id", { length: 255 }).notNull(),
+    id: serial("id").notNull().primaryKey(),
+    examId: varchar("exam_id", { length: 255 })
+      .notNull()
+      .references(() => exams.id, { onDelete: "cascade", onUpdate: "cascade" }),
     text: varchar("text", { length: 1023 }).notNull(),
     type: mysqlEnum("type", ["single_choice", "multiple_choice"]).notNull(),
   },
@@ -63,7 +65,12 @@ export const answers = mysqlTable(
   "answer",
   {
     id: serial("id").primaryKey(),
-    questionId: bigint("question_id", { mode: "number" }).notNull(),
+    questionId: bigint("question_id", { mode: "number", unsigned: true })
+      .notNull()
+      .references(() => questions.id, {
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      }),
     text: varchar("text", { length: 255 }).notNull(),
     isCorrect: boolean("is_correct").notNull(),
   },

@@ -23,7 +23,9 @@ export const users = mysqlTable("user", {
 export const accounts = mysqlTable(
   "account",
   {
-    userId: varchar("userId", { length: 255 }).notNull(),
+    userId: varchar("userId", { length: 255 })
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade", onUpdate: "cascade" }),
     type: varchar("type", { length: 255 })
       .$type<AdapterAccount["type"]>()
       .notNull(),
@@ -46,7 +48,9 @@ export const accounts = mysqlTable(
 
 export const sessions = mysqlTable("session", {
   sessionToken: varchar("sessionToken", { length: 255 }).notNull().primaryKey(),
-  userId: varchar("userId", { length: 255 }).notNull(),
+  userId: varchar("userId", { length: 255 })
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade", onUpdate: "cascade" }),
   expires: timestamp("expires", { mode: "date" }).notNull(),
 })
 

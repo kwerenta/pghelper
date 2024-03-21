@@ -11,12 +11,18 @@ import {
 } from "drizzle-orm/mysql-core"
 
 import { exams } from "./exam"
+import { users } from "./user"
 
 export const timeslots = mysqlTable(
   "timeslot",
   {
     id: serial("id").primaryKey(),
-    courseId: bigint("course_id", { mode: "number" }).notNull(),
+    courseId: bigint("course_id", { mode: "number", unsigned: true })
+      .notNull()
+      .references(() => courses.id, {
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      }),
     weekday: mysqlEnum("weekday", [
       "monday",
       "tuesday",
@@ -45,8 +51,15 @@ export const timeslotRelations = relations(timeslots, ({ one }) => ({
 export const timeslotOverrides = mysqlTable(
   "timeslot_override",
   {
-    studentId: varchar("student_id", { length: 255 }).notNull(),
-    courseId: bigint("course_id", { mode: "number" }).notNull(),
+    studentId: varchar("student_id", { length: 255 })
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade", onUpdate: "cascade" }),
+    courseId: bigint("course_id", { mode: "number", unsigned: true })
+      .notNull()
+      .references(() => courses.id, {
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      }),
     deanGroup: tinyint("dean_group").notNull(),
   },
   (timeslot) => ({
