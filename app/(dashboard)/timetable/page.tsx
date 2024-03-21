@@ -4,7 +4,7 @@ import {
   getDeanGroups,
   getTimeslotsByCourses,
   getUserTimetable,
-} from "@/lib/api/timeslots/queries"
+} from "@/lib/api/queries/timeslots"
 import { getCurrentUser } from "@/lib/session"
 import { DashboardHeader } from "@/components/DashboardHeader"
 import { DashboardShell } from "@/components/DashboardShell"

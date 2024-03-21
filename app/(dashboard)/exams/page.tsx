@@ -1,6 +1,6 @@
 import Link from "next/link"
 
-import { getExamsWithAuthorAndCourse } from "@/lib/api/exams/queries"
+import { getExamsWithAuthorAndCourse } from "@/lib/api/queries/exams"
 import { formatTimeAgo } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/Button"
 import { Card, CardContent } from "@/components/ui/Card"

@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation"
 
+import { deleteExam } from "@/lib/api/actions/exam"
 import { useActionToast } from "@/hooks/useActionToast"
 import {
   AlertDialog,
@@ -16,8 +17,6 @@ import {
 } from "@/components/ui/AlertDialog"
 import { buttonVariants } from "@/components/ui/Button"
 import { Icons } from "@/components/Icons"
-
-import { deleteExam } from "../actions"
 
 type DeleteExamButtonProps = {
   examId: string

@@ -4,7 +4,7 @@ import { redirect } from "next/navigation"
 import {
   getDeanGroups,
   getTimeslotsByDeanGroup,
-} from "@/lib/api/timeslots/queries"
+} from "@/lib/api/queries/timeslots"
 import { deanGroupSchema } from "@/lib/validators/deanGroup"
 import { buttonVariants } from "@/components/ui/Button"
 import { DashboardHeader } from "@/components/DashboardHeader"

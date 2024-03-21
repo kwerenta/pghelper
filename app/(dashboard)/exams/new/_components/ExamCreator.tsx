@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { Check, ChevronsUpDown } from "lucide-react"
 import { useFieldArray, useForm } from "react-hook-form"
 
+import { createExam } from "@/lib/api/actions/exam"
 import { cn } from "@/lib/utils"
 import { NewExamParams, examSchema } from "@/lib/validators/exam"
 import { useActionToast } from "@/hooks/useActionToast"
@@ -40,7 +41,6 @@ import {
 } from "@/components/ui/Popover"
 import { Textarea } from "@/components/ui/Textarea"
 import { ExamQuestionForm } from "@/app/(dashboard)/exams/new/_components/ExamQuestionForm"
-import { createExam } from "@/app/(dashboard)/exams/new/actions"
 
 const DEFAULT_QUESTION: NewExamParams["questions"][number] = {
   text: "",

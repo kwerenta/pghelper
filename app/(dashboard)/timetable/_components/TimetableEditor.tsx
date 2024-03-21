@@ -5,7 +5,8 @@ import type { Timeslot } from "@/db/schema"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useFieldArray, useForm } from "react-hook-form"
 
-import { type TimetableEntry } from "@/lib/api/timeslots/queries"
+import { updateTimetable } from "@/lib/api/actions/timetable"
+import { type TimetableEntry } from "@/lib/api/queries/timeslots"
 import { transformStringToNumber } from "@/lib/utils"
 import {
   UpdateTimetableParams,
@@ -39,7 +40,6 @@ import {
   SheetTrigger,
 } from "@/components/ui/Sheet"
 import { Icons } from "@/components/Icons"
-import { updateTimetable } from "@/app/(dashboard)/timetable/actions"
 
 type TimetableEditorProps = {
   timetableEntries: TimetableEntry[]

@@ -1,7 +1,7 @@
 import Link from "next/link"
 import { notFound, redirect } from "next/navigation"
 
-import { getExamByIdWithQuestions } from "@/lib/api/exams/queries"
+import { getExamByIdWithQuestions } from "@/lib/api/queries/exams"
 import { getCurrentUser } from "@/lib/session"
 import { formatTimeAgo } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/Button"

@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation"
 
-import { getDeanGroups } from "@/lib/api/timeslots/queries"
+import { getDeanGroups } from "@/lib/api/queries/timeslots"
 import { getCurrentUser } from "@/lib/session"
 import { DashboardHeader } from "@/components/DashboardHeader"
 import { DashboardShell } from "@/components/DashboardShell"

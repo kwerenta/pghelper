@@ -1,6 +1,6 @@
 import Link from "next/link"
 
-import { getCourses } from "@/lib/api/courses/queries"
+import { getCourses } from "@/lib/api/queries/courses"
 import { buttonVariants } from "@/components/ui/Button"
 import { DashboardHeader } from "@/components/DashboardHeader"
 import { DashboardShell } from "@/components/DashboardShell"

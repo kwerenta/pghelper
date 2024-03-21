@@ -1,6 +1,6 @@
 import { timeslots } from "@/db/schema"
 
-import { type TimetableEntry } from "@/lib/api/timeslots/queries"
+import { type TimetableEntry } from "@/lib/api/queries/timeslots"
 import { Card, CardContent } from "@/components/ui/Card"
 import { Timeslot } from "@/app/(dashboard)/timetable/_components/Timeslot"
 

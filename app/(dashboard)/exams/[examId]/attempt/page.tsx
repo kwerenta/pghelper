@@ -1,7 +1,7 @@
 import Link from "next/link"
 import { notFound } from "next/navigation"
 
-import { getExamByIdWithQuestions } from "@/lib/api/exams/queries"
+import { getExamByIdWithQuestions } from "@/lib/api/queries/exams"
 import { shuffleArray } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/Button"
 import { DashboardHeader } from "@/components/DashboardHeader"

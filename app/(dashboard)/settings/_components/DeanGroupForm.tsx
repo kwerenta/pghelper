@@ -38,7 +38,7 @@ import {
   SelectValue,
 } from "@/components/ui/Select"
 
-import { updateDeanGroup } from "../actions"
+import { updateDeanGroup } from "../../../../lib/api/actions/deanGroup"
 
 type DeanGroupFormProps = {
   userDeanGroup: number
