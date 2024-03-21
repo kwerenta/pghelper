@@ -45,7 +45,7 @@ export const DeleteExamButton = ({ examId }: DeleteExamButtonProps) => {
           <AlertDialogCancel>Cancel</AlertDialogCancel>
           <AlertDialogAction
             onClick={async () => {
-              const result = await deleteExam(examId)
+              const result = await deleteExam({ id: examId })
               actionToast(result)
 
               if (result.success) router.push("/exams")

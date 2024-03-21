@@ -41,6 +41,7 @@ const baseQuestionSchema = z.discriminatedUnion("type", [
 ])
 
 export const examSchema = z.object({
+  id: z.string().uuid(),
   title: z
     .string({ required_error: "Please enter a title for the exam" })
     .min(3, "Question title must be at least 3 characters long")
@@ -56,7 +57,10 @@ export const examSchema = z.object({
     .max(255, "Exam must have less than 256 questions"),
 })
 
-export type NewExamParams = z.infer<typeof examSchema>
+export const examIdSchema = examSchema.pick({ id: true })
+export const examParamsSchema = examSchema.omit({ id: true })
+
+export type NewExamParams = z.infer<typeof examParamsSchema>
 
 export const examAttempSchema = z.object({
   questions: z.array(
