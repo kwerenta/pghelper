@@ -1,12 +1,14 @@
 import type { AdapterAccount } from "@auth/core/adapters"
+import { relations } from "drizzle-orm"
 import {
   int,
   mysqlTable,
   primaryKey,
   timestamp,
-  tinyint,
   varchar,
 } from "drizzle-orm/mysql-core"
+
+import { studentDeanGroups } from "./deanGroup"
 
 export const users = mysqlTable("user", {
   id: varchar("id", { length: 255 }).notNull().primaryKey(),
@@ -17,8 +19,11 @@ export const users = mysqlTable("user", {
     fsp: 3,
   }).defaultNow(),
   image: varchar("image", { length: 255 }),
-  deanGroup: tinyint("dean_group").notNull().default(0),
 })
+
+export const userRealtions = relations(users, ({ many }) => ({
+  studentDeanGroups: many(studentDeanGroups),
+}))
 
 export const accounts = mysqlTable(
   "account",

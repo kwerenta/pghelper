@@ -1,10 +1,9 @@
 import Link from "next/link"
 import { redirect } from "next/navigation"
 
-import {
-  getDeanGroups,
-  getTimeslotsByDeanGroup,
-} from "@/lib/api/queries/timeslots"
+import { getDeanGroupsBySemester } from "@/lib/api/queries/deanGroup"
+import { getTimeslotsByDeanGroup } from "@/lib/api/queries/timeslots"
+import { getCurrentUser } from "@/lib/session"
 import { deanGroupSchema } from "@/lib/validators/deanGroup"
 import { buttonVariants } from "@/components/ui/Button"
 import { DashboardHeader } from "@/components/DashboardHeader"
@@ -18,12 +17,16 @@ type TimetablePageProps = {
 }
 
 export default async function TimetablePage({ params }: TimetablePageProps) {
+  const user = await getCurrentUser()
+  if (!user) return redirect("/")
+
   const parsedParams = deanGroupSchema.safeParse(params)
   if (!parsedParams.success) redirect("/timetable")
   const { deanGroup } = parsedParams.data
 
-  const deanGroups = await getDeanGroups()
-  if (!deanGroups.includes(deanGroup)) redirect("/timetable")
+  const deanGroups = await getDeanGroupsBySemester(user.deanGroup.semesterId)
+  if (!deanGroups.map((group) => group.id).includes(deanGroup))
+    redirect("/timetable")
 
   const entries = await getTimeslotsByDeanGroup(deanGroup)
 
@@ -36,7 +39,7 @@ export default async function TimetablePage({ params }: TimetablePageProps) {
         <div className="flex flex-row gap-4">
           <SelectDeanGroupTimetable
             deanGroups={deanGroups}
-            deanGroup={deanGroup}
+            currentDeanGroup={deanGroup}
           />
           <Link href="/timetable" className={buttonVariants()}>
             Go to your timetable

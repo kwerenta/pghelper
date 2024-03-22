@@ -1,6 +1,7 @@
 "use client"
 
 import { useRouter } from "next/navigation"
+import { DeanGroup } from "@/db/schema"
 
 import {
   Select,
@@ -14,18 +15,18 @@ import {
 } from "@/components/ui/Select"
 
 type SelectDeanGroupTimetableProps = {
-  deanGroup?: number
-  deanGroups: number[]
+  currentDeanGroup?: number
+  deanGroups: Omit<DeanGroup, "semesterId">[]
 }
 
 export const SelectDeanGroupTimetable = ({
-  deanGroup,
+  currentDeanGroup,
   deanGroups,
 }: SelectDeanGroupTimetableProps) => {
   const router = useRouter()
   return (
     <Select
-      defaultValue={deanGroup?.toString() || ""}
+      value={currentDeanGroup?.toString() || ""}
       onValueChange={(value) => router.push(`/timetable/${value}`)}
     >
       <SelectTrigger className="w-[180px]">
@@ -37,8 +38,8 @@ export const SelectDeanGroupTimetable = ({
         <SelectGroup>
           <SelectLabel>Dean groups</SelectLabel>
           {deanGroups.map((group) => (
-            <SelectItem key={group} value={group.toString()}>
-              {group}
+            <SelectItem key={group.id} value={group.id.toString()}>
+              {group.number}
             </SelectItem>
           ))}
         </SelectGroup>

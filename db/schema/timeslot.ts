@@ -7,10 +7,12 @@ import {
   primaryKey,
   serial,
   tinyint,
+  uniqueIndex,
   varchar,
 } from "drizzle-orm/mysql-core"
 
 import { courses } from "./course"
+import { deanGroups } from "./deanGroup"
 import { users } from "./user"
 
 export const timeslots = mysqlTable(
@@ -32,10 +34,16 @@ export const timeslots = mysqlTable(
     ]).notNull(),
     startTime: tinyint("start_time").notNull(),
     endTime: tinyint("end_time").notNull(),
-    deanGroup: tinyint("dean_group").notNull().default(0),
+    deanGroupId: bigint("dean_group_id", {
+      mode: "number",
+      unsigned: true,
+    }).references(() => deanGroups.id, {
+      onDelete: "cascade",
+      onUpdate: "cascade",
+    }),
   },
   (timeslot) => ({
-    deanGroupIndex: index("dean_group_index").on(timeslot.deanGroup),
+    deanGroupIndex: index("dean_group_index").on(timeslot.deanGroupId),
   }),
 )
 
@@ -46,11 +54,16 @@ export const timeslotRelations = relations(timeslots, ({ one }) => ({
     fields: [timeslots.courseId],
     references: [courses.id],
   }),
+  deanGroup: one(deanGroups, {
+    fields: [timeslots.deanGroupId],
+    references: [deanGroups.id],
+  }),
 }))
 
 export const timeslotOverrides = mysqlTable(
   "timeslot_override",
   {
+    id: serial("id").primaryKey(),
     studentId: varchar("student_id", { length: 255 })
       .notNull()
       .references(() => users.id, { onDelete: "cascade", onUpdate: "cascade" }),
@@ -60,12 +73,19 @@ export const timeslotOverrides = mysqlTable(
         onDelete: "cascade",
         onUpdate: "cascade",
       }),
-    deanGroup: tinyint("dean_group").notNull(),
+    deanGroupId: bigint("dean_group_id", {
+      mode: "number",
+      unsigned: true,
+    }).references(() => deanGroups.id, {
+      onDelete: "cascade",
+      onUpdate: "cascade",
+    }),
   },
   (timeslot) => ({
-    compoundKey: primaryKey({
-      columns: [timeslot.studentId, timeslot.courseId],
-    }),
+    uniqueIndex: uniqueIndex("student_course_index").on(
+      timeslot.studentId,
+      timeslot.courseId,
+    ),
   }),
 )
 

@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache"
 import { db } from "@/db"
-import { timeslotOverrides, timeslots, users } from "@/db/schema"
+import { studentDeanGroups, timeslotOverrides, timeslots } from "@/db/schema"
 import { and, eq, not, notInArray } from "drizzle-orm"
 
 import { validatedAction } from "@/lib/actionValidator"
@@ -12,11 +12,11 @@ import { updateDeanGroupSchema } from "@/lib/validators/deanGroup"
 
 export const updateDeanGroup = validatedAction(
   updateDeanGroupSchema,
-  async ({ deanGroup: newDeanGroup, mode }) => {
+  async ({ deanGroup: newDeanGroupId, mode }) => {
     const user = await getCurrentUser()
     if (!user) throw new UnauthenticatedException()
 
-    if (user.deanGroup === newDeanGroup)
+    if (user.deanGroup.id === newDeanGroupId)
       return { message: "Successfully updated dean group" }
 
     await db.transaction(async (tx) => {
@@ -31,7 +31,7 @@ export const updateDeanGroup = validatedAction(
           .where(
             and(
               eq(timeslotOverrides.studentId, user.id),
-              not(eq(timeslotOverrides.deanGroup, user.deanGroup)),
+              not(eq(timeslotOverrides.deanGroupId, user.deanGroup.id)),
             ),
           )
           .then((result) => result.map(({ courseId }) => courseId))
@@ -41,7 +41,7 @@ export const updateDeanGroup = validatedAction(
           .from(timeslots)
           .where(
             and(
-              eq(timeslots.deanGroup, user.deanGroup),
+              eq(timeslots.deanGroupId, user.deanGroup.id),
               overridedCourseIds.length !== 0
                 ? notInArray(timeslots.courseId, overridedCourseIds)
                 : undefined,
@@ -54,7 +54,7 @@ export const updateDeanGroup = validatedAction(
             coursesToOverrideIds.map((courseId) => ({
               courseId,
               studentId: user.id,
-              deanGroup: user.deanGroup,
+              deanGroupId: user.deanGroup.id,
             })),
           )
 
@@ -63,15 +63,24 @@ export const updateDeanGroup = validatedAction(
           .where(
             and(
               eq(timeslotOverrides.studentId, user.id),
-              eq(timeslotOverrides.deanGroup, newDeanGroup),
+              eq(timeslotOverrides.deanGroupId, newDeanGroupId),
             ),
           )
       }
 
       await tx
-        .update(users)
-        .set({ deanGroup: newDeanGroup })
-        .where(eq(users.id, user.id))
+        .update(studentDeanGroups)
+        .set({ isActive: false })
+        .where(eq(studentDeanGroups.studentId, user.id))
+
+      await tx
+        .insert(studentDeanGroups)
+        .values({
+          deanGroupId: newDeanGroupId,
+          studentId: user.id,
+          isActive: true,
+        })
+        .onDuplicateKeyUpdate({ set: { isActive: true } })
     })
 
     revalidatePath("/settings")

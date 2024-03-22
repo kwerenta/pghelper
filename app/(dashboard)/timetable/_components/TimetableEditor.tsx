@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import type { Timeslot } from "@/db/schema"
+import type { DeanGroup, DeanGroupId, Timeslot } from "@/db/schema"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useFieldArray, useForm } from "react-hook-form"
 
@@ -42,8 +42,8 @@ import {
 import { Icons } from "@/components/Icons"
 
 type TimetableEditorProps = {
-  timetableEntries: TimetableEntry[]
-  timeslots: Timeslot[]
+  timetableEntries: (TimetableEntry & { deanGroupId: DeanGroupId })[]
+  timeslots: (Timeslot & { deanGroupId: DeanGroupId; deanGroup: DeanGroup })[]
 }
 
 export const TimetableEditor = ({
@@ -58,7 +58,7 @@ export const TimetableEditor = ({
     defaultValues: {
       timeslots: timetableEntries.map((entry) => ({
         courseId: entry.courseId,
-        deanGroup: entry.deanGroup,
+        deanGroupId: entry.deanGroupId,
       })),
     },
   })
@@ -111,7 +111,7 @@ export const TimetableEditor = ({
               <div key={entry.id}>
                 <FormField
                   control={form.control}
-                  name={`timeslots.${index}.deanGroup`}
+                  name={`timeslots.${index}.deanGroupId`}
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="capitalize">
@@ -142,9 +142,9 @@ export const TimetableEditor = ({
                                 <SelectItem
                                   key={timeslot.id}
                                   className="capitalize"
-                                  value={timeslot.deanGroup.toString()}
+                                  value={timeslot.deanGroupId.toString()}
                                 >
-                                  Group {timeslot.deanGroup} |{" "}
+                                  Group {timeslot.deanGroup.number} |{" "}
                                   {timeslot.startTime}
                                   :00 - {timeslot.endTime}:00 {timeslot.weekday}
                                 </SelectItem>

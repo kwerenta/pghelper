@@ -1,8 +1,10 @@
 "use client"
 
+import { DeanGroup, DeanGroupId } from "@/db/schema"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 
+import { updateDeanGroup } from "@/lib/api/actions/deanGroup"
 import { transformStringToNumber } from "@/lib/utils"
 import {
   UpdateDeanGroupParams,
@@ -38,25 +40,23 @@ import {
   SelectValue,
 } from "@/components/ui/Select"
 
-import { updateDeanGroup } from "../../../../lib/api/actions/deanGroup"
-
 type DeanGroupFormProps = {
-  userDeanGroup: number
-  deanGroups: number[]
+  userDeanGroupId: DeanGroupId
+  deanGroups: Omit<DeanGroup, "semesterId">[]
 }
 
 export const DeanGroupForm = ({
-  userDeanGroup,
+  userDeanGroupId,
   deanGroups,
 }: DeanGroupFormProps) => {
   const actionToast = useActionToast()
 
   const form = useForm<UpdateDeanGroupParams>({
     resolver: zodResolver(updateDeanGroupSchema),
-    defaultValues: { deanGroup: userDeanGroup, mode: "replace" },
+    defaultValues: { deanGroup: userDeanGroupId, mode: "replace" },
   })
 
-  const hasGroupChanged = form.getValues("deanGroup") !== userDeanGroup
+  const hasGroupChanged = form.getValues("deanGroup") !== userDeanGroupId
 
   const handleSubmit = async (values: UpdateDeanGroupParams) => {
     const result = await updateDeanGroup(values)
@@ -93,8 +93,11 @@ export const DeanGroupForm = ({
                       <SelectGroup>
                         <SelectLabel>Dean groups</SelectLabel>
                         {deanGroups.map((group) => (
-                          <SelectItem key={group} value={group.toString()}>
-                            {group}
+                          <SelectItem
+                            key={group.id}
+                            value={group.id.toString()}
+                          >
+                            {group.number}
                           </SelectItem>
                         ))}
                       </SelectGroup>

@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation"
 
-import { getDeanGroups } from "@/lib/api/queries/timeslots"
+import { getDeanGroupsBySemester } from "@/lib/api/queries/deanGroup"
 import { getCurrentUser } from "@/lib/session"
 import { DashboardHeader } from "@/components/DashboardHeader"
 import { DashboardShell } from "@/components/DashboardShell"
@@ -11,7 +11,7 @@ export default async function SettingsPage() {
   const user = await getCurrentUser()
   if (!user) redirect("/")
 
-  const deanGroups = await getDeanGroups()
+  const deanGroups = await getDeanGroupsBySemester(user.deanGroup.semesterId)
 
   return (
     <DashboardShell>
@@ -19,7 +19,10 @@ export default async function SettingsPage() {
         title="Settings"
         description="Edit your account settings."
       />
-      <DeanGroupForm userDeanGroup={user.deanGroup} deanGroups={deanGroups} />
+      <DeanGroupForm
+        userDeanGroupId={user.deanGroup.id}
+        deanGroups={deanGroups}
+      />
     </DashboardShell>
   )
 }

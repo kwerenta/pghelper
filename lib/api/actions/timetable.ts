@@ -33,7 +33,7 @@ export const updateTimetable = validatedAction(
       )
 
       const timeslotsToInsert = data.filter(
-        (entry) => entry.deanGroup !== user.deanGroup,
+        (entry) => entry.deanGroupId !== user.deanGroup.id,
       )
 
       if (timeslotsToInsert.length !== 0)

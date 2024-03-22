@@ -1,5 +1,6 @@
 import { db } from "@/db"
 import { users } from "@/db/schema"
+import { studentDeanGroups } from "@/db/schema/deanGroup"
 import { DrizzleAdapter } from "@auth/drizzle-adapter"
 import { eq } from "drizzle-orm"
 import type { NextAuthOptions } from "next-auth"
@@ -33,6 +34,14 @@ export const authOptions: NextAuthOptions = {
     },
     async jwt({ token, user }) {
       const dbUser = await db.query.users.findFirst({
+        with: {
+          studentDeanGroups: {
+            with: {
+              deanGroup: true,
+            },
+            where: eq(studentDeanGroups.isActive, true),
+          },
+        },
         where: eq(users.email, token.email ?? ""),
       })
 
@@ -48,7 +57,7 @@ export const authOptions: NextAuthOptions = {
         name: dbUser.name,
         email: dbUser.email,
         picture: dbUser.image,
-        deanGroup: dbUser.deanGroup,
+        deanGroup: dbUser.studentDeanGroups[0].deanGroup,
       }
     },
   },
