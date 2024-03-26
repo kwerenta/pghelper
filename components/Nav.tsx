@@ -22,7 +22,7 @@ export function SidebarNav({ items }: SidebarNavProps) {
     <div className="flex-1">
       <Link href="/">
         <span className="mb-6 flex items-center text-2xl font-bold tracking-tight lg:mb-10">
-          <Icons.graduationCap className="mr-2 h-6 w-6" />
+          <Icons.graduationCap className="mr-2 size-6" />
           <span>PGHelper</span>
         </span>
       </Link>
@@ -43,7 +43,7 @@ export function SidebarNav({ items }: SidebarNavProps) {
                     item.disabled && "cursor-not-allowed opacity-80",
                   )}
                 >
-                  <Icon className="mr-2 h-4 w-4" />
+                  <Icon className="mr-2 size-4" />
                   <span>{item.title}</span>
                 </span>
               </Link>

@@ -3,11 +3,12 @@ import { users } from "@/db/schema"
 import { studentDeanGroups } from "@/db/schema/deanGroup"
 import { DrizzleAdapter } from "@auth/drizzle-adapter"
 import { eq } from "drizzle-orm"
-import type { NextAuthOptions } from "next-auth"
+import { NextAuthOptions } from "next-auth"
+import { Adapter } from "next-auth/adapters"
 import Discord from "next-auth/providers/discord"
 
 export const authOptions: NextAuthOptions = {
-  adapter: DrizzleAdapter(db),
+  adapter: DrizzleAdapter(db) as Adapter,
   session: {
     strategy: "jwt",
   },

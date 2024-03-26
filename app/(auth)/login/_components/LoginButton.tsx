@@ -8,7 +8,7 @@ import { Icons } from "@/components/Icons"
 export function LoginButton() {
   return (
     <Button onClick={() => signIn("discord")}>
-      <Icons.discord className="mr-2 h-4 w-4" /> Discord
+      <Icons.discord className="mr-2 size-4" /> Discord
     </Button>
   )
 }

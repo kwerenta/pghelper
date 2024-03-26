@@ -22,8 +22,8 @@ export function ThemeToggleSubMenu() {
   return (
     <DropdownMenuSub>
       <DropdownMenuSubTrigger>
-        <Icons.sun className="mr-2 inline h-4 w-4 dark:hidden" />
-        <Icons.moon className="mr-2 hidden h-4 w-4 dark:inline" />
+        <Icons.sun className="mr-2 inline size-4 dark:hidden" />
+        <Icons.moon className="mr-2 hidden size-4 dark:inline" />
         <span>Theme</span>
       </DropdownMenuSubTrigger>
       <DropdownMenuPortal>
@@ -35,7 +35,7 @@ export function ThemeToggleSubMenu() {
                 key={theme.name}
                 onClick={() => setTheme(theme.name)}
               >
-                <Icon className="mr-2 h-4 w-4" />
+                <Icon className="mr-2 size-4" />
                 <span className="capitalize">{theme.name}</span>
               </DropdownMenuItem>
             )

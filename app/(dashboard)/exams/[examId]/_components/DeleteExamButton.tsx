@@ -31,7 +31,7 @@ export const DeleteExamButton = ({ examId }: DeleteExamButtonProps) => {
       <AlertDialogTrigger
         className={buttonVariants({ variant: "destructive" })}
       >
-        <Icons.trash className="mr-2 h-4 w-4" /> Delete
+        <Icons.trash className="mr-2 size-4" /> Delete
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>

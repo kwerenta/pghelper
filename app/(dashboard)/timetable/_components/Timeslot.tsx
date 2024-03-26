@@ -6,7 +6,7 @@ type TimeslotProps = {
 
 export function Timeslot({ course }: TimeslotProps) {
   return (
-    <td className="min-w-[12rem] rounded-lg bg-muted p-2 capitalize md:p-3">
+    <td className="min-w-48 rounded-lg bg-muted p-2 capitalize md:p-3">
       {!course ? null : (
         <>
           <span>[{course.type}]</span>

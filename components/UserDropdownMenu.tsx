@@ -24,7 +24,7 @@ export function UserDropdownMenu({ user }: UserDropdownMenuProps) {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="w-full justify-start">
-          <Icons.user className="mr-2 h-4 w-4" />
+          <Icons.user className="mr-2 size-4" />
           <span className="truncate">{user.name || user.email || "User"}</span>
         </Button>
       </DropdownMenuTrigger>
@@ -42,7 +42,7 @@ export function UserDropdownMenu({ user }: UserDropdownMenuProps) {
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
           <Link href="/settings">
-            <Icons.settings className="mr-2 h-4 w-4" />
+            <Icons.settings className="mr-2 size-4" />
             <span>Settings</span>
           </Link>
         </DropdownMenuItem>
@@ -55,7 +55,7 @@ export function UserDropdownMenu({ user }: UserDropdownMenuProps) {
             signOut()
           }}
         >
-          <Icons.logOut className="mr-2 h-4 w-4" />
+          <Icons.logOut className="mr-2 size-4" />
           <span>Log out</span>
         </DropdownMenuItem>
       </DropdownMenuContent>

@@ -18,7 +18,7 @@ export default async function ExamsPage() {
         description="View all available exams for you."
       >
         <Link href="/exams/new" className={buttonVariants()}>
-          <Icons.plusCircle className="mr-2 h-4 w-4" />
+          <Icons.plusCircle className="mr-2 size-4" />
           Add exam
         </Link>
       </DashboardHeader>
@@ -42,14 +42,14 @@ export default async function ExamsPage() {
                 <div className="mr-3 flex shrink-0 flex-col items-end text-sm md:mr-4">
                   <p className="inline-flex items-center">
                     {exam.author.name ?? "Unknown author"}
-                    <Icons.user className="ml-2 h-4 w-4" />
+                    <Icons.user className="ml-2 size-4" />
                   </p>
                   <p
                     title={`Created at ${exam.createdAt.toLocaleString()}`}
                     className="inline-flex items-center text-muted-foreground"
                   >
                     {formatTimeAgo(exam.createdAt)}
-                    <Icons.calendarDays className="ml-2 h-4 w-4" />
+                    <Icons.calendarDays className="ml-2 size-4" />
                   </p>
                 </div>
                 <Icons.chevronRight />

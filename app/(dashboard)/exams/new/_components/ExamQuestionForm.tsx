@@ -50,7 +50,7 @@ export const ExamQuestionForm = ({
           variant="outline"
           onClick={removeQuestion}
         >
-          <Icons.trash className="h-4 w-4" />
+          <Icons.trash className="size-4" />
         </Button>
       </CardHeader>
       <CardContent className="space-y-2">
@@ -132,7 +132,7 @@ export const ExamQuestionForm = ({
                           }}
                           aria-label="Toggle correct answer"
                         >
-                          <Icons.check className="h-4 w-4" />
+                          <Icons.check className="size-4" />
                         </Toggle>
                       </FormControl>
                       <FormMessage />
@@ -145,7 +145,7 @@ export const ExamQuestionForm = ({
                   variant="outline"
                   onClick={() => removeAnswer(answerIndex)}
                 >
-                  <Icons.trash className="h-4 w-4" />
+                  <Icons.trash className="size-4" />
                 </Button>
               </div>
             </li>

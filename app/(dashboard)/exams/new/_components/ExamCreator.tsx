@@ -148,7 +148,7 @@ export const ExamCreator = ({ courses }: ExamCreatorProps) => {
                                 (course) => course.id === field.value,
                               )?.name
                             : "Select course"}
-                          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                          <ChevronsUpDown className="ml-2 size-4 shrink-0 opacity-50" />
                         </Button>
                       </FormControl>
                     </PopoverTrigger>
@@ -168,7 +168,7 @@ export const ExamCreator = ({ courses }: ExamCreatorProps) => {
                             >
                               <Check
                                 className={cn(
-                                  "mr-2 h-4 w-4",
+                                  "mr-2 size-4",
                                   course.id === field.value
                                     ? "opacity-100"
                                     : "opacity-0",
