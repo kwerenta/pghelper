@@ -4,7 +4,6 @@ import {
   index,
   mysqlEnum,
   mysqlTable,
-  primaryKey,
   serial,
   tinyint,
   uniqueIndex,

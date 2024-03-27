@@ -94,7 +94,7 @@ export const TimetableEditor = ({
           Edit timetable
         </Button>
       </SheetTrigger>
-      <SheetContent>
+      <SheetContent className="overflow-y-auto">
         <SheetHeader>
           <SheetTitle>Edit timetable</SheetTitle>
           <SheetDescription>
@@ -107,63 +107,68 @@ export const TimetableEditor = ({
             onSubmit={form.handleSubmit(onSubmit)}
             className="space-y-4 py-4"
           >
-            {fields.map((entry, index) => (
-              <div key={entry.id}>
-                <FormField
-                  control={form.control}
-                  name={`timeslots.${index}.deanGroupId`}
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="capitalize">
-                        {timetableEntries.find(
-                          (e) => entry.courseId === e.courseId,
-                        )?.course.name ?? "Unknown course"}
-                      </FormLabel>
-                      <Select
-                        onValueChange={(value) =>
-                          field.onChange(transformStringToNumber(value))
-                        }
-                        defaultValue={field.value.toString()}
-                      >
-                        <FormControl>
-                          <SelectTrigger className="capitalize">
-                            <SelectValue placeholder="Select a timeslot" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          <SelectGroup>
-                            <SelectLabel>Timeslots</SelectLabel>
-                            {timeslots
-                              .filter(
-                                (timeslot) =>
-                                  timeslot.courseId === entry.courseId,
-                              )
-                              .map((timeslot) => (
-                                <SelectItem
-                                  key={timeslot.id}
-                                  className="capitalize"
-                                  value={timeslot.deanGroupId.toString()}
-                                >
-                                  Group {timeslot.deanGroup.number} |{" "}
-                                  {timeslot.startTime}
-                                  :00 - {timeslot.endTime}:00 {timeslot.weekday}
-                                </SelectItem>
-                              ))}
-                          </SelectGroup>
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  name={`timeslots.${index}.courseId`}
-                  control={form.control}
-                  defaultValue={entry.courseId}
-                  render={({ field }) => <input type="hidden" {...field} />}
-                />
-              </div>
-            ))}
+            {fields.map((entry, index) => {
+              const timetableEntry = timetableEntries.find(
+                (e) => entry.courseId === e.courseId,
+              )
+              return (
+                <div key={entry.id}>
+                  <FormField
+                    control={form.control}
+                    name={`timeslots.${index}.deanGroupId`}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="capitalize">
+                          {`${timetableEntry?.course.name} [${timetableEntry?.course.type[0].toUpperCase()}]` ??
+                            "Unknown course"}
+                        </FormLabel>
+                        <Select
+                          onValueChange={(value) =>
+                            field.onChange(transformStringToNumber(value))
+                          }
+                          defaultValue={field.value.toString()}
+                        >
+                          <FormControl>
+                            <SelectTrigger className="capitalize">
+                              <SelectValue placeholder="Select a timeslot" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectGroup>
+                              <SelectLabel>Timeslots</SelectLabel>
+                              {timeslots
+                                .filter(
+                                  (timeslot) =>
+                                    timeslot.courseId === entry.courseId,
+                                )
+                                .map((timeslot) => (
+                                  <SelectItem
+                                    key={timeslot.id}
+                                    className="capitalize"
+                                    value={timeslot.deanGroupId.toString()}
+                                  >
+                                    Group {timeslot.deanGroup.number} |{" "}
+                                    {timeslot.startTime}
+                                    :00 - {timeslot.endTime}:00{" "}
+                                    {timeslot.weekday}
+                                  </SelectItem>
+                                ))}
+                            </SelectGroup>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    name={`timeslots.${index}.courseId`}
+                    control={form.control}
+                    defaultValue={entry.courseId}
+                    render={({ field }) => <input type="hidden" {...field} />}
+                  />
+                </div>
+              )
+            })}
             <div className="flex flex-col-reverse sm:flex-row sm:justify-end">
               <Button disabled={form.formState.isSubmitting} type="submit">
                 Save changes

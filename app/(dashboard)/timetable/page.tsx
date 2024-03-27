@@ -4,7 +4,7 @@ import { DeanGroup, DeanGroupId, Timeslot } from "@/db/schema"
 import { getDeanGroupsBySemester } from "@/lib/api/queries/deanGroup"
 import {
   TimetableEntry,
-  getTimeslotsByCoursesWithDeanGroup,
+  getTimeslotsBySemesterWithDeanGroup,
   getUserTimetable,
 } from "@/lib/api/queries/timeslots"
 import { getCurrentUser } from "@/lib/session"
@@ -26,9 +26,11 @@ export default async function UserTimetablePage() {
     (entry) => entry.deanGroupId !== null,
   ) as Array<TimetableEntry & { deanGroupId: DeanGroupId }>
 
-  const timeslots = (await getTimeslotsByCoursesWithDeanGroup(
-    modifiableEntries.map((e) => e.course.id),
-  )) as Array<Timeslot & { deanGroupId: DeanGroupId; deanGroup: DeanGroup }>
+  const timeslots = (
+    await getTimeslotsBySemesterWithDeanGroup(user.deanGroup.semesterId)
+  ).filter((timeslot) => timeslot.deanGroupId !== null) as Array<
+    Timeslot & { deanGroupId: DeanGroupId; deanGroup: DeanGroup }
+  >
 
   return (
     <DashboardShell>

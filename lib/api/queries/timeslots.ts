@@ -3,6 +3,7 @@ import { notFound } from "next/navigation"
 import { db } from "@/db"
 import {
   DeanGroupId,
+  SemesterId,
   deanGroups,
   timeslotOverrides,
   timeslots,
@@ -54,10 +55,13 @@ export const getTimeslotsByDeanGroup = async (deanGroupId: DeanGroupId) =>
     ),
   })
 
-export const getTimeslotsByCoursesWithDeanGroup = async (ids: number[]) =>
-  await db.query.timeslots.findMany({
-    with: {
-      deanGroup: true,
-    },
-    where: inArray(timeslots.courseId, ids),
-  })
+export const getTimeslotsBySemesterWithDeanGroup = async (
+  semesterId: SemesterId,
+) =>
+  (
+    await db
+      .select()
+      .from(timeslots)
+      .innerJoin(deanGroups, eq(timeslots.deanGroupId, deanGroups.id))
+      .where(eq(deanGroups.semesterId, semesterId))
+  ).map((entry) => ({ ...entry.timeslot, deanGroup: { ...entry.dean_group } }))

@@ -79,6 +79,9 @@ hourRows?.forEach((row) => {
         })
       }
 
+      // Support for common timeslots is missing
+      if (deanGroup === null && courseType !== "lecture") continue
+
       let courseId = courses.findIndex(
         (course) => course.name === courseName && course.type === courseType,
       )
