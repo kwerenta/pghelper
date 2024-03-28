@@ -4,8 +4,11 @@ export const timetableEditorSchema = z.object({
   timeslots: z
     .array(
       z.object({
-        deanGroupId: z.number().positive(),
         courseId: z.number().positive(),
+        group: z.object({
+          deanGroupId: z.number().positive().nullable(),
+          subgroup: z.number().positive().nullable(),
+        }),
       }),
     )
     .min(1),

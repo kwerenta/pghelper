@@ -1,7 +1,6 @@
 import type { Answer, Question } from "@/db/schema"
 import { Control } from "react-hook-form"
 
-import { transformStringToNumber } from "@/lib/utils"
 import { ExamAttemptParams } from "@/lib/validators/exam"
 import {
   FormControl,
@@ -34,7 +33,7 @@ export const SingleChoiceAnswers = ({
             <FormControl>
               <RadioGroup
                 onValueChange={(e) => {
-                  field.onChange([transformStringToNumber(e)])
+                  field.onChange([Number(e)])
                 }}
                 defaultValue={field.value.toString()}
               >

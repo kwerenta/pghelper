@@ -40,6 +40,7 @@ export const timeslots = mysqlTable(
       onDelete: "cascade",
       onUpdate: "cascade",
     }),
+    subgroup: tinyint("subgroup"),
   },
   (timeslot) => ({
     deanGroupIndex: index("dean_group_index").on(timeslot.deanGroupId),

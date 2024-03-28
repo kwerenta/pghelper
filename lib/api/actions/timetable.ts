@@ -21,6 +21,7 @@ export const updateTimetable = validatedAction(
       studentId: user.id,
     }))
 
+    // TODO: add handling for timeslots with subgroups
     await db.transaction(async (tx) => {
       await tx.delete(timeslotOverrides).where(
         and(
@@ -33,7 +34,7 @@ export const updateTimetable = validatedAction(
       )
 
       const timeslotsToInsert = data.filter(
-        (entry) => entry.deanGroupId !== user.deanGroup.id,
+        (entry) => entry.group.deanGroupId !== user.deanGroup.id,
       )
 
       if (timeslotsToInsert.length !== 0)

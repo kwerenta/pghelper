@@ -8,7 +8,7 @@ import {
   timeslotOverrides,
   timeslots,
 } from "@/db/schema"
-import { eq, inArray, isNull, ne, notInArray, or } from "drizzle-orm"
+import { and, eq, inArray, isNull, ne, notInArray, or } from "drizzle-orm"
 
 import { getCurrentUser } from "@/lib/session"
 
@@ -26,9 +26,9 @@ export const getUserTimetable = async () => {
     with: {
       course: true,
     },
-    where: ({ deanGroupId, courseId }, { or, and, eq }) =>
+    where: ({ deanGroupId, courseId, subgroup }, { or, and, eq }) =>
       or(
-        isNull(deanGroupId),
+        and(isNull(deanGroupId), isNull(subgroup)),
         and(
           eq(deanGroupId, user.deanGroup.id),
           notInArray(courseId, customTimeslotsIds),
@@ -51,7 +51,7 @@ export const getTimeslotsByDeanGroup = async (deanGroupId: DeanGroupId) =>
     },
     where: or(
       eq(timeslots.deanGroupId, deanGroupId),
-      isNull(timeslots.deanGroupId),
+      and(isNull(timeslots.deanGroupId), isNull(timeslots.subgroup)),
     ),
   })
 

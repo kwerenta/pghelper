@@ -5,7 +5,6 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 
 import { updateDeanGroup } from "@/lib/api/actions/deanGroup"
-import { transformStringToNumber } from "@/lib/utils"
 import {
   UpdateDeanGroupParams,
   updateDeanGroupSchema,
@@ -79,9 +78,7 @@ export const DeanGroupForm = ({
                 <FormItem>
                   <FormLabel>Select your dean group</FormLabel>
                   <Select
-                    onValueChange={(value) =>
-                      field.onChange(transformStringToNumber(value))
-                    }
+                    onValueChange={(value) => field.onChange(Number(value))}
                     defaultValue={field.value.toString()}
                   >
                     <FormControl>

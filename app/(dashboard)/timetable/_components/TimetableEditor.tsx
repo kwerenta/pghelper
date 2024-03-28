@@ -1,13 +1,12 @@
 "use client"
 
 import { useState } from "react"
-import type { DeanGroup, DeanGroupId, Timeslot } from "@/db/schema"
+import type { Course, DeanGroup, DeanGroupId, Timeslot } from "@/db/schema"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useFieldArray, useForm } from "react-hook-form"
 
 import { updateTimetable } from "@/lib/api/actions/timetable"
 import { type TimetableEntry } from "@/lib/api/queries/timeslots"
-import { transformStringToNumber } from "@/lib/utils"
 import {
   UpdateTimetableParams,
   timetableEditorSchema,
@@ -42,12 +41,25 @@ import {
 import { Icons } from "@/components/Icons"
 
 type TimetableEditorProps = {
-  timetableEntries: (TimetableEntry & { deanGroupId: DeanGroupId })[]
-  timeslots: (Timeslot & { deanGroupId: DeanGroupId; deanGroup: DeanGroup })[]
+  currentTimetable: TimetableEntry[]
+  courses: Omit<Course, "semesterId" | "frequency">[]
+  timeslots: (Timeslot & { deanGroup?: DeanGroup })[]
+}
+
+type UpdateTimetableGroupParam =
+  UpdateTimetableParams["timeslots"][number]["group"]
+
+function formatGroupValue(
+  deanGroupId: UpdateTimetableGroupParam["deanGroupId"],
+  subgroup: UpdateTimetableGroupParam["subgroup"],
+) {
+  if (deanGroupId === null && subgroup === null) return ""
+  return `${deanGroupId ?? "0"}_${subgroup ?? "0"}`
 }
 
 export const TimetableEditor = ({
-  timetableEntries,
+  currentTimetable,
+  courses,
   timeslots,
 }: TimetableEditorProps) => {
   const actionToast = useActionToast()
@@ -56,10 +68,19 @@ export const TimetableEditor = ({
   const form = useForm<UpdateTimetableParams>({
     resolver: zodResolver(timetableEditorSchema),
     defaultValues: {
-      timeslots: timetableEntries.map((entry) => ({
-        courseId: entry.courseId,
-        deanGroupId: entry.deanGroupId,
-      })),
+      timeslots: courses.map((course) => {
+        const entry = currentTimetable.find(
+          (entry) => entry.courseId === course.id,
+        )
+
+        return {
+          courseId: course.id,
+          group: {
+            deanGroupId: entry?.deanGroupId ?? null,
+            subgroup: entry?.subgroup ?? null,
+          },
+        }
+      }),
     },
   })
   const { fields } = useFieldArray({ name: "timeslots", control: form.control })
@@ -108,25 +129,33 @@ export const TimetableEditor = ({
             className="space-y-4 py-4"
           >
             {fields.map((entry, index) => {
-              const timetableEntry = timetableEntries.find(
-                (e) => entry.courseId === e.courseId,
-              )
+              const course = courses.find((c) => entry.courseId === c.id)
               return (
                 <div key={entry.id}>
                   <FormField
                     control={form.control}
-                    name={`timeslots.${index}.deanGroupId`}
+                    name={`timeslots.${index}.group`}
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel className="capitalize">
-                          {`${timetableEntry?.course.name} [${timetableEntry?.course.type[0].toUpperCase()}]` ??
-                            "Unknown course"}
+                          {`${course?.name} [${course?.type[0].toUpperCase()}]`}
                         </FormLabel>
                         <Select
-                          onValueChange={(value) =>
-                            field.onChange(transformStringToNumber(value))
-                          }
-                          defaultValue={field.value.toString()}
+                          onValueChange={(value) => {
+                            const [deanGroupId, subgroup] = value.split("_")
+                            field.onChange({
+                              deanGroupId:
+                                deanGroupId !== "0"
+                                  ? Number(deanGroupId)
+                                  : null,
+                              subgroup:
+                                subgroup !== "0" ? Number(subgroup) : null,
+                            })
+                          }}
+                          defaultValue={formatGroupValue(
+                            field.value.deanGroupId,
+                            field.value.subgroup,
+                          )}
                         >
                           <FormControl>
                             <SelectTrigger className="capitalize">
@@ -134,26 +163,22 @@ export const TimetableEditor = ({
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            <SelectGroup>
-                              <SelectLabel>Timeslots</SelectLabel>
-                              {timeslots
-                                .filter(
-                                  (timeslot) =>
-                                    timeslot.courseId === entry.courseId,
-                                )
-                                .map((timeslot) => (
-                                  <SelectItem
-                                    key={timeslot.id}
-                                    className="capitalize"
-                                    value={timeslot.deanGroupId.toString()}
-                                  >
-                                    Group {timeslot.deanGroup.number} |{" "}
-                                    {timeslot.startTime}
-                                    :00 - {timeslot.endTime}:00{" "}
-                                    {timeslot.weekday}
-                                  </SelectItem>
-                                ))}
-                            </SelectGroup>
+                            {timeslots
+                              .filter(
+                                (timeslot) =>
+                                  timeslot.courseId === entry.courseId,
+                              )
+                              .map((timeslot) => (
+                                <SelectItem
+                                  key={timeslot.id}
+                                  className="capitalize"
+                                  value={`${timeslot.deanGroupId ?? "0"}_${timeslot.subgroup ?? "0"}`}
+                                >
+                                  Group {timeslot.deanGroup?.number ?? "0"} |{" "}
+                                  {timeslot.startTime}
+                                  :00 - {timeslot.endTime}:00 {timeslot.weekday}
+                                </SelectItem>
+                              ))}
                           </SelectContent>
                         </Select>
                         <FormMessage />

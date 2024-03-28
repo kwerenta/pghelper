@@ -16,6 +16,13 @@ export const getCourses = async () => {
     .where(isNull(coursesAlias.id))
 }
 
+export const getCoursesBySemester = async (semesterId: number) =>
+  await db
+    .select({ id: courses.id, name: courses.name, type: courses.type })
+    .from(courses)
+    .where(eq(courses.semesterId, semesterId))
+    .orderBy(courses.name)
+
 export const getCourseById = async (id: number) =>
   await db
     .select({ id: courses.id })

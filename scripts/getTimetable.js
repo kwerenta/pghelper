@@ -62,6 +62,7 @@ hourRows?.forEach((row) => {
 
       let frequency = "every_week"
       let deanGroup = courseType === "lecture" ? null : DEAN_GROUP_ID
+      let subgroup = null
 
       if (additionalInfo) {
         additionalInfo.split(";").forEach((info) => {
@@ -69,18 +70,17 @@ hourRows?.forEach((row) => {
 
           if (formattedInfo.startsWith("co 2 tygodnie"))
             frequency = "every_two_weeks"
-          else if (formattedInfo.startsWith("termin wspólny"))
-            // deanGroup = Number(info.split("gr.")[1].trim())
+          else if (
+            formattedInfo.startsWith("termin wspólny") ||
+            formattedInfo.startsWith("dodatkowa grupa") ||
+            // This typo is also present in the original data
+            formattedInfo.startsWith("termin dpdatkowy")
+          ) {
             deanGroup = null
-          else if (formattedInfo.startsWith("dodatkowa grupa")) deanGroup = null
-          // This typo is also present in the original data
-          else if (formattedInfo.startsWith("termin dpdatkowy"))
-            deanGroup = null
+            subgroup = 1
+          }
         })
       }
-
-      // Support for common timeslots is missing
-      if (deanGroup === null && courseType !== "lecture") continue
 
       let courseId = courses.findIndex(
         (course) => course.name === courseName && course.type === courseType,
@@ -115,6 +115,7 @@ hourRows?.forEach((row) => {
         startTime: hour,
         endTime: hour + 1,
         deanGroupId: deanGroup,
+        subgroup,
       })
     }
   })
@@ -131,7 +132,7 @@ courses.reduce((query, course, courseId) => {
       .reduce(
         (timeslotQuery, timeslot) =>
           timeslotQuery +
-          `INSERT INTO timeslot (course_id, weekday, start_time, end_time, dean_group_id) VALUES (@courseId, '${timeslot.weekday}', ${timeslot.startTime}, ${timeslot.endTime}, ${timeslot.deanGroupId});\n`,
+          `INSERT INTO timeslot (course_id, weekday, start_time, end_time, dean_group_id, subgroup) VALUES (@courseId, '${timeslot.weekday}', ${timeslot.startTime}, ${timeslot.endTime}, ${timeslot.deanGroupId}, ${timeslot.subgroup});\n`,
         "",
       )
   )

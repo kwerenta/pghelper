@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation"
 import { DeanGroup, DeanGroupId, Timeslot } from "@/db/schema"
 
+import { getCoursesBySemester } from "@/lib/api/queries/courses"
 import { getDeanGroupsBySemester } from "@/lib/api/queries/deanGroup"
 import {
   TimetableEntry,
@@ -22,15 +23,16 @@ export default async function UserTimetablePage() {
   const entries = await getUserTimetable()
 
   const deanGroups = await getDeanGroupsBySemester(user.deanGroup.semesterId)
-  const modifiableEntries = entries.filter(
-    (entry) => entry.deanGroupId !== null,
-  ) as Array<TimetableEntry & { deanGroupId: DeanGroupId }>
+  const courses = (
+    await getCoursesBySemester(user.deanGroup.semesterId)
+  ).filter((course) => course.type !== "lecture")
 
   const timeslots = (
     await getTimeslotsBySemesterWithDeanGroup(user.deanGroup.semesterId)
-  ).filter((timeslot) => timeslot.deanGroupId !== null) as Array<
-    Timeslot & { deanGroupId: DeanGroupId; deanGroup: DeanGroup }
-  >
+  ).filter(
+    (timeslot) =>
+      !(timeslot.deanGroupId === null && timeslot.subgroup === null),
+  )
 
   return (
     <DashboardShell>
@@ -41,7 +43,8 @@ export default async function UserTimetablePage() {
         <div className="flex flex-row gap-4">
           <SelectDeanGroupTimetable deanGroups={deanGroups} />
           <TimetableEditor
-            timetableEntries={modifiableEntries}
+            currentTimetable={entries}
+            courses={courses}
             timeslots={timeslots}
           />
         </div>
