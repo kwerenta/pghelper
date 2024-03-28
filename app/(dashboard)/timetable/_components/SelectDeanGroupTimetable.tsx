@@ -26,14 +26,14 @@ export const SelectDeanGroupTimetable = ({
   const router = useRouter()
   return (
     <Select
-      value={currentDeanGroup?.toString() || ""}
+      value={currentDeanGroup?.toString() || "0"}
       onValueChange={(value) => router.push(`/timetable/${value}`)}
     >
       <SelectTrigger className="w-[180px]">
         <SelectValue placeholder="Select group" />
       </SelectTrigger>
       <SelectContent>
-        <SelectItem value="">Your timetable</SelectItem>
+        <SelectItem value="0">Your timetable</SelectItem>
         <SelectSeparator />
         <SelectGroup>
           <SelectLabel>Dean groups</SelectLabel>
