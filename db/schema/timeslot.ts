@@ -67,19 +67,22 @@ export const timeslotOverrides = mysqlTable(
     studentId: varchar("student_id", { length: 255 })
       .notNull()
       .references(() => users.id, { onDelete: "cascade", onUpdate: "cascade" }),
+    // Column used only for uniqueness constraint
     courseId: bigint("course_id", { mode: "number", unsigned: true })
       .notNull()
       .references(() => courses.id, {
         onDelete: "cascade",
         onUpdate: "cascade",
       }),
-    deanGroupId: bigint("dean_group_id", {
+    timeslotId: bigint("timeslot_id", {
       mode: "number",
       unsigned: true,
-    }).references(() => deanGroups.id, {
-      onDelete: "cascade",
-      onUpdate: "cascade",
-    }),
+    })
+      .notNull()
+      .references(() => timeslots.id, {
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      }),
   },
   (timeslot) => ({
     uniqueIndex: uniqueIndex("student_course_index").on(

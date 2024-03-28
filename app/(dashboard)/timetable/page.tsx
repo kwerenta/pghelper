@@ -27,11 +27,8 @@ export default async function UserTimetablePage() {
     await getCoursesBySemester(user.deanGroup.semesterId)
   ).filter((course) => course.type !== "lecture")
 
-  const timeslots = (
-    await getTimeslotsBySemesterWithDeanGroup(user.deanGroup.semesterId)
-  ).filter(
-    (timeslot) =>
-      !(timeslot.deanGroupId === null && timeslot.subgroup === null),
+  const timeslots = await getTimeslotsBySemesterWithDeanGroup(
+    user.deanGroup.semesterId,
   )
 
   return (

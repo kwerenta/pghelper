@@ -5,10 +5,7 @@ export const timetableEditorSchema = z.object({
     .array(
       z.object({
         courseId: z.number().positive(),
-        group: z.object({
-          deanGroupId: z.number().positive().nullable(),
-          subgroup: z.number().positive().nullable(),
-        }),
+        timeslotId: z.number().positive("Timeslot must be selected"),
       }),
     )
     .min(1),

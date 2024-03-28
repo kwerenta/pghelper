@@ -4,11 +4,12 @@ import { db } from "@/db"
 import {
   DeanGroupId,
   SemesterId,
+  courses,
   deanGroups,
   timeslotOverrides,
   timeslots,
 } from "@/db/schema"
-import { and, eq, inArray, isNull, ne, notInArray, or } from "drizzle-orm"
+import { and, eq, inArray, isNull, notInArray, or } from "drizzle-orm"
 
 import { getCurrentUser } from "@/lib/session"
 
@@ -17,28 +18,37 @@ export const getUserTimetable = async () => {
 
   if (!user) notFound()
 
-  const customTimeslotsIds = db
-    .select({ id: timeslotOverrides.courseId })
+  const overridedTimeslotIds = db
+    .select({
+      timeslotId: timeslotOverrides.timeslotId,
+    })
     .from(timeslotOverrides)
     .where(eq(timeslotOverrides.studentId, user.id))
 
-  return await db.query.timeslots.findMany({
-    with: {
-      course: true,
-    },
-    where: ({ deanGroupId, courseId, subgroup }, { or, and, eq }) =>
-      or(
-        and(isNull(deanGroupId), isNull(subgroup)),
-        and(
-          eq(deanGroupId, user.deanGroup.id),
-          notInArray(courseId, customTimeslotsIds),
+  const overridedCourseIds = db
+    .select({
+      courseId: timeslotOverrides.courseId,
+    })
+    .from(timeslotOverrides)
+    .where(eq(timeslotOverrides.studentId, user.id))
+
+  return (
+    await db
+      .select()
+      .from(timeslots)
+      .innerJoin(courses, eq(timeslots.courseId, courses.id))
+      .where(
+        or(
+          and(isNull(timeslots.deanGroupId), isNull(timeslots.subgroup)),
+          inArray(timeslots.id, overridedTimeslotIds),
+          and(
+            eq(timeslots.deanGroupId, user.deanGroup.id),
+            isNull(timeslots.subgroup),
+            notInArray(timeslots.courseId, overridedCourseIds),
+          ),
         ),
-        and(
-          ne(deanGroupId, user.deanGroup.id),
-          inArray(courseId, customTimeslotsIds),
-        ),
-      ),
-  })
+      )
+  ).map((entry) => ({ ...entry.timeslot, course: entry.course }))
 }
 export type TimetableEntry = Awaited<
   ReturnType<typeof getUserTimetable>
@@ -62,6 +72,9 @@ export const getTimeslotsBySemesterWithDeanGroup = async (
     await db
       .select()
       .from(timeslots)
-      .innerJoin(deanGroups, eq(timeslots.deanGroupId, deanGroups.id))
-      .where(eq(deanGroups.semesterId, semesterId))
-  ).map((entry) => ({ ...entry.timeslot, deanGroup: { ...entry.dean_group } }))
+      .leftJoin(deanGroups, eq(timeslots.deanGroupId, deanGroups.id))
+      .where(or(eq(deanGroups.semesterId, semesterId), isNull(deanGroups.id)))
+  ).map((entry) => ({
+    ...entry.timeslot,
+    deanGroup: entry.dean_group === null ? undefined : { ...entry.dean_group },
+  }))

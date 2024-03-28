@@ -16,29 +16,25 @@ export const updateTimetable = validatedAction(
     const user = await getCurrentUser()
     if (!user) throw new UnauthenticatedException()
 
-    const data = input.timeslots.map((entry) => ({
-      ...entry,
-      studentId: user.id,
-    }))
-
-    // TODO: add handling for timeslots with subgroups
     await db.transaction(async (tx) => {
       await tx.delete(timeslotOverrides).where(
         and(
           inArray(
             timeslotOverrides.courseId,
-            data.map((entry) => entry.courseId),
+            input.timeslots.map((entry) => entry.courseId),
           ),
           eq(timeslotOverrides.studentId, user.id),
         ),
       )
 
-      const timeslotsToInsert = data.filter(
-        (entry) => entry.group.deanGroupId !== user.deanGroup.id,
-      )
+      const overridesToInsert = input.timeslots.map((entry) => ({
+        courseId: entry.courseId,
+        studentId: user.id,
+        timeslotId: entry.timeslotId,
+      }))
 
-      if (timeslotsToInsert.length !== 0)
-        await tx.insert(timeslotOverrides).values(timeslotsToInsert)
+      if (overridesToInsert.length !== 0)
+        await tx.insert(timeslotOverrides).values(overridesToInsert)
     })
 
     revalidatePath("/timetable")

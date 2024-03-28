@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import type { Course, DeanGroup, DeanGroupId, Timeslot } from "@/db/schema"
+import type { Course, DeanGroup, Timeslot } from "@/db/schema"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useFieldArray, useForm } from "react-hook-form"
 
@@ -24,9 +24,7 @@ import {
 import {
   Select,
   SelectContent,
-  SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/Select"
@@ -44,17 +42,6 @@ type TimetableEditorProps = {
   currentTimetable: TimetableEntry[]
   courses: Omit<Course, "semesterId" | "frequency">[]
   timeslots: (Timeslot & { deanGroup?: DeanGroup })[]
-}
-
-type UpdateTimetableGroupParam =
-  UpdateTimetableParams["timeslots"][number]["group"]
-
-function formatGroupValue(
-  deanGroupId: UpdateTimetableGroupParam["deanGroupId"],
-  subgroup: UpdateTimetableGroupParam["subgroup"],
-) {
-  if (deanGroupId === null && subgroup === null) return ""
-  return `${deanGroupId ?? "0"}_${subgroup ?? "0"}`
 }
 
 export const TimetableEditor = ({
@@ -75,10 +62,7 @@ export const TimetableEditor = ({
 
         return {
           courseId: course.id,
-          group: {
-            deanGroupId: entry?.deanGroupId ?? null,
-            subgroup: entry?.subgroup ?? null,
-          },
+          timeslotId: entry?.id ?? 0,
         }
       }),
     },
@@ -134,31 +118,22 @@ export const TimetableEditor = ({
                 <div key={entry.id}>
                   <FormField
                     control={form.control}
-                    name={`timeslots.${index}.group`}
+                    name={`timeslots.${index}.timeslotId`}
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="capitalize">
+                        <FormLabel>
                           {`${course?.name} [${course?.type[0].toUpperCase()}]`}
                         </FormLabel>
                         <Select
                           onValueChange={(value) => {
-                            const [deanGroupId, subgroup] = value.split("_")
-                            field.onChange({
-                              deanGroupId:
-                                deanGroupId !== "0"
-                                  ? Number(deanGroupId)
-                                  : null,
-                              subgroup:
-                                subgroup !== "0" ? Number(subgroup) : null,
-                            })
+                            field.onChange(Number(value))
                           }}
-                          defaultValue={formatGroupValue(
-                            field.value.deanGroupId,
-                            field.value.subgroup,
-                          )}
+                          defaultValue={
+                            field.value === 0 ? "" : field.value.toString()
+                          }
                         >
                           <FormControl>
-                            <SelectTrigger className="capitalize">
+                            <SelectTrigger>
                               <SelectValue placeholder="Select a timeslot" />
                             </SelectTrigger>
                           </FormControl>
@@ -171,12 +146,14 @@ export const TimetableEditor = ({
                               .map((timeslot) => (
                                 <SelectItem
                                   key={timeslot.id}
-                                  className="capitalize"
-                                  value={`${timeslot.deanGroupId ?? "0"}_${timeslot.subgroup ?? "0"}`}
+                                  value={timeslot.id.toString()}
                                 >
                                   Group {timeslot.deanGroup?.number ?? "0"} |{" "}
                                   {timeslot.startTime}
-                                  :00 - {timeslot.endTime}:00 {timeslot.weekday}
+                                  :00 - {timeslot.endTime}:00{" "}
+                                  <span className="capitalize">
+                                    {timeslot.weekday}
+                                  </span>
                                 </SelectItem>
                               ))}
                           </SelectContent>
