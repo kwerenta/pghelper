@@ -2,8 +2,8 @@
 
 import { revalidatePath } from "next/cache"
 import { db } from "@/db"
-import { timeslotOverrides } from "@/db/schema"
-import { and, eq, inArray } from "drizzle-orm"
+import { timeslotOverrides, timeslots } from "@/db/schema"
+import { and, eq, inArray, isNull, sql } from "drizzle-orm"
 
 import { validatedAction } from "@/lib/actionValidator"
 import { UnauthenticatedException } from "@/lib/exceptions"
@@ -17,24 +17,42 @@ export const updateTimetable = validatedAction(
     if (!user) throw new UnauthenticatedException()
 
     await db.transaction(async (tx) => {
-      await tx.delete(timeslotOverrides).where(
-        and(
-          inArray(
-            timeslotOverrides.courseId,
-            input.timeslots.map((entry) => entry.courseId),
-          ),
-          eq(timeslotOverrides.studentId, user.id),
-        ),
-      )
-
       const overridesToInsert = input.timeslots.map((entry) => ({
         courseId: entry.courseId,
         studentId: user.id,
         timeslotId: entry.timeslotId,
       }))
 
-      if (overridesToInsert.length !== 0)
-        await tx.insert(timeslotOverrides).values(overridesToInsert)
+      await tx
+        .insert(timeslotOverrides)
+        .values(overridesToInsert)
+        .onDuplicateKeyUpdate({
+          set: { timeslotId: sql`VALUES(${timeslotOverrides.timeslotId})` },
+        })
+
+      const unnecessaryOverrideIds = db.$with("unnecessary_override_ids").as(
+        db
+          .select({ id: timeslotOverrides.id })
+          .from(timeslotOverrides)
+          .innerJoin(timeslots, eq(timeslotOverrides.timeslotId, timeslots.id))
+          .where(
+            and(
+              eq(timeslotOverrides.studentId, user.id),
+              eq(timeslots.deanGroupId, user.deanGroup.id),
+              isNull(timeslots.subgroup),
+            ),
+          ),
+      )
+
+      await tx
+        .with(unnecessaryOverrideIds)
+        .delete(timeslotOverrides)
+        .where(
+          inArray(
+            timeslotOverrides.id,
+            sql`(SELECT id FROM ${unnecessaryOverrideIds})`,
+          ),
+        )
     })
 
     revalidatePath("/timetable")
