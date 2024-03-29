@@ -7,3 +7,4 @@ export const getDeanGroupsBySemester = async (semesterId: SemesterId) =>
     .select({ id: deanGroups.id, number: deanGroups.number })
     .from(deanGroups)
     .where(eq(deanGroups.semesterId, semesterId))
+    .orderBy(deanGroups.number)

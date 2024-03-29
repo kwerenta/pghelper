@@ -1,11 +1,9 @@
 import { redirect } from "next/navigation"
-import { DeanGroup, DeanGroupId, Timeslot } from "@/db/schema"
 
 import { getCoursesBySemester } from "@/lib/api/queries/courses"
 import { getDeanGroupsBySemester } from "@/lib/api/queries/deanGroup"
 import {
-  TimetableEntry,
-  getTimeslotsBySemesterWithDeanGroup,
+  getTimeslotsBySemester,
   getUserTimetable,
 } from "@/lib/api/queries/timeslots"
 import { getCurrentUser } from "@/lib/session"
@@ -27,9 +25,7 @@ export default async function UserTimetablePage() {
     await getCoursesBySemester(user.deanGroup.semesterId)
   ).filter((course) => course.type !== "lecture")
 
-  const timeslots = await getTimeslotsBySemesterWithDeanGroup(
-    user.deanGroup.semesterId,
-  )
+  const timeslots = await getTimeslotsBySemester(user.deanGroup.semesterId)
 
   return (
     <DashboardShell>
@@ -43,6 +39,7 @@ export default async function UserTimetablePage() {
             currentTimetable={entries}
             courses={courses}
             timeslots={timeslots}
+            deanGroups={deanGroups}
           />
         </div>
       </DashboardHeader>

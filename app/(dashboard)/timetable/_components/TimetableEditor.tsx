@@ -24,7 +24,9 @@ import {
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
+  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/Select"
@@ -41,12 +43,14 @@ import { Icons } from "@/components/Icons"
 type TimetableEditorProps = {
   currentTimetable: TimetableEntry[]
   courses: Omit<Course, "semesterId" | "frequency">[]
-  timeslots: (Timeslot & { deanGroup?: DeanGroup })[]
+  timeslots: Timeslot[]
+  deanGroups: Omit<DeanGroup, "semesterId">[]
 }
 
 export const TimetableEditor = ({
   currentTimetable,
   courses,
+  deanGroups,
   timeslots,
 }: TimetableEditorProps) => {
   const actionToast = useActionToast()
@@ -138,24 +142,24 @@ export const TimetableEditor = ({
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            {timeslots
-                              .filter(
-                                (timeslot) =>
-                                  timeslot.courseId === entry.courseId,
-                              )
-                              .map((timeslot) => (
-                                <SelectItem
-                                  key={timeslot.id}
-                                  value={timeslot.id.toString()}
-                                >
-                                  Group {timeslot.deanGroup?.number ?? "0"} |{" "}
-                                  {timeslot.startTime}
-                                  :00 - {timeslot.endTime}:00{" "}
-                                  <span className="capitalize">
-                                    {timeslot.weekday}
-                                  </span>
-                                </SelectItem>
-                              ))}
+                            {[{ id: null, number: 0 }, ...deanGroups].map(
+                              (deanGroup) => {
+                                const groupTimeslots = timeslots.filter(
+                                  (timeslot) =>
+                                    timeslot.courseId === entry.courseId &&
+                                    timeslot.deanGroupId === deanGroup.id,
+                                )
+
+                                if (groupTimeslots.length === 0) return null
+
+                                return (
+                                  <SelectGroupTimeslotContent
+                                    deanGroupNumber={deanGroup.number}
+                                    timeslots={groupTimeslots}
+                                  />
+                                )
+                              },
+                            )}
                           </SelectContent>
                         </Select>
                         <FormMessage />
@@ -182,3 +186,21 @@ export const TimetableEditor = ({
     </Sheet>
   )
 }
+
+const SelectGroupTimeslotContent = ({
+  deanGroupNumber,
+  timeslots,
+}: {
+  deanGroupNumber: number
+  timeslots: Timeslot[]
+}) => (
+  <SelectGroup>
+    <SelectLabel>Group {deanGroupNumber}</SelectLabel>
+    {timeslots.map((timeslot) => (
+      <SelectItem key={timeslot.id} value={timeslot.id.toString()}>
+        <span className="capitalize">{timeslot.weekday}, </span>
+        {timeslot.startTime}:00 - {timeslot.endTime}:00
+      </SelectItem>
+    ))}
+  </SelectGroup>
+)

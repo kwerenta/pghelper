@@ -9,7 +9,15 @@ import {
   timeslotOverrides,
   timeslots,
 } from "@/db/schema"
-import { and, eq, inArray, isNull, notInArray, or } from "drizzle-orm"
+import {
+  and,
+  eq,
+  getTableColumns,
+  inArray,
+  isNull,
+  notInArray,
+  or,
+} from "drizzle-orm"
 
 import { getCurrentUser } from "@/lib/session"
 
@@ -65,16 +73,9 @@ export const getTimeslotsByDeanGroup = async (deanGroupId: DeanGroupId) =>
     ),
   })
 
-export const getTimeslotsBySemesterWithDeanGroup = async (
-  semesterId: SemesterId,
-) =>
-  (
-    await db
-      .select()
-      .from(timeslots)
-      .leftJoin(deanGroups, eq(timeslots.deanGroupId, deanGroups.id))
-      .where(or(eq(deanGroups.semesterId, semesterId), isNull(deanGroups.id)))
-  ).map((entry) => ({
-    ...entry.timeslot,
-    deanGroup: entry.dean_group === null ? undefined : { ...entry.dean_group },
-  }))
+export const getTimeslotsBySemester = async (semesterId: SemesterId) =>
+  await db
+    .select(getTableColumns(timeslots))
+    .from(timeslots)
+    .leftJoin(deanGroups, eq(timeslots.deanGroupId, deanGroups.id))
+    .where(or(eq(deanGroups.semesterId, semesterId), isNull(deanGroups.id)))
