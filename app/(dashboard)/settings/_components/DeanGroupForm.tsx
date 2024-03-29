@@ -52,7 +52,7 @@ export const DeanGroupForm = ({
 
   const form = useForm<UpdateDeanGroupParams>({
     resolver: zodResolver(updateDeanGroupSchema),
-    defaultValues: { deanGroup: userDeanGroupId, mode: "replace" },
+    defaultValues: { deanGroup: userDeanGroupId, action: "replace" },
   })
 
   const hasGroupChanged = form.getValues("deanGroup") !== userDeanGroupId
@@ -107,7 +107,7 @@ export const DeanGroupForm = ({
             {hasGroupChanged ? (
               <FormField
                 control={form.control}
-                name="mode"
+                name="action"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Mode</FormLabel>

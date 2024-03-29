@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache"
 import { db } from "@/db"
 import { studentDeanGroups, timeslotOverrides, timeslots } from "@/db/schema"
-import { and, eq, not, notInArray } from "drizzle-orm"
+import { and, eq, inArray, isNull, not, notInArray, sql } from "drizzle-orm"
 
 import { validatedAction } from "@/lib/actionValidator"
 import { UnauthenticatedException } from "@/lib/exceptions"
@@ -12,7 +12,7 @@ import { updateDeanGroupSchema } from "@/lib/validators/deanGroup"
 
 export const updateDeanGroup = validatedAction(
   updateDeanGroupSchema,
-  async ({ deanGroup: newDeanGroupId, mode }) => {
+  async ({ deanGroup: newDeanGroupId, action }) => {
     const user = await getCurrentUser()
     if (!user) throw new UnauthenticatedException()
 
@@ -20,50 +20,60 @@ export const updateDeanGroup = validatedAction(
       return { message: "Successfully updated dean group" }
 
     await db.transaction(async (tx) => {
-      if (mode === "replace") {
+      if (action === "replace") {
         await tx
           .delete(timeslotOverrides)
           .where(eq(timeslotOverrides.studentId, user.id))
       } else {
-        const overridedCourseIds = await tx
+        const overridedCourseIds = tx
           .select({ courseId: timeslotOverrides.courseId })
           .from(timeslotOverrides)
-          .where(
-            and(
-              eq(timeslotOverrides.studentId, user.id),
-              not(eq(timeslotOverrides.deanGroupId, user.deanGroup.id)),
-            ),
-          )
-          .then((result) => result.map(({ courseId }) => courseId))
+          .where(eq(timeslotOverrides.studentId, user.id))
 
-        const coursesToOverrideIds = await tx
-          .select({ courseId: timeslots.courseId })
+        const timeslotToOverrideIds = await tx
+          .select({ timeslotId: timeslots.id, courseId: timeslots.courseId })
           .from(timeslots)
           .where(
             and(
               eq(timeslots.deanGroupId, user.deanGroup.id),
-              overridedCourseIds.length !== 0
-                ? notInArray(timeslots.courseId, overridedCourseIds)
-                : undefined,
+              isNull(timeslots.subgroup),
+              notInArray(timeslots.courseId, overridedCourseIds),
             ),
           )
-          .then((result) => result.map(({ courseId }) => courseId))
 
-        if (coursesToOverrideIds.length !== 0)
+        if (timeslotToOverrideIds.length !== 0)
           await tx.insert(timeslotOverrides).values(
-            coursesToOverrideIds.map((courseId) => ({
+            timeslotToOverrideIds.map(({ timeslotId, courseId }) => ({
+              timeslotId,
               courseId,
               studentId: user.id,
-              deanGroupId: user.deanGroup.id,
             })),
           )
 
+        const newDeanGroupOverrides = db.$with("new_dean_group_overrides").as(
+          db
+            .select({ id: timeslotOverrides.id })
+            .from(timeslotOverrides)
+            .innerJoin(
+              timeslots,
+              eq(timeslotOverrides.timeslotId, timeslots.id),
+            )
+            .where(
+              and(
+                eq(timeslotOverrides.studentId, user.id),
+                isNull(timeslots.subgroup),
+                eq(timeslots.deanGroupId, newDeanGroupId),
+              ),
+            ),
+        )
+
         await tx
+          .with(newDeanGroupOverrides)
           .delete(timeslotOverrides)
           .where(
-            and(
-              eq(timeslotOverrides.studentId, user.id),
-              eq(timeslotOverrides.deanGroupId, newDeanGroupId),
+            inArray(
+              timeslotOverrides.id,
+              sql`(SELECT id FROM ${newDeanGroupOverrides})`,
             ),
           )
       }

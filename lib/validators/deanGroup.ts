@@ -5,7 +5,7 @@ export const deanGroupSchema = z.object({
 })
 
 export const updateDeanGroupSchema = deanGroupSchema.extend({
-  mode: z.enum(["replace", "keep"]),
+  action: z.enum(["replace", "keep"]),
 })
 
 export type UpdateDeanGroupParams = z.infer<typeof updateDeanGroupSchema>
