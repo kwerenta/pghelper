@@ -7,9 +7,8 @@ import { Check, ChevronsUpDown } from "lucide-react"
 import { useFieldArray, useForm } from "react-hook-form"
 
 import { createExam } from "@/lib/api/actions/exam"
-import { cn } from "@/lib/utils"
+import { actionToast, cn } from "@/lib/utils"
 import { NewExamParams, examParamsSchema } from "@/lib/validators/exam"
-import { useActionToast } from "@/hooks/useActionToast"
 import { Button } from "@/components/ui/Button"
 import {
   Card,
@@ -57,7 +56,6 @@ type ExamCreatorProps = {
 
 export const ExamCreator = ({ courses }: ExamCreatorProps) => {
   const router = useRouter()
-  const actionToast = useActionToast()
 
   const form = useForm<NewExamParams>({
     resolver: zodResolver(examParamsSchema),

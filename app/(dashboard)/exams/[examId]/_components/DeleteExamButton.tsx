@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation"
 
 import { deleteExam } from "@/lib/api/actions/exam"
-import { useActionToast } from "@/hooks/useActionToast"
+import { actionToast } from "@/lib/utils"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -23,7 +23,6 @@ type DeleteExamButtonProps = {
 }
 
 export const DeleteExamButton = ({ examId }: DeleteExamButtonProps) => {
-  const actionToast = useActionToast()
   const router = useRouter()
 
   return (

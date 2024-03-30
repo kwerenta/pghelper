@@ -7,11 +7,11 @@ import { useFieldArray, useForm } from "react-hook-form"
 
 import { updateTimetable } from "@/lib/api/actions/timetable"
 import { type TimetableEntry } from "@/lib/api/queries/timeslots"
+import { actionToast } from "@/lib/utils"
 import {
   UpdateTimetableParams,
   timetableEditorSchema,
 } from "@/lib/validators/timetable"
-import { useActionToast } from "@/hooks/useActionToast"
 import { Button } from "@/components/ui/Button"
 import {
   Form,
@@ -53,7 +53,6 @@ export const TimetableEditor = ({
   deanGroups,
   timeslots,
 }: TimetableEditorProps) => {
-  const actionToast = useActionToast()
   const [isOpen, setIsOpen] = useState(false)
 
   const form = useForm<UpdateTimetableParams>({

@@ -5,11 +5,11 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 
 import { updateDeanGroup } from "@/lib/api/actions/deanGroup"
+import { actionToast } from "@/lib/utils"
 import {
   UpdateDeanGroupParams,
   updateDeanGroupSchema,
 } from "@/lib/validators/deanGroup"
-import { useActionToast } from "@/hooks/useActionToast"
 import { Button } from "@/components/ui/Button"
 import {
   Card,
@@ -48,8 +48,6 @@ export const DeanGroupForm = ({
   userDeanGroupId,
   deanGroups,
 }: DeanGroupFormProps) => {
-  const actionToast = useActionToast()
-
   const form = useForm<UpdateDeanGroupParams>({
     resolver: zodResolver(updateDeanGroupSchema),
     defaultValues: { deanGroup: userDeanGroupId, action: "replace" },

@@ -3,13 +3,12 @@
 import type { Answer, Question } from "@/db/schema"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
+import { toast } from "sonner"
 
 import { ExamAttemptParams, examAttempSchema } from "@/lib/validators/exam"
-import { toast } from "@/hooks/useToast"
 import { Button } from "@/components/ui/Button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card"
 import { Form, FormField, FormItem, FormMessage } from "@/components/ui/Form"
-import { ToastAction } from "@/components/ui/Toast"
 
 import { MultipleChoiceAnswers } from "./MultipleChoiceAnswers"
 import { SingleChoiceAnswers } from "./SingleChoiceAnswers"
@@ -41,28 +40,24 @@ export const ExamForm = ({ questions }: ExamFormProps) => {
       }),
     )
 
-    toast({
-      title: `Score: ${correctQuestions.length} / ${questions.length}`,
+    toast(`Score: ${correctQuestions.length} / ${questions.length}`, {
       description: `${Math.floor(
         (correctQuestions.length / questions.length) * 100,
       )}%`,
       action:
-        correctQuestions.length !== questions.length ? (
-          <ToastAction
-            altText="Show which answers are incorrect"
-            onClick={() =>
-              questions.forEach((question, index) => {
-                if (!correctQuestions.includes(question))
-                  form.setError(`questions.${index}.answers`, {
-                    type: "manual",
-                    message: "Invalid answer.",
-                  })
-              })
+        correctQuestions.length !== questions.length
+          ? {
+              label: "Show incorrect answers",
+              onClick: () =>
+                questions.forEach((question, index) => {
+                  if (!correctQuestions.includes(question))
+                    form.setError(`questions.${index}.answers`, {
+                      type: "manual",
+                      message: "Invalid answer.",
+                    })
+                }),
             }
-          >
-            Show errors
-          </ToastAction>
-        ) : undefined,
+          : undefined,
     })
   }
 

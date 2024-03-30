@@ -1,8 +1,19 @@
 import { clsx, type ClassValue } from "clsx"
+import { toast } from "sonner"
 import { twMerge } from "tailwind-merge"
+
+import { ActionResult } from "./actionValidator"
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
+}
+
+export function actionToast(result: ActionResult<unknown>) {
+  if (result.success) {
+    toast.success("Success", { description: result.message })
+    return
+  }
+  toast.error("Error", { description: result.message })
 }
 
 const relativeTimeFormatter = new Intl.RelativeTimeFormat(undefined, {
