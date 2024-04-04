@@ -37,13 +37,20 @@ export const Timetable = ({ entries }: TimetableProps) => (
                 {hour}:00
               </th>
               {timeslots.weekday.enumValues.map((weekday) => {
-                const course = entries.find(
+                const entry = entries.find(
                   (entry) =>
                     entry.weekday === weekday &&
                     entry.startTime <= hour &&
                     entry.endTime > hour,
-                )?.course
-                return <Timeslot key={weekday + hour} course={course} />
+                )
+                return (
+                  <Timeslot
+                    key={weekday + hour}
+                    course={entry?.course}
+                    startDate={entry?.startDate}
+                    endDate={entry?.endDate}
+                  />
+                )
               })}
             </tr>
           ))}

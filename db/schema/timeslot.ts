@@ -1,7 +1,7 @@
 import { InferSelectModel, relations } from "drizzle-orm"
 import {
   bigint,
-  datetime,
+  date,
   index,
   mysqlEnum,
   mysqlTable,
@@ -34,6 +34,8 @@ export const timeslots = mysqlTable(
     ]).notNull(),
     startTime: tinyint("start_time").notNull(),
     endTime: tinyint("end_time").notNull(),
+    startDate: date("start_date"),
+    endDate: date("end_date"),
     deanGroupId: bigint("dean_group_id", {
       mode: "number",
       unsigned: true,
@@ -123,7 +125,7 @@ export const timeslotExceptions = mysqlTable("timeslot_exception", {
   ]).notNull(),
   startTime: tinyint("start_time"),
   endTime: tinyint("end_time"),
-  date: datetime("date"),
+  date: date("date"),
 })
 
 export const timeslotExceptionRelations = relations(
