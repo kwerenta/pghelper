@@ -1,6 +1,7 @@
 import { InferSelectModel, relations } from "drizzle-orm"
 import {
   bigint,
+  datetime,
   index,
   mysqlEnum,
   mysqlTable,
@@ -49,7 +50,7 @@ export const timeslots = mysqlTable(
 
 export type Timeslot = InferSelectModel<typeof timeslots>
 
-export const timeslotRelations = relations(timeslots, ({ one }) => ({
+export const timeslotRelations = relations(timeslots, ({ one, many }) => ({
   course: one(courses, {
     fields: [timeslots.courseId],
     references: [courses.id],
@@ -58,6 +59,7 @@ export const timeslotRelations = relations(timeslots, ({ one }) => ({
     fields: [timeslots.deanGroupId],
     references: [deanGroups.id],
   }),
+  exceptions: many(timeslotExceptions),
 }))
 
 export const timeslotOverrides = mysqlTable(
@@ -98,6 +100,38 @@ export const timeslotOverrideRelations = relations(
     course: one(courses, {
       fields: [timeslotOverrides.courseId],
       references: [courses.id],
+    }),
+  }),
+)
+
+export const timeslotExceptions = mysqlTable("timeslot_exception", {
+  id: serial("id").primaryKey(),
+  timeslotId: bigint("timeslot_id", {
+    mode: "number",
+    unsigned: true,
+  })
+    .notNull()
+    .references(() => timeslots.id, {
+      onDelete: "cascade",
+      onUpdate: "cascade",
+    }),
+  action: mysqlEnum("action", [
+    "cancel",
+    "reschedule",
+    "shift",
+    "add",
+  ]).notNull(),
+  startTime: tinyint("start_time"),
+  endTime: tinyint("end_time"),
+  date: datetime("date"),
+})
+
+export const timeslotExceptionRelations = relations(
+  timeslotExceptions,
+  ({ one }) => ({
+    timeslot: one(timeslots, {
+      fields: [timeslotExceptions.timeslotId],
+      references: [timeslots.id],
     }),
   }),
 )
