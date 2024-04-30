@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation"
+import { z } from "zod"
 
 import { getCoursesBySemester } from "@/lib/api/queries/courses"
 import { getDeanGroupsBySemester } from "@/lib/api/queries/deanGroup"
@@ -13,12 +14,28 @@ import { Timetable } from "@/app/(dashboard)/timetable/_components/Timetable"
 import { TimetableEditor } from "@/app/(dashboard)/timetable/_components/TimetableEditor"
 
 import { SelectDeanGroupTimetable } from "./_components/SelectDeanGroupTimetable"
+import { SelectTimetableDate } from "./_components/SelectTimetableDate"
 
-export default async function UserTimetablePage() {
+type UserTimetablePage = {
+  searchParams: { [key: string]: string | string[] | undefined }
+}
+
+const timetableDateSchema = z.object({
+  date: z.string().date(),
+})
+
+export default async function UserTimetablePage({
+  searchParams,
+}: UserTimetablePage) {
   const user = await getCurrentUser()
   if (!user) return redirect("/")
 
   const entries = await getUserTimetable()
+
+  const parsedSearchParams = timetableDateSchema.safeParse(searchParams)
+  const selectedDate = parsedSearchParams.success
+    ? new Date(parsedSearchParams.data.date)
+    : undefined
 
   const deanGroups = await getDeanGroupsBySemester(user.deanGroup.semesterId)
   const courses = (
@@ -34,6 +51,7 @@ export default async function UserTimetablePage() {
         description="View and customise your timetable."
       >
         <div className="flex flex-row gap-4">
+          <SelectTimetableDate date={selectedDate} />
           <SelectDeanGroupTimetable deanGroups={deanGroups} />
           <TimetableEditor
             currentTimetable={entries}
