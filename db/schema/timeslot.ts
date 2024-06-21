@@ -1,7 +1,9 @@
 import { InferSelectModel, relations } from "drizzle-orm"
 import {
   bigint,
+  boolean,
   date,
+  foreignKey,
   index,
   mysqlEnum,
   mysqlTable,
@@ -36,6 +38,7 @@ export const timeslots = mysqlTable(
     endTime: tinyint("end_time").notNull(),
     startDate: date("start_date"),
     endDate: date("end_date"),
+    isOneTime: boolean("is_one_time").default(false).notNull(),
     deanGroupId: bigint("dean_group_id", {
       mode: "number",
       unsigned: true,
@@ -44,9 +47,17 @@ export const timeslots = mysqlTable(
       onUpdate: "cascade",
     }),
     subgroup: tinyint("subgroup"),
+    parentTimeslotId: bigint("parent_timeslot_id", {
+      mode: "number",
+      unsigned: true,
+    }),
   },
   (timeslot) => ({
     deanGroupIndex: index("dean_group_index").on(timeslot.deanGroupId),
+    parentTimeslotKey: foreignKey({
+      columns: [timeslot.parentTimeslotId],
+      foreignColumns: [timeslot.id],
+    }).onDelete("set null"),
   }),
 )
 
@@ -117,16 +128,14 @@ export const timeslotExceptions = mysqlTable("timeslot_exception", {
       onDelete: "cascade",
       onUpdate: "cascade",
     }),
-  action: mysqlEnum("action", [
-    "cancel",
-    "reschedule",
-    "shift",
-    "add",
-  ]).notNull(),
+  action: mysqlEnum("action", ["cancel", "reschedule"]).notNull(),
   startTime: tinyint("start_time"),
   endTime: tinyint("end_time"),
-  date: date("date"),
+  date: date("date").notNull(),
+  newDate: date("new_date"),
 })
+
+export type TimeslotException = InferSelectModel<typeof timeslotExceptions>
 
 export const timeslotExceptionRelations = relations(
   timeslotExceptions,

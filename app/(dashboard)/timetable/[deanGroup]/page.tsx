@@ -46,7 +46,7 @@ export default async function TimetablePage({ params }: TimetablePageProps) {
           </Link>
         </div>
       </DashboardHeader>
-      <Timetable entries={entries} />
+      <Timetable entries={entries} week={undefined} timeslotExceptions={[]} />
     </DashboardShell>
   )
 }

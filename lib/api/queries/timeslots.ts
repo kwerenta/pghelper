@@ -4,8 +4,10 @@ import { db } from "@/db"
 import {
   DeanGroupId,
   SemesterId,
+  Timeslot,
   courses,
   deanGroups,
+  timeslotExceptions,
   timeslotOverrides,
   timeslots,
 } from "@/db/schema"
@@ -81,3 +83,12 @@ export const getTimeslotsBySemester = async (semesterId: SemesterId) =>
     .from(timeslots)
     .leftJoin(deanGroups, eq(timeslots.deanGroupId, deanGroups.id))
     .where(or(eq(deanGroups.semesterId, semesterId), isNull(deanGroups.id)))
+
+export const getTimeslotExceptionsByTimeslots = async (
+  timeslotIds: Timeslot["id"][],
+) =>
+  await db
+    .select()
+    .from(timeslotExceptions)
+    .where(inArray(timeslotExceptions.timeslotId, timeslotIds))
+    .orderBy(timeslotExceptions.date)

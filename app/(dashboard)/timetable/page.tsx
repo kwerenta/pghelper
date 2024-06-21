@@ -1,9 +1,11 @@
 import { redirect } from "next/navigation"
+import { addDays, addHours, parseISO, startOfISOWeek } from "date-fns"
 import { z } from "zod"
 
 import { getCoursesBySemester } from "@/lib/api/queries/courses"
 import { getDeanGroupsBySemester } from "@/lib/api/queries/deanGroup"
 import {
+  getTimeslotExceptionsByTimeslots,
   getTimeslotsBySemester,
   getUserTimetable,
 } from "@/lib/api/queries/timeslots"
@@ -36,6 +38,17 @@ export default async function UserTimetablePage({
   const selectedDate = parsedSearchParams.success
     ? new Date(parsedSearchParams.data.date)
     : undefined
+  const week = selectedDate
+    ? // TEMP timezone offset fix
+      new Date(
+        startOfISOWeek(selectedDate).valueOf() -
+          selectedDate.getTimezoneOffset() * 60 * 1000,
+      )
+    : undefined
+
+  const timeslotExceptions = selectedDate
+    ? await getTimeslotExceptionsByTimeslots(entries.map((entry) => entry.id))
+    : []
 
   const deanGroups = await getDeanGroupsBySemester(user.deanGroup.semesterId)
   const courses = (
@@ -61,7 +74,11 @@ export default async function UserTimetablePage({
           />
         </div>
       </DashboardHeader>
-      <Timetable entries={entries} />
+      <Timetable
+        week={week}
+        timeslotExceptions={timeslotExceptions}
+        entries={entries}
+      />
     </DashboardShell>
   )
 }
