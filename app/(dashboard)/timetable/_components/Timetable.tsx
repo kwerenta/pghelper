@@ -14,16 +14,10 @@ const hoursArray = Array.from(
 )
 
 type TimetableProps = {
-  entries: TimetableEntry[]
-  timeslotExceptions: TimeslotException[]
-  week: Date | undefined
+  entries: Record<TimetableEntry["weekday"], TimetableEntry[]>
 }
 
-export const Timetable = ({
-  week,
-  timeslotExceptions,
-  entries,
-}: TimetableProps) => (
+export const Timetable = ({ entries }: TimetableProps) => (
   <Card className="overflow-x-auto">
     <CardContent className="pl-0">
       <table className="border-separate border-spacing-2">
@@ -43,38 +37,10 @@ export const Timetable = ({
               <th className="sticky left-0 bg-background px-2 align-text-top capitalize md:px-3">
                 {hour}:00
               </th>
-              {timeslots.weekday.enumValues.map((weekday, index) => {
-                const entry =
-                  entries.find(
-                    (entry) =>
-                      entry.weekday === weekday &&
-                      entry.startTime <= hour &&
-                      entry.endTime > hour &&
-                      (!entry.subgroup ||
-                        (entry.subgroup && entry.subgroup === 1)),
-                  ) ??
-                  entries.find(
-                    (entry) =>
-                      entry.id ===
-                      timeslotExceptions.find(
-                        (e) =>
-                          e.startTime &&
-                          e.startTime <= hour &&
-                          e.endTime &&
-                          e.endTime > hour &&
-                          week &&
-                          e.newDate &&
-                          isSameISOWeek(week, e.newDate),
-                      )?.timeslotId,
-                  )
-
-                const exception = week
-                  ? timeslotExceptions.find(
-                      (e) =>
-                        isEqual(e.date, addDays(week, index)) &&
-                        e.timeslotId === entry?.id,
-                    )
-                  : undefined
+              {timeslots.weekday.enumValues.map((weekday) => {
+                const entry = entries[weekday].find(
+                  (entry) => entry.startTime <= hour && entry.endTime > hour,
+                )
 
                 return (
                   <Timeslot
@@ -82,7 +48,7 @@ export const Timetable = ({
                     course={entry?.course}
                     startDate={entry?.startDate}
                     endDate={entry?.endDate}
-                    exception={exception}
+                    exception={undefined}
                   />
                 )
               })}

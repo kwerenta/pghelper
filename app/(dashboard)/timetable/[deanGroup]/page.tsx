@@ -4,6 +4,7 @@ import { redirect } from "next/navigation"
 import { getDeanGroupsBySemester } from "@/lib/api/queries/deanGroup"
 import { getTimeslotsByDeanGroup } from "@/lib/api/queries/timeslots"
 import { getCurrentUser } from "@/lib/session"
+import { parseTimetable } from "@/lib/utils"
 import { deanGroupSchema } from "@/lib/validators/deanGroup"
 import { buttonVariants } from "@/components/ui/Button"
 import { DashboardHeader } from "@/components/DashboardHeader"
@@ -30,6 +31,8 @@ export default async function TimetablePage({ params }: TimetablePageProps) {
 
   const entries = await getTimeslotsByDeanGroup(deanGroup)
 
+  const timetable = parseTimetable(entries, [], undefined)
+
   return (
     <DashboardShell>
       <DashboardHeader
@@ -46,7 +49,7 @@ export default async function TimetablePage({ params }: TimetablePageProps) {
           </Link>
         </div>
       </DashboardHeader>
-      <Timetable entries={entries} week={undefined} timeslotExceptions={[]} />
+      <Timetable entries={timetable} />
     </DashboardShell>
   )
 }

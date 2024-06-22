@@ -10,6 +10,7 @@ import {
   getUserTimetable,
 } from "@/lib/api/queries/timeslots"
 import { getCurrentUser } from "@/lib/session"
+import { parseTimetable } from "@/lib/utils"
 import { DashboardHeader } from "@/components/DashboardHeader"
 import { DashboardShell } from "@/components/DashboardShell"
 import { Timetable } from "@/app/(dashboard)/timetable/_components/Timetable"
@@ -57,6 +58,8 @@ export default async function UserTimetablePage({
 
   const timeslots = await getTimeslotsBySemester(user.deanGroup.semesterId)
 
+  const timetable = parseTimetable(entries, timeslotExceptions, week)
+
   return (
     <DashboardShell>
       <DashboardHeader
@@ -74,11 +77,7 @@ export default async function UserTimetablePage({
           />
         </div>
       </DashboardHeader>
-      <Timetable
-        week={week}
-        timeslotExceptions={timeslotExceptions}
-        entries={entries}
-      />
+      <Timetable entries={timetable} />
     </DashboardShell>
   )
 }
