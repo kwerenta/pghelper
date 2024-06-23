@@ -1,35 +1,26 @@
-import { Course, TimeslotException } from "@/db/schema"
-
-import { cn } from "@/lib/utils"
+import { TimetableEntry } from "@/lib/api/queries/timeslots"
 
 type TimeslotProps = {
-  course?: Course
-  startDate?: Date | null
-  endDate?: Date | null
-  exception?: TimeslotException
+  entry: TimetableEntry
+  firstSubjectHour: number
 }
 
-export function Timeslot({
-  course,
-  startDate,
-  endDate,
-  exception,
-}: TimeslotProps) {
+export function Timeslot({ entry, firstSubjectHour }: TimeslotProps) {
   return (
-    <td className="min-w-48 rounded-lg bg-muted p-2 md:p-3">
-      {!course ? null : (
-        <>
-          <span>[{course.type}]</span>
-          <p className={cn(exception?.action === "cancel" && "line-through")}>
-            {course.name}
-          </p>
-          <span className="text-sm">
-            {startDate ? `from ${startDate.toLocaleDateString()}` : null}
-            {endDate ? `to ${endDate.toLocaleDateString()}` : null}
-            {exception ? exception.action : null}
-          </span>
-        </>
-      )}
-    </td>
+    <div
+      className="flex flex-col items-center justify-center rounded-lg bg-muted p-2 md:p-3"
+      style={{
+        gridRow: `${entry.startTime - firstSubjectHour + 2} / ${entry.endTime - firstSubjectHour + 2}`,
+      }}
+    >
+      <span>[{entry.course.type}]</span>
+      <p>{entry.course.name}</p>
+      <span className="text-sm">
+        {entry.startDate
+          ? `from ${entry.startDate.toLocaleDateString()}`
+          : null}
+        {entry.endDate ? `to ${entry.endDate.toLocaleDateString()}` : null}
+      </span>
+    </div>
   )
 }

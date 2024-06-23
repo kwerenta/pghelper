@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation"
-import { addDays, addHours, parseISO, startOfISOWeek } from "date-fns"
+import { startOfISOWeek } from "date-fns"
 import { z } from "zod"
 
 import { getCoursesBySemester } from "@/lib/api/queries/courses"
