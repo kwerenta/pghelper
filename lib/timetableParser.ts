@@ -1,5 +1,12 @@
 import { TimeslotException, timeslots } from "@/db/schema"
-import { addDays, getDay, isAfter, isBefore, isSameISOWeek } from "date-fns"
+import {
+  addDays,
+  differenceInCalendarWeeks,
+  getDay,
+  isAfter,
+  isBefore,
+  isSameISOWeek,
+} from "date-fns"
 
 import type { TimetableEntry } from "./api/queries/timeslots"
 
@@ -23,7 +30,17 @@ export function parseTimetable(
         (isTimeslotInWeek(entry, week) &&
           !hasTimeslotException(entry, timeslotExceptions, week)),
     )
-    .forEach((entry) => timetable[entry.weekday].push(entry))
+    .forEach((entry) => {
+      if (
+        entry.course.frequency === "every_two_weeks" &&
+        week &&
+        entry.startDate &&
+        differenceInCalendarWeeks(week, entry.startDate) % 2 !== 0
+      )
+        return
+
+      timetable[entry.weekday].push(entry)
+    })
 
   timeslotExceptions.forEach((exception) => {
     if (exception.action !== "reschedule") return

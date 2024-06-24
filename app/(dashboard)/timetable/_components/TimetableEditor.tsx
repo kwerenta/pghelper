@@ -198,7 +198,8 @@ const SelectGroupTimeslotContent = ({
     {timeslots.map((timeslot) => (
       <SelectItem key={timeslot.id} value={timeslot.id.toString()}>
         <span className="capitalize">{timeslot.weekday}, </span>
-        {timeslot.startTime}:00 - {timeslot.endTime}:00
+        {timeslot.startTime}:00 - {timeslot.endTime}:00{" "}
+        {timeslot.subgroup && String.fromCharCode(timeslot.subgroup + 64)}
       </SelectItem>
     ))}
   </SelectGroup>
