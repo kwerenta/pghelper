@@ -10,7 +10,7 @@ import {
   getUserTimetable,
 } from "@/lib/api/queries/timeslots"
 import { getCurrentUser } from "@/lib/session"
-import { parseTimetable } from "@/lib/utils"
+import { parseTimetable } from "@/lib/timetableParser"
 import { DashboardHeader } from "@/components/DashboardHeader"
 import { DashboardShell } from "@/components/DashboardShell"
 import { Timetable } from "@/app/(dashboard)/timetable/_components/Timetable"
