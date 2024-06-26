@@ -3,7 +3,6 @@ import {
   bigint,
   boolean,
   date,
-  foreignKey,
   index,
   mysqlEnum,
   mysqlTable,
@@ -47,17 +46,9 @@ export const timeslots = mysqlTable(
       onUpdate: "cascade",
     }),
     subgroup: tinyint("subgroup"),
-    parentTimeslotId: bigint("parent_timeslot_id", {
-      mode: "number",
-      unsigned: true,
-    }),
   },
   (timeslot) => ({
     deanGroupIndex: index("dean_group_index").on(timeslot.deanGroupId),
-    parentTimeslotKey: foreignKey({
-      columns: [timeslot.parentTimeslotId],
-      foreignColumns: [timeslot.id],
-    }).onDelete("set null"),
   }),
 )
 
@@ -128,7 +119,11 @@ export const timeslotExceptions = mysqlTable("timeslot_exception", {
       onDelete: "cascade",
       onUpdate: "cascade",
     }),
-  action: mysqlEnum("action", ["cancel", "reschedule"]).notNull(),
+  action: mysqlEnum("action", [
+    "cancel",
+    "reschedule",
+    "reschedule_all",
+  ]).notNull(),
   startTime: tinyint("start_time"),
   endTime: tinyint("end_time"),
   date: date("date").notNull(),

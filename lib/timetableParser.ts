@@ -23,19 +23,13 @@ export function parseTimetable(
     friday: [],
   }
 
-  const isTimeslotInCurrentWeek = (entry: TimetableEntry) =>
+  const isValidEntry = (entry: TimetableEntry) =>
     !week ||
     (isTimeslotInWeek(entry, week) &&
       !hasTimeslotException(entry, timeslotExceptions, week))
 
-  const shouldIncludeEntry = (entry: TimetableEntry) =>
-    entry.course.frequency !== "every_two_weeks" ||
-    !week ||
-    !entry.startDate ||
-    differenceInCalendarWeeks(week, entry.startDate) % 2 === 0
-
-  entries.filter(isTimeslotInCurrentWeek).forEach((entry) => {
-    if (shouldIncludeEntry(entry)) timetable[entry.weekday].push(entry)
+  entries.filter(isValidEntry).forEach((entry) => {
+    if (shouldIncludeEntry(entry, week)) timetable[entry.weekday].push(entry)
   })
 
   if (!week) return timetable
@@ -72,8 +66,11 @@ function applyExceptionsToEntry(
         return result
 
       if (
-        exception.action === "reschedule" &&
-        isSameISOWeek(week, exception.newDate)
+        (exception.action === "reschedule" &&
+          isSameISOWeek(week, exception.newDate)) ||
+        (exception.action === "reschedule_all" &&
+          isTimeslotInWeek({ ...entry, startDate: exception.newDate }, week) &&
+          shouldIncludeEntry({ ...entry, startDate: exception.newDate }, week))
       ) {
         return {
           ...entry,
@@ -106,6 +103,15 @@ function compareExceptions(a: TimeslotException, b: TimeslotException) {
   return 0
 }
 
+function shouldIncludeEntry(entry: TimetableEntry, week: Date | undefined) {
+  return (
+    entry.course.frequency !== "every_two_weeks" ||
+    !week ||
+    !entry.startDate ||
+    differenceInCalendarWeeks(week, entry.startDate) % 2 === 0
+  )
+}
+
 function isTimeslotInWeek(timeslot: TimetableEntry, week: Date) {
   return !(
     (timeslot.endDate && isAfter(week, timeslot.endDate)) ||
@@ -121,6 +127,12 @@ function hasTimeslotException(
   return exceptions.some(
     (exception) =>
       exception.timeslotId === timeslot.id &&
-      isSameISOWeek(week, exception.date),
+      (isSameISOWeek(week, exception.date) ||
+        (exception.action === "reschedule_all" &&
+          exception.newDate &&
+          isTimeslotInWeek(
+            { ...timeslot, startDate: exception.newDate },
+            week,
+          ))),
   )
 }
