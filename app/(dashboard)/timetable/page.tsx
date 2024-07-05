@@ -38,14 +38,12 @@ export default async function UserTimetablePage({
   const parsedSearchParams = timetableDateSchema.safeParse(searchParams)
   const selectedDate = parsedSearchParams.success
     ? new Date(parsedSearchParams.data.date)
-    : undefined
-  const week = selectedDate
-    ? // TEMP timezone offset fix
-      new Date(
-        startOfISOWeek(selectedDate).valueOf() -
-          selectedDate.getTimezoneOffset() * 60 * 1000,
-      )
-    : undefined
+    : new Date()
+  // TEMP timezone offset fix
+  const week = new Date(
+    startOfISOWeek(selectedDate).valueOf() -
+      selectedDate.getTimezoneOffset() * 60 * 1000,
+  )
 
   const timeslotExceptions = selectedDate
     ? await getTimeslotExceptionsByTimeslots(entries.map((entry) => entry.id))
@@ -67,7 +65,7 @@ export default async function UserTimetablePage({
         description="View and customise your timetable."
       >
         <div className="flex flex-row gap-4">
-          <SelectTimetableDate date={selectedDate} />
+          <SelectTimetableDate week={week} />
           <SelectDeanGroupTimetable deanGroups={deanGroups} />
           <TimetableEditor
             currentTimetable={entries}

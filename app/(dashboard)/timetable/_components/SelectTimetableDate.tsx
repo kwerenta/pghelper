@@ -2,10 +2,11 @@
 
 import * as React from "react"
 import { usePathname, useRouter } from "next/navigation"
-import { format } from "date-fns"
+import { endOfISOWeek, format, isSameISOWeek, startOfISOWeek } from "date-fns"
 import { Calendar as CalendarIcon } from "lucide-react"
+import type { DateRange } from "react-day-picker"
+import type { DeepRequired } from "react-hook-form"
 
-import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/Button"
 import { Calendar } from "@/components/ui/Calendar"
 import {
@@ -15,12 +16,17 @@ import {
 } from "@/components/ui/Popover"
 
 type SelectTimetableDateProps = {
-  date: Date | undefined
+  week: Date
 }
 
-export function SelectTimetableDate({ date }: SelectTimetableDateProps) {
+export function SelectTimetableDate({ week }: SelectTimetableDateProps) {
   const router = useRouter()
   const pathname = usePathname()
+
+  const weekRange: DeepRequired<DateRange> = {
+    from: week,
+    to: endOfISOWeek(week),
+  }
 
   const getNewSearchParams = (newDate: Date) =>
     new URLSearchParams({
@@ -31,25 +37,25 @@ export function SelectTimetableDate({ date }: SelectTimetableDateProps) {
     <Popover>
       <PopoverTrigger asChild>
         <Button
-          variant={"outline"}
-          className={cn(
-            "w-[280px] justify-start text-left font-normal",
-            !date && "text-muted-foreground",
-          )}
+          variant="outline"
+          className="w-[280px] justify-start text-left font-normal"
         >
           <CalendarIcon className="mr-2 size-4" />
-          {date ? format(date, "PPP") : <span>Generalized timetable</span>}
+          {format(weekRange.from, "PP")} - {format(weekRange.to, "PP")}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0">
         <Calendar
           ISOWeek
-          mode="single"
-          selected={date}
-          onSelect={(newDate) =>
-            newDate
-              ? router.push(pathname + "?" + getNewSearchParams(newDate))
-              : router.push(pathname)
+          mode="range"
+          selected={weekRange}
+          defaultMonth={week}
+          onDayClick={(newDate) =>
+            isSameISOWeek(newDate, week)
+              ? router.push(pathname)
+              : router.push(
+                  pathname + "?" + getNewSearchParams(startOfISOWeek(newDate)),
+                )
           }
           initialFocus
         />
