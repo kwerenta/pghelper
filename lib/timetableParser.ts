@@ -23,16 +23,21 @@ export function parseTimetable(
     friday: [],
   }
 
+  if (!week) {
+    // TODO: Fix showing only subgroup 1 and multiple timeslots in the same time
+    entries
+      .filter((entry) => entry.subgroup === null || entry.subgroup === 1)
+      .forEach((entry) => timetable[entry.weekday].push(entry))
+    return timetable
+  }
+
   const isValidEntry = (entry: TimetableEntry) =>
-    !week ||
-    (isTimeslotInWeek(entry, week) &&
-      !hasTimeslotException(entry, timeslotExceptions, week))
+    isTimeslotInWeek(entry, week) &&
+    !hasTimeslotException(entry, timeslotExceptions, week)
 
   entries.filter(isValidEntry).forEach((entry) => {
     if (shouldIncludeEntry(entry, week)) timetable[entry.weekday].push(entry)
   })
-
-  if (!week) return timetable
 
   const groupedExceptions = groupExceptionsByTimeslotId(timeslotExceptions)
 

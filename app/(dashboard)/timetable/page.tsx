@@ -45,9 +45,9 @@ export default async function UserTimetablePage({
       selectedDate.getTimezoneOffset() * 60 * 1000,
   )
 
-  const timeslotExceptions = selectedDate
-    ? await getTimeslotExceptionsByTimeslots(entries.map((entry) => entry.id))
-    : []
+  const timeslotExceptions = await getTimeslotExceptionsByTimeslots(
+    entries.map((entry) => entry.id),
+  )
 
   const deanGroups = await getDeanGroupsBySemester(user.deanGroup.semesterId)
   const courses = (

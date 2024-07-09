@@ -10,8 +10,8 @@ import { buttonVariants } from "@/components/ui/Button"
 import { DashboardHeader } from "@/components/DashboardHeader"
 import { DashboardShell } from "@/components/DashboardShell"
 
-import { SelectDeanGroupTimetable } from "../_components/SelectDeanGroupTimetable"
-import { Timetable } from "../_components/Timetable"
+import { SelectDeanGroupTimetable } from "../../_components/SelectDeanGroupTimetable"
+import { Timetable } from "../../_components/Timetable"
 
 type TimetablePageProps = {
   params: { deanGroup: string }
