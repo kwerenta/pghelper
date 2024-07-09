@@ -31,14 +31,14 @@ export const Timetable = ({ entries }: TimetableProps) => {
           <div
             className="sticky left-0 grid grid-cols-[auto] gap-2 bg-background text-center"
             style={{
-              gridTemplateRows: `auto repeat(${dayLength - 1}, 1fr) auto`,
+              gridTemplateRows: `auto repeat(${dayLength - 1}, 1fr) 1.5rem`,
             }}
           >
             <div className="py-3 font-bold">Hour</div>
             {hoursArray.map((hour, index) => (
               <div
                 key={hour}
-                className="px-2 capitalize leading-none md:px-4 [&:not(:last-child)]:translate-y-[-0.75ch]"
+                className="translate-y-[-0.5em] px-2 capitalize leading-none md:px-4"
                 style={{ gridRow: `${index + 2} / ${index + 3}` }}
               >
                 {hour}:00
@@ -51,7 +51,7 @@ export const Timetable = ({ entries }: TimetableProps) => {
               key={dayIndex}
               className="grid grid-cols-[minmax(10rem,1fr)] gap-2"
               style={{
-                gridTemplateRows: `auto repeat(${dayLength - 1}, 1fr) auto`,
+                gridTemplateRows: `auto repeat(${dayLength - 1}, 1fr) 1.5rem`,
               }}
             >
               <div className="py-3 font-bold capitalize">{day}</div>
