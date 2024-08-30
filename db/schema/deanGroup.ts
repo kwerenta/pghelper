@@ -24,6 +24,8 @@ export const deanGroups = mysqlTable("dean_group", {
       onDelete: "cascade",
       onUpdate: "cascade",
     }),
+  stream: varchar("stream", { length: 255 }),
+  profile: varchar("profile", { length: 255 }),
 })
 
 export const deanGroupRelations = relations(deanGroups, ({ one, many }) => ({

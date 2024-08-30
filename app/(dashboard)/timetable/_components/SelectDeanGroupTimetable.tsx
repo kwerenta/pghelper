@@ -39,7 +39,8 @@ export const SelectDeanGroupTimetable = ({
           <SelectLabel>Dean groups</SelectLabel>
           {deanGroups.map((group) => (
             <SelectItem key={group.id} value={group.id.toString()}>
-              {group.number}
+              {group.number} {group.stream && `| ${group.stream}`}{" "}
+              {group.profile && `| ${group.profile}`}
             </SelectItem>
           ))}
         </SelectGroup>
