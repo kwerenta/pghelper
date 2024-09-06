@@ -58,7 +58,8 @@ export const authOptions: NextAuthOptions = {
         name: dbUser.name,
         email: dbUser.email,
         picture: dbUser.image,
-        deanGroup: dbUser.studentDeanGroups[0].deanGroup,
+        // TODO Fix if user does not have dean group (setup page?)
+        deanGroup: dbUser.studentDeanGroups[0]?.deanGroup || 0,
       }
     },
   },

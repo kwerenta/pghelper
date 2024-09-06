@@ -6,7 +6,6 @@ import {
   SemesterId,
   Timeslot,
   courses,
-  deanGroups,
   timeslotExceptions,
   timeslotOverrides,
   timeslots,
@@ -34,7 +33,13 @@ export const getUserTimetable = async () => {
         courseId: timeslotOverrides.courseId,
       })
       .from(timeslotOverrides)
-      .where(eq(timeslotOverrides.studentId, user.id)),
+      .innerJoin(courses, eq(timeslotOverrides.courseId, courses.id))
+      .where(
+        and(
+          eq(courses.semesterId, user.deanGroup.semesterId),
+          eq(timeslotOverrides.studentId, user.id),
+        ),
+      ),
   )
 
   const overridedTimeslotIds = db
@@ -51,13 +56,16 @@ export const getUserTimetable = async () => {
     .from(timeslots)
     .innerJoin(courses, eq(timeslots.courseId, courses.id))
     .where(
-      or(
-        and(isNull(timeslots.deanGroupId), isNull(timeslots.subgroup)),
-        inArray(timeslots.id, overridedTimeslotIds),
-        and(
-          eq(timeslots.deanGroupId, user.deanGroup.id),
-          isNull(timeslots.subgroup),
-          notInArray(timeslots.courseId, overridedCourseIds),
+      and(
+        eq(courses.semesterId, user.deanGroup.semesterId),
+        or(
+          and(isNull(timeslots.deanGroupId), isNull(timeslots.subgroup)),
+          inArray(timeslots.id, overridedTimeslotIds),
+          and(
+            eq(timeslots.deanGroupId, user.deanGroup.id),
+            isNull(timeslots.subgroup),
+            notInArray(timeslots.courseId, overridedCourseIds),
+          ),
         ),
       ),
     )
@@ -81,14 +89,16 @@ export const getTimeslotsBySemester = async (semesterId: SemesterId) =>
   await db
     .select(getTableColumns(timeslots))
     .from(timeslots)
-    .leftJoin(deanGroups, eq(timeslots.deanGroupId, deanGroups.id))
-    .where(or(eq(deanGroups.semesterId, semesterId), isNull(deanGroups.id)))
+    .leftJoin(courses, eq(timeslots.courseId, courses.id))
+    .where(eq(courses.semesterId, semesterId))
 
 export const getTimeslotExceptionsByTimeslots = async (
   timeslotIds: Timeslot["id"][],
 ) =>
-  await db
-    .select()
-    .from(timeslotExceptions)
-    .where(inArray(timeslotExceptions.timeslotId, timeslotIds))
-    .orderBy(timeslotExceptions.date)
+  timeslotIds.length === 0
+    ? []
+    : await db
+        .select()
+        .from(timeslotExceptions)
+        .where(inArray(timeslotExceptions.timeslotId, timeslotIds))
+        .orderBy(timeslotExceptions.date)
