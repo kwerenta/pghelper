@@ -121,19 +121,22 @@ hourRows?.forEach((row) => {
   })
 })
 
-courses.reduce((query, course, courseId) => {
-  courseQuery = `INSERT IGNORE INTO course (name, type, frequency, semester_id) VALUES ('${course.name}', '${course.type}', '${course.frequency}', ${course.semesterId});\n`
-  courseQuery += `SET @courseId = (SELECT id FROM course WHERE name = '${course.name}' AND type = '${course.type}' AND frequency = '${course.frequency}' AND semester_id = ${course.semesterId});\n`
-  return (
-    query +
-    courseQuery +
-    timeslots
-      .filter((timeslot) => timeslot.courseId === courseId)
-      .reduce(
-        (timeslotQuery, timeslot) =>
-          timeslotQuery +
-          `INSERT INTO timeslot (course_id, weekday, start_time, end_time, dean_group_id, subgroup) VALUES (@courseId, '${timeslot.weekday}', ${timeslot.startTime}, ${timeslot.endTime}, ${timeslot.deanGroupId}, ${timeslot.subgroup});\n`,
-        "",
-      )
-  )
-}, "")
+const result =
+  courses.reduce((query, course, courseId) => {
+    courseQuery = `INSERT IGNORE INTO course (name, type, frequency, semester_id) VALUES ('${course.name}', '${course.type}', '${course.frequency}', ${course.semesterId});\n`
+    courseQuery += `SET @courseId = LAST_INSERT_ID();\n`
+    return (
+      query +
+      courseQuery +
+      timeslots
+        .filter((timeslot) => timeslot.courseId === courseId)
+        .reduce(
+          (timeslotQuery, timeslot, index, arr) =>
+            timeslotQuery +
+            `\t(@courseId, '${timeslot.weekday}', ${timeslot.startTime}, ${timeslot.endTime}, ${timeslot.deanGroupId}, ${timeslot.subgroup})${index === arr.length - 1 ? ";" : ","}\n`,
+          "INSERT INTO timeslot (course_id, weekday, start_time, end_time, dean_group_id, subgroup) VALUES\n",
+        )
+    )
+  }, "BEGIN;\n") + "COMMIT;\n"
+
+console.log(result)
