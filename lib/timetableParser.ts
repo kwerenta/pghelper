@@ -15,29 +15,17 @@ export function parseTimetable(
   timeslotExceptions: TimeslotException[],
   week: Date | undefined,
 ) {
-  const timetable: Record<TimetableEntry["weekday"], TimetableEntry[]> = {
-    monday: [],
-    tuesday: [],
-    wednesday: [],
-    thursday: [],
-    friday: [],
-  }
+  if (!week) return entries
 
-  if (!week) {
-    // TODO: Fix showing only subgroup 1 and multiple timeslots in the same time
-    entries
-      .filter((entry) => entry.subgroup === null || entry.subgroup === 1)
-      .forEach((entry) => timetable[entry.weekday].push(entry))
-    return timetable
-  }
+  const timetable: TimetableEntry[] = []
 
   const isValidEntry = (entry: TimetableEntry) =>
     isTimeslotInWeek(entry, week) &&
     !hasTimeslotException(entry, timeslotExceptions, week)
 
-  entries.filter(isValidEntry).forEach((entry) => {
-    if (shouldIncludeEntry(entry, week)) timetable[entry.weekday].push(entry)
-  })
+  for (const entry of entries.filter(isValidEntry)) {
+    if (shouldIncludeEntry(entry, week)) timetable.push(entry)
+  }
 
   const groupedExceptions = groupExceptionsByTimeslotId(timeslotExceptions)
 
@@ -46,7 +34,7 @@ export function parseTimetable(
     if (!entry) continue
 
     const updatedEntry = applyExceptionsToEntry(entry, exceptions, week)
-    if (updatedEntry) timetable[updatedEntry.weekday].push(updatedEntry)
+    if (updatedEntry) timetable.push(updatedEntry)
   }
 
   return timetable
@@ -91,9 +79,11 @@ function applyExceptionsToEntry(
 
 function groupExceptionsByTimeslotId(exceptions: TimeslotException[]) {
   return exceptions.reduce<Record<number, TimeslotException[]>>(
-    (grouped, exception) => (
-      (grouped[exception.timeslotId] ||= []).push(exception), grouped
-    ),
+    (grouped, exception) => {
+      grouped[exception.timeslotId] ??= []
+      grouped[exception.timeslotId].push(exception)
+      return grouped
+    },
     {},
   )
 }
@@ -108,10 +98,9 @@ function compareExceptions(a: TimeslotException, b: TimeslotException) {
   return 0
 }
 
-function shouldIncludeEntry(entry: TimetableEntry, week: Date | undefined) {
+function shouldIncludeEntry(entry: TimetableEntry, week: Date) {
   return (
     entry.course.frequency !== "every_two_weeks" ||
-    !week ||
     !entry.startDate ||
     differenceInCalendarWeeks(week, entry.startDate) % 2 === 0
   )
