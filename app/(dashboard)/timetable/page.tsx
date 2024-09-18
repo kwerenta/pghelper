@@ -16,6 +16,7 @@ import { DashboardShell } from "@/components/DashboardShell"
 import { Timetable } from "@/app/(dashboard)/timetable/_components/Timetable"
 import { TimetableEditor } from "@/app/(dashboard)/timetable/_components/TimetableEditor"
 
+import { AddToCalendarButton } from "./_components/AddToCalendarButton"
 import { SelectDeanGroupTimetable } from "./_components/SelectDeanGroupTimetable"
 import { SelectTimetableDate } from "./_components/SelectTimetableDate"
 
@@ -73,6 +74,7 @@ export default async function UserTimetablePage({
             timeslots={timeslots}
             deanGroups={deanGroups}
           />
+          <AddToCalendarButton entries={timetable} />
         </div>
       </DashboardHeader>
       <Timetable entries={timetable} />
