@@ -4,6 +4,8 @@ import { type TimetableEntry } from "@/lib/api/queries/timeslots"
 import { Card, CardContent } from "@/components/ui/Card"
 import { Timeslot } from "@/app/(dashboard)/timetable/_components/Timeslot"
 
+import { StackedTimeslots } from "./StackedTimeslots"
+
 type TimetableProps = {
   entries: TimetableEntry[]
 }
@@ -21,6 +23,30 @@ export const Timetable = ({ entries }: TimetableProps) => {
   const hoursArray = Array.from(
     { length: dayLength },
     (_, i) => i + firstSubjectHour,
+  )
+
+  const [singleEntries, multiEntries] = entries.reduce<
+    [TimetableEntry[], TimetableEntry[][]]
+  >(
+    (result, entry) => {
+      const overlappingEntries = entries.filter(
+        (e) =>
+          entry.id !== e.id &&
+          entry.weekday === e.weekday &&
+          entry.startTime < e.endTime &&
+          e.startTime < entry.endTime,
+      )
+
+      if (overlappingEntries.length === 0) {
+        result[0].push(entry)
+        return result
+      }
+
+      if (!result[1].some((entries) => entries.some((e) => entry.id === e.id)))
+        result[1].push([entry, ...overlappingEntries])
+      return result
+    },
+    [[], []],
   )
 
   return (
@@ -51,10 +77,18 @@ export const Timetable = ({ entries }: TimetableProps) => {
             </div>
           ))}
 
-          {entries.map((entry) => (
+          {singleEntries.map((entry) => (
             <Timeslot
               key={entry.id}
               entry={entry}
+              firstSubjectHour={firstSubjectHour}
+            />
+          ))}
+
+          {multiEntries.map((entries) => (
+            <StackedTimeslots
+              key={entries[0].id}
+              entries={entries}
               firstSubjectHour={firstSubjectHour}
             />
           ))}

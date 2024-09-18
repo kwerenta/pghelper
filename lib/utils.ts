@@ -3,6 +3,15 @@ import { toast } from "sonner"
 import { twMerge } from "tailwind-merge"
 
 import { ActionResult } from "./actionValidator"
+import type { TimetableEntry } from "./api/queries/timeslots"
+
+export const weekdayMap: Record<TimetableEntry["weekday"], number> = {
+  monday: 2,
+  tuesday: 3,
+  wednesday: 4,
+  thursday: 5,
+  friday: 6,
+}
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))

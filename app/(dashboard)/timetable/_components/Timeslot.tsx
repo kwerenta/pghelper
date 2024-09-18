@@ -1,19 +1,17 @@
 import { TimetableEntry } from "@/lib/api/queries/timeslots"
+import { weekdayMap } from "@/lib/utils"
 
 type TimeslotProps = {
   entry: TimetableEntry
   firstSubjectHour: number
+  shouldShowTime?: boolean
 }
 
-const weekdayMap: Record<TimetableEntry["weekday"], number> = {
-  monday: 2,
-  tuesday: 3,
-  wednesday: 4,
-  thursday: 5,
-  friday: 6,
-}
-
-export function Timeslot({ entry, firstSubjectHour }: TimeslotProps) {
+export function Timeslot({
+  entry,
+  firstSubjectHour,
+  shouldShowTime,
+}: TimeslotProps) {
   return (
     <div
       className="flex flex-col items-center justify-center rounded-lg bg-muted p-2 md:p-3"
@@ -24,6 +22,11 @@ export function Timeslot({ entry, firstSubjectHour }: TimeslotProps) {
     >
       <span>[{entry.course.type}]</span>
       <p>{entry.course.name}</p>
+      {shouldShowTime && (
+        <span>
+          {entry.startTime}:00 - {entry.endTime}:00
+        </span>
+      )}
       <span className="text-sm">
         {entry.startDate
           ? `from ${entry.startDate.toLocaleDateString()}`
