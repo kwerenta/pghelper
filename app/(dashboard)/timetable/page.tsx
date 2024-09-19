@@ -78,7 +78,7 @@ export default async function UserTimetablePage({
             timeslots={timeslots}
             deanGroups={deanGroups}
           />
-          <AddToCalendarButton entries={timetable} semester={semester} />
+          <AddToCalendarButton entries={entries} semester={semester} />
         </div>
       </DashboardHeader>
       <Timetable entries={timetable} />
