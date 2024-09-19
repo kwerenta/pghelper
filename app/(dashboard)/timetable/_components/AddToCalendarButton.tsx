@@ -1,6 +1,14 @@
 "use client"
 
-import { addDays, startOfISOWeek } from "date-fns"
+import type { Semester } from "@/db/schema"
+import {
+  addDays,
+  addWeeks,
+  format,
+  isBefore,
+  isSameDay,
+  startOfISOWeek,
+} from "date-fns"
 import { createEvents, type EventAttributes } from "ics"
 
 import { TimetableEntry } from "@/lib/api/queries/timeslots"
@@ -8,6 +16,7 @@ import { Button } from "@/components/ui/Button"
 
 type AddToCalendarButtonProps = {
   entries: TimetableEntry[]
+  semester: Semester
 }
 
 const weekdayMap: Record<TimetableEntry["weekday"], number> = {
@@ -25,11 +34,23 @@ const courseTypeMap: Record<TimetableEntry["course"]["type"], string> = {
   tutorial: "C",
 }
 
-export function AddToCalendarButton({ entries }: AddToCalendarButtonProps) {
-  const weekStart = startOfISOWeek(new Date())
+export function AddToCalendarButton({
+  entries,
+  semester,
+}: AddToCalendarButtonProps) {
+  const semesterFirstWeek = startOfISOWeek(semester.startDate)
 
   const calendarEvents = entries.map<EventAttributes>((entry) => {
-    const day = addDays(weekStart, weekdayMap[entry.weekday])
+    let day = addDays(semesterFirstWeek, weekdayMap[entry.weekday])
+    console.log(day, semester.startDate)
+    if (
+      !isSameDay(day, semester.startDate) &&
+      isBefore(day, semester.startDate)
+    )
+      day = addWeeks(day, 1)
+
+    const interval = entry.course.frequency === "every_two_weeks" ? "2" : "1"
+    const until = `${format(addDays(semester.endDate, 1), "yyyMMdd")}T000000Z`
 
     return {
       title: `[${courseTypeMap[entry.course.type]}] ${entry.course.name}`,
@@ -37,18 +58,18 @@ export function AddToCalendarButton({ entries }: AddToCalendarButtonProps) {
       start: [
         day.getFullYear(),
         day.getMonth() + 1,
-        day.getDay() + 1,
+        day.getDate(),
         entry.startTime,
         0,
       ],
       end: [
         day.getFullYear(),
         day.getMonth() + 1,
-        day.getDay() + 1,
+        day.getDate(),
         entry.endTime,
         0,
       ],
-      recurrenceRule: `FREQ=WEEKLY;INTERVAL=${entry.course.frequency === "every_two_weeks" ? "2" : "1"}`,
+      recurrenceRule: `FREQ=WEEKLY;INTERVAL=${interval};UNTIL=${until}`,
     }
   })
 

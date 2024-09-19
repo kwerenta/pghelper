@@ -4,6 +4,7 @@ import { z } from "zod"
 
 import { getCoursesBySemester } from "@/lib/api/queries/courses"
 import { getDeanGroupsBySemester } from "@/lib/api/queries/deanGroup"
+import { getSemesterById } from "@/lib/api/queries/semesters"
 import {
   getTimeslotExceptionsByTimeslots,
   getTimeslotsBySemester,
@@ -35,6 +36,9 @@ export default async function UserTimetablePage({
   if (!user) return redirect("/")
 
   const entries = await getUserTimetable()
+
+  const semester = await getSemesterById(user.deanGroup.semesterId)
+  if (!semester) return redirect("/")
 
   const parsedSearchParams = timetableDateSchema.safeParse(searchParams)
   const selectedDate = parsedSearchParams.success
@@ -74,7 +78,7 @@ export default async function UserTimetablePage({
             timeslots={timeslots}
             deanGroups={deanGroups}
           />
-          <AddToCalendarButton entries={timetable} />
+          <AddToCalendarButton entries={timetable} semester={semester} />
         </div>
       </DashboardHeader>
       <Timetable entries={timetable} />
