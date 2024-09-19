@@ -1,4 +1,4 @@
-import { TimeslotException, timeslots } from "@/db/schema"
+import { timeslots, type Semester, type TimeslotException } from "@/db/schema"
 import {
   addDays,
   differenceInCalendarWeeks,
@@ -13,19 +13,17 @@ import type { TimetableEntry } from "./api/queries/timeslots"
 export function parseTimetable(
   entries: TimetableEntry[],
   timeslotExceptions: TimeslotException[],
-  week: Date | undefined,
+  week?: Date | undefined,
+  semester?: Semester | undefined,
 ) {
-  if (!week) return entries
-
-  const timetable: TimetableEntry[] = []
+  if (!week || !semester) return entries
 
   const isValidEntry = (entry: TimetableEntry) =>
     isTimeslotInWeek(entry, week) &&
-    !hasTimeslotException(entry, timeslotExceptions, week)
+    !hasTimeslotException(entry, timeslotExceptions, week) &&
+    shouldIncludeEntry(entry, week, semester)
 
-  for (const entry of entries.filter(isValidEntry)) {
-    if (shouldIncludeEntry(entry, week)) timetable.push(entry)
-  }
+  const timetable: TimetableEntry[] = entries.filter(isValidEntry)
 
   const groupedExceptions = groupExceptionsByTimeslotId(timeslotExceptions)
 
@@ -33,7 +31,12 @@ export function parseTimetable(
     const entry = entries.find((e) => e.id.toString() === timeslotId)
     if (!entry) continue
 
-    const updatedEntry = applyExceptionsToEntry(entry, exceptions, week)
+    const updatedEntry = applyExceptionsToEntry(
+      entry,
+      exceptions,
+      week,
+      semester,
+    )
     if (updatedEntry) timetable.push(updatedEntry)
   }
 
@@ -44,6 +47,7 @@ function applyExceptionsToEntry(
   entry: TimetableEntry,
   exceptions: TimeslotException[],
   week: Date,
+  semester: Semester,
 ) {
   return exceptions
     .sort(compareExceptions)
@@ -63,7 +67,11 @@ function applyExceptionsToEntry(
           isSameISOWeek(week, exception.newDate)) ||
         (exception.action === "reschedule_all" &&
           isTimeslotInWeek({ ...entry, startDate: exception.newDate }, week) &&
-          shouldIncludeEntry({ ...entry, startDate: exception.newDate }, week))
+          shouldIncludeEntry(
+            { ...entry, startDate: exception.newDate },
+            week,
+            semester,
+          ))
       ) {
         return {
           ...entry,
@@ -98,11 +106,16 @@ function compareExceptions(a: TimeslotException, b: TimeslotException) {
   return 0
 }
 
-function shouldIncludeEntry(entry: TimetableEntry, week: Date) {
+function shouldIncludeEntry(
+  entry: TimetableEntry,
+  week: Date,
+  semester: Semester,
+) {
   return (
     entry.course.frequency !== "every_two_weeks" ||
-    !entry.startDate ||
-    differenceInCalendarWeeks(week, entry.startDate) % 2 === 0
+    differenceInCalendarWeeks(week, entry.startDate || semester.startDate) %
+      2 ===
+      0
   )
 }
 

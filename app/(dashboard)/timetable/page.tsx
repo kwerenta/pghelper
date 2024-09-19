@@ -61,7 +61,7 @@ export default async function UserTimetablePage({
 
   const timeslots = await getTimeslotsBySemester(user.deanGroup.semesterId)
 
-  const timetable = parseTimetable(entries, timeslotExceptions, week)
+  const timetable = parseTimetable(entries, timeslotExceptions, week, semester)
 
   return (
     <DashboardShell>

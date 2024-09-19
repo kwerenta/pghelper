@@ -31,7 +31,7 @@ export default async function TimetablePage({ params }: TimetablePageProps) {
 
   const entries = await getTimeslotsByDeanGroup(deanGroup)
 
-  const timetable = parseTimetable(entries, [], undefined)
+  const timetable = parseTimetable(entries, [])
 
   return (
     <DashboardShell>
