@@ -41,8 +41,8 @@ export function AddToCalendarButton({
   const semesterFirstWeek = startOfISOWeek(semester.startDate)
 
   const calendarEvents = entries.map<EventAttributes>((entry) => {
-    let day = addDays(semesterFirstWeek, weekdayMap[entry.weekday])
-    console.log(day, semester.startDate)
+    let day =
+      entry.startDate || addDays(semesterFirstWeek, weekdayMap[entry.weekday])
     if (
       !isSameDay(day, semester.startDate) &&
       isBefore(day, semester.startDate)
@@ -50,7 +50,7 @@ export function AddToCalendarButton({
       day = addWeeks(day, 1)
 
     const interval = entry.course.frequency === "every_two_weeks" ? "2" : "1"
-    const until = `${format(addDays(semester.endDate, 1), "yyyMMdd")}T000000Z`
+    const until = `${format(addDays(entry.endDate || semester.endDate, 1), "yyyMMdd")}T000000Z`
 
     return {
       title: `[${courseTypeMap[entry.course.type]}] ${entry.course.name}`,
